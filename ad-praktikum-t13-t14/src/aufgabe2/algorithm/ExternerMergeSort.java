@@ -1,9 +1,7 @@
 package aufgabe2.algorithm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import aufgabe2.data.DataWrapper;
+import aufgabe2.data.DataWrapperImpl;
 
 public class ExternerMergeSort {
 	
@@ -42,7 +40,7 @@ public class ExternerMergeSort {
             	rechtsPos ++;
 	        }
 
-	        return DataWrapper.create(newList, links.getSize()+rechts.getSize());
+	        return DataWrapperImpl.create(newList, links.getSize() + rechts.getSize());
 
 	    }
 

@@ -26,9 +26,10 @@ public class Mergesort {
         if (listSize <= 1) {
             return toBeSorted; //einelementige liste ist sortiert
         } else {
-            int h‰lfte = (listSize ) / 2;
-            List<Integer> links =  toBeSorted.subList(0, h‰lfte);
-            List<Integer> rechts = toBeSorted.subList(h‰lfte, listSize);
+            //h√§lfte? wurde als "h<?>lfte" in intelliJ angezeigt
+            int half = (listSize ) / 2;
+            List<Integer> links =  toBeSorted.subList(0, half);
+            List<Integer> rechts = toBeSorted.subList(half, listSize);
             links = mergeSort(links);
             rechts = mergeSort(rechts);
 
@@ -39,7 +40,7 @@ public class Mergesort {
     }
 
     private static List<Integer> merge(List<Integer> links, List<Integer> rechts) {
-        List<Integer> newList = new ArrayList<>();
+        List<Integer> newList = new ArrayList<Integer>();
 
         while (!links.isEmpty() && !rechts.isEmpty()) // length(left) > 0 or length(right) > 0
         {
