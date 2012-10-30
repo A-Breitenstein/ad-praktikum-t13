@@ -1,40 +1,42 @@
 package aufgabe2.data;
 
 /**
- * Created with IntelliJ IDEA.
- * User: abg667
+ * AD-Praktikum
+ * Team: 13
  * Date: 30.10.12
- * Time: 11:50
+ * Time: 23:06
  */
-public class DataWrapper {
+public interface DataWrapper {
 
-    private int[] data;
-    private int size;
+    /**
+     * Gibt die beinhalteten Datensätze zurück.
+     *
+     * @return array von unsortierten integer
+     */
+    int[] getData();
 
-    private DataWrapper(int[] data, int size) {
-        this.data = data;
-        this.size = size;
-    }
+    /**
+     * Gibt die Anzahl der Datensätze zurück, die sich im Array des DataWrappers befinden.
+     *
+     * @return Anzahl der Datensätze
+     */
+    int getSize();
 
-    public static DataWrapper create(int[] data, int size){
-        return new DataWrapper(data,size);
-    }
+    /**
+     * <b>Nicht von nöten aufgrund von constructor!</b>
+     * <p>
+     * Speichert das angegbene Array in den DataWrapper, size sollte ebenfals gesetzt werden.
+     *
+     * @param data Array von Datensätzen
+     */
+    void setData(int[] data);
 
-    //    Getter
-    public int[] getData() {
-        return data;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-//    Setter
-    public void setData(int[] data) {
-        this.data = data;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
+    /**
+     * <b>Nicht von nöten aufgrund von constructor!</b>
+     * <p>
+     * Setzt die Anzahl der Datensätze für einfachere Abfrage.
+     *
+     * @param size of Array von Datensätzen
+     */
+    void setSize(int size);
 }
