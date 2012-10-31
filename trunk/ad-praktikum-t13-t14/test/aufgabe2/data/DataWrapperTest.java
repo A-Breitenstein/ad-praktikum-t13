@@ -1,5 +1,6 @@
 package aufgabe2.data;
 
+import aufgabe2.interfaces.DataWrapper;
 import org.junit.Before;
 import org.junit.Test;
 

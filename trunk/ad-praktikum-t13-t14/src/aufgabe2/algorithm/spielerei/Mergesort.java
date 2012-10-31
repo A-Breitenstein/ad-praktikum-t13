@@ -4,6 +4,9 @@
  */
 package aufgabe2.algorithm.spielerei;
 
+import aufgabe2.data.DataManagerImpl;
+import aufgabe2.interfaces.DataWrapper;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,8 +38,6 @@ public class Mergesort {
 
             return merge(links, rechts);
         }
-
-
     }
 
     private static List<Integer> merge(List<Integer> links, List<Integer> rechts) {
