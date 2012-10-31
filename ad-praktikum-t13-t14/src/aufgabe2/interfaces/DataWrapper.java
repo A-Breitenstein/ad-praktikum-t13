@@ -1,4 +1,4 @@
-package aufgabe2.data;
+package aufgabe2.interfaces;
 
 /**
  * AD-Praktikum

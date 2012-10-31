@@ -1,12 +1,14 @@
 package aufgabe2.data;
 
+import aufgabe2.interfaces.DataWrapper;
+
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
  * Date: 30.10.12
  * Time: 11:50
  */
-public class DataWrapperImpl implements DataWrapper {
+final class DataWrapperImpl implements DataWrapper {
 
     private int[] data;
     private int size;
@@ -16,8 +18,8 @@ public class DataWrapperImpl implements DataWrapper {
         this.size = size;
     }
 
-    public static DataWrapper create(int[] data, int size){
-        return new DataWrapperImpl(data,size);
+    public static DataWrapper create(int[] data, int size) {
+        return new DataWrapperImpl(data, size);
     }
 
     //    Getter
@@ -31,7 +33,7 @@ public class DataWrapperImpl implements DataWrapper {
         return size;
     }
 
-//    Setter
+    //    Setter
     @Deprecated
     @Override
     public void setData(int[] data) {
