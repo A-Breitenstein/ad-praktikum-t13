@@ -31,7 +31,7 @@ public class ExternerMergeSort {
 		int[] unpacked = input.getData();
 		
 		
-		for(int i = 1 ; i <= unpacked.length; i++ ) {
+		for(int i = 1  ; i <= unpacked.length; i++ ) {
 			int j = i; 
 			int itemToSort = unpacked[i]; 
 			while(unpacked[j-1] > itemToSort) {
@@ -48,15 +48,19 @@ public class ExternerMergeSort {
 	public static int[] blockSort(int[] input){ // zum testen
 		/* Das Verfahren zum internen sortieren der speicherblÃ¶cke
 		 *  benutzt momentan einen Insertionsort zum Sortieren.
+		 *  
+		 *  Für die zu sortierenden Int-Arrays muss eines gelten: 
+		 *  arr[0] ist ein Stopper-Element, d.h am besten die kleinste zahl überhaupt.
 		 */
 		
 		int[] unpacked = input;
 		
 		
-		for(int i = 2 ; i < unpacked.length; i++ ) {
+		for(int i = 1 ; i < unpacked.length; i++ ) {
 			int j = i; 
 			int itemToSort = unpacked[i]; 
-			while(unpacked[j-1] > itemToSort) {
+			while(unpacked[j-1] > itemToSort) { /* ohne stopper: while((unpacked[j-1] > itemToSort) && j > 1) */
+				
 				//insert
 				unpacked[j] = unpacked[j-1]; 
 				j = j-1; 
