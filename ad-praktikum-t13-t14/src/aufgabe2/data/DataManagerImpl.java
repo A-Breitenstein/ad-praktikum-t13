@@ -46,7 +46,6 @@ public class DataManagerImpl implements DataManager {
 //        write1 = createDataWrapper(new int[writerSize],0);
 //        write2 = createDataWrapper(new int[writerSize],0);
 
-
         byte[] byteArray = new byte[4];
         byteArray[0] = 0;
         byteArray[1] = 0;
