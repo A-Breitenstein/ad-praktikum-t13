@@ -1,10 +1,71 @@
 package aufgabe2.algorithm;
 
 import aufgabe2.data.DataManagerImpl;
+import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.DataWrapper;
 
 public class ExternerMergeSort {
+
 	
+	
+	public static void sort(String inputFile, String outputFile){
+		DataManager tapes = new DataManagerImpl(); //InputFile übergeben, Konstruktor mit angebbarem Dateinamen bitte? 
+		DataWrapper data = tapes.readBlock(); //lese von "band" 1; initialisierung
+		while (data.getSize() > 0){ //solange das "band" nicht leer ist
+			tapes.write(blockSort(data)); // kleine blöcke sortieren
+			data = tapes.readBlock(); //lese wieder von "band" 1
+		}
+			
+		
+		//Sortieren
+		//mergen
+			
+			
+	}
+	
+	private static DataWrapper blockSort(DataWrapper input){ // später wieder zurück zu private
+		/* Das Verfahren zum internen sortieren der speicherblöcke
+		 *  benutzt momentan einen Insertionsort zum Sortieren.
+		 */
+		
+		int[] unpacked = input.getData();
+		
+		
+		for(int i = 1 ; i <= unpacked.length; i++ ) {
+			int j = i; 
+			int itemToSort = unpacked[i]; 
+			while(unpacked[j-1] > itemToSort) {
+				//insert
+				unpacked[j] = unpacked[j-1]; 
+				j = j-1; 
+			}
+			unpacked[j] = itemToSort; 
+		}
+		
+		return input;
+	}
+	
+	public static int[] blockSort(int[] input){ // zum testen
+		/* Das Verfahren zum internen sortieren der speicherblöcke
+		 *  benutzt momentan einen Insertionsort zum Sortieren.
+		 */
+		
+		int[] unpacked = input;
+		
+		
+		for(int i = 2 ; i < unpacked.length; i++ ) {
+			int j = i; 
+			int itemToSort = unpacked[i]; 
+			while(unpacked[j-1] > itemToSort) {
+				//insert
+				unpacked[j] = unpacked[j-1]; 
+				j = j-1; 
+			}
+			unpacked[j] = itemToSort; 
+		}
+		
+		return input;
+	}
 	
 	
 	// kopiert von /spielerei/Mergesort.java
