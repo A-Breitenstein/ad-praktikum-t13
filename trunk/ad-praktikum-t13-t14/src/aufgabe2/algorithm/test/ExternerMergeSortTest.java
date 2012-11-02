@@ -17,7 +17,7 @@ public class ExternerMergeSortTest {
 	@Test
 	public void testBlockSort() {
 		final int STOPPER = Integer.MIN_VALUE;
-		int[] testelems = {STOPPER,6,3,7,2,8,7,345,8,323, 7,3,0,7,23,6,7,-4,546,34};
+		int[] testelems = {6,3,7,2,8,7,345,8,323, 7,3,0,7,23,6,7,-4,546,34};
 		
 	//	DataWrapper t = DataWrapperImpl.create(testelems,testelems.length); 
 	    int[] expected = Arrays.copyOf(testelems,testelems.length); 
