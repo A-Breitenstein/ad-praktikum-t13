@@ -1,5 +1,7 @@
 package aufgabe2.data;
 
+import aufgabe2.interfaces.DataWrapper;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
@@ -15,21 +17,15 @@ import java.util.Random;
  */
 public class TestFileGenerator {
 
-    public static boolean isSorted(String fileName){
+    @Deprecated
+    public static boolean isSorted_OLD(String fileName){
         FileChannel fc = null;
-        IntBuffer ib = null;
        // buffer size needs to be divied by 4
         int byteBufferSize =512;
         long cursorPosition = 0;
         int[] intArray;
         long CONTROLL_COUNTER = 0;
         long integerCount = byteBufferSize/4;
-
-        try {
-            fc = new FileInputStream(new File(fileName)).getChannel();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         try {
             fc = new FileInputStream(new File(fileName)).getChannel();
@@ -89,7 +85,7 @@ public class TestFileGenerator {
         return array;
     }
 
-    static void writeIntArray(FileChannel fc,int[] array) {
+    private static void writeIntArray(FileChannel fc,int[] array) {
         try {
             ByteBuffer byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * array.length);
             IntBuffer intBuff = byteBuff.asIntBuffer();
@@ -142,5 +138,39 @@ public class TestFileGenerator {
             arr[i] = i;
         }
         createTestFile(fileName,arr);
+    }
+
+    public static boolean isSorted(String fileName){
+        FileReader reader = FileReader.create("Reader1",fileName);
+        DataWrapper tmp = null;
+        long CONTROLL_COUNTER = 0;
+        int[] intArray;
+
+        try {
+            while(reader.hasNextIntArrray()){
+                    tmp = reader.getIntArray();
+                    intArray = tmp.getData();
+                    for (int i = 0; i < tmp.getSize()-1; i++) {
+                        CONTROLL_COUNTER++;
+                        //aufsteigend sortieret
+                        if(intArray[i]>intArray[i+1]){
+                            System.out.println(intArray[i] +" ist großer als "+intArray[i+1]);
+                            System.out.println(fileName+ " nicht richtig sortiert!");
+                            reader.close();
+                            return false;
+                        }
+                    }
+                CONTROLL_COUNTER++;
+
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(fileName+ " is sorted! congratulations ");
+        System.out.println("fileChannel Size: "+reader.getFileChanSize()+" b");
+        System.out.println("Anzahl der betrachteten Integer Zahlen: "+(CONTROLL_COUNTER-1));
+        return true;
     }
 }
