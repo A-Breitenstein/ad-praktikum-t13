@@ -8,8 +8,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,6 +25,14 @@ public class DataManagerImpl implements DataManager {
     DataWrapper write1;
     DataWrapper write2;
 
+    Queue<DataWrapper> dataWrappers = new ArrayDeque<DataWrapper>();
+
+    List<Group> groupList;
+    Group currentGroup;
+    Map<String,FileReader> fileReaderMap;
+
+    final String filePath1 = "file1", filePath2 = "file2", filePath3 = "file3", filePath4 = "file4";
+    final String fileName1 = "file1", fileName2 = "file2", fileName3 = "file3", fileName4 = "file4";
 
     FileChannel file1, file2, file3, file4;
     // ca 1.416.872 KB RAM  ( 357923000*4)
@@ -35,7 +42,12 @@ public class DataManagerImpl implements DataManager {
     private final String sourceFile = "zahlenfolge";
 
     public static void main(String[] args) {
-        DataManager d = new DataManagerImpl();
+//        int[] i = new int[357000000];
+//        int[] o = new int[357000000];
+//        int[] p = new int[357000000];
+//        int[] q = new int[357000000];
+        while(true);
+
     }
 
     public DataManagerImpl() {
@@ -46,117 +58,93 @@ public class DataManagerImpl implements DataManager {
 //        write1 = createDataWrapper(new int[writerSize],0);
 //        write2 = createDataWrapper(new int[writerSize],0);
 
-        byte[] byteArray = new byte[4];
-        byteArray[0] = 0;
-        byteArray[1] = 0;
-        byteArray[2] = 0;
-        byteArray[3] = 1;
+        Group group1 = Group.createGroup(1,fileName1,fileName2);
+        Group group2 = Group.createGroup(2,fileName3,fileName4);
+        groupList.addAll(Arrays.asList(group1,group2));
+        currentGroup = groupList.get(0);
 
-        int[] intArray = new int[4];
-        intArray[0] = 0;
-        intArray[1] = 0;
-        intArray[2] = 0;
-        intArray[3] = 1;
-
-        writeIntArray(intArray);
-
-        for (int i = 0; i < intArray.length; i++) {
-            System.out.println(intArray[i]);
-        }
-
-        int[] intArray2 = new int[4];
-
-        intArray2 = readIntArray();
-
-        for (int i = 0; i < intArray2.length; i++) {
-            System.out.println(intArray2[i]);
-        }
-
-//        IntBuffer intBuf = ByteBuffer.wrap(byteArray).order(ByteOrder.BIG_ENDIAN).asIntBuffer();
-//        int[] array = new int[intBuf.remaining()];
-//        intBuf.get(array);
-//        System.out.println(array[0]);
-
-
-//        try {
-//            DataInputStream  instr = new DataInputStream(new BufferedInputStream(new FileInputStream( sourceFile ) ) );
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-
+        fileReaderMap.put(fileName1,FileReader.create(fileName1,filePath1));
+        fileReaderMap.put(fileName2, FileReader.create(fileName2, filePath2));
+        fileReaderMap.put(fileName3, FileReader.create(fileName3, filePath3));
+        fileReaderMap.put(fileName4, FileReader.create(fileName4, filePath4));
 
     }
 
-    static int[] readIntArray() {
-        FileChannel fc = null;
-        try {
-            fc = new FileInputStream(new File("out.file")).getChannel();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        IntBuffer ib = null;
-        try {
-            ib = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size()).asIntBuffer();
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        int[] array = new int[4];
-        ib.get(array);
-        return array;
+    @Override
+    public DataWrapper createDataWrapper(int[] data, int size, int folgen, boolean folgeKomplett) {
+        return DataWrapperImpl.create(data, size, folgen, folgeKomplett);
     }
-
-    static void writeIntArray(int[] array) {
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream("out.file");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-        try {
-            ByteBuffer byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * array.length);
-            IntBuffer intBuff = byteBuff.asIntBuffer();
-            intBuff.put(array);
-            intBuff.flip();
-            FileChannel fc = fos.getChannel();
-            fc.write(byteBuff);
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } finally {
-            try {
-                fos.close();
-            } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
-        }
-    }
-
-    public DataWrapper createDataWrapper(int[] data, int size) {
-        return DataWrapperImpl.create(data, size);
-    }
-
 
     @Override
     public DataWrapper readBlock(int blockSize) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
     public DataWrapper readBlock() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+
+        return null;
     }
 
     @Override
     public DataWrapper[] read() {
-        return new DataWrapper[0];  //To change body of implemented methods use File | Settings | File Templates.
+
+        DataWrapper[] dWrap1 = {read1,read2,write1};
+        DataWrapper[] dWrap2 = {read3,read4,write2};
+
+        //Group1
+        if(currentGroup.getCurrentFile().equals(fileName1)){
+//            read1 = fileReaderMap.get(currentGroup.getCurrentFile()).getIntArray();
+            currentGroup.switchFile();
+        }
+
+        if(currentGroup.getCurrentFile().equals(fileName2)){
+//            read2 = fileReaderMap.get(currentGroup.getCurrentFile()).getIntArray();
+            currentGroup.switchFile();
+        }
+
+        if(currentGroup.getGroupID() == 1)
+            return dWrap1;
+
+        //Group2
+        if(currentGroup.getCurrentFile().equals(fileName3)){
+//            read1 = fileReaderMap.get(currentGroup.getCurrentFile()).getIntArray();
+            currentGroup.switchFile();
+        }
+
+        if(currentGroup.getCurrentFile().equals(fileName4)){
+//            read2 = fileReaderMap.get(currentGroup.getCurrentFile()).getIntArray();
+            currentGroup.switchFile();
+        }
+
+        if(currentGroup.getGroupID() == 2)
+            return dWrap2;
+
+        return null;
     }
 
     @Override
     public void write(DataWrapper dataWrapper) {
-        //To change body of implemented methods use File | Settings | File Templates.
+
     }
 
-    private void fetchDataFromFile(DataWrapper whichReader, String filePath) {
+    @Override
+    public Queue<DataWrapper> exportFolgenToQueue(DataWrapper dataWrapper) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 
+    //GROUP-SWITCH-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    void switchGroup(){
+        switchGroup(currentGroup, groupList);
+    }
+
+    void switchGroup(Group currentGroup, List<Group> groupList){
+        final int currentGroupIndex = groupList.indexOf(currentGroup);
+
+        if(currentGroupIndex+1 > groupList.size()-1){
+            currentGroup = groupList.get(0);
+        }else{
+            currentGroup = groupList.get(currentGroupIndex+1);
+        }
     }
 }
