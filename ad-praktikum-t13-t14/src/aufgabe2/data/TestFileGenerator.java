@@ -141,7 +141,7 @@ public class TestFileGenerator {
     }
 
     public static boolean isSorted(String fileName){
-        FileReader reader = FileReader.create("Reader1",fileName);
+        FileReader reader = FileReader.create("Reader1",fileName,40);
         DataWrapper tmp = null;
         long CONTROLL_COUNTER = 0;
         int[] intArray;

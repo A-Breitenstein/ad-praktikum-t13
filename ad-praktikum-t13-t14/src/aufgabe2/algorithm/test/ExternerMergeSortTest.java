@@ -1,6 +1,6 @@
 package aufgabe2.algorithm.test;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.*;
 
 import java.util.Arrays;
 
