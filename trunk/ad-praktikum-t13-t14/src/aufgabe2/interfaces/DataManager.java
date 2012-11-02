@@ -1,5 +1,7 @@
 package aufgabe2.interfaces;
 
+import java.util.Queue;
+
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -7,13 +9,6 @@ package aufgabe2.interfaces;
  * Time: 11:32
  */
 public interface DataManager {
-
-    /*
-    <Name>:<Text>;<\n>
-    Anmerkungen und Ideen:
-    Alex: Momentan alles Vorschläge, die Namensgebung DataWrapper klingt vllt. etwas allgemein;
-
-     */
 
     /**
      * Zum lesen unsortierter Blöcke an Datensätzen, um diese per
@@ -62,6 +57,14 @@ public interface DataManager {
      * @param size of Array von Datensätzen
      * @return DataWrapper mit angegebenen Daten
      */
-    public DataWrapper createDataWrapper(int[] data, int size);
+    public DataWrapper createDataWrapper(int[] data, int size, int folgen, boolean folgeKomplett);
 
+    /**
+     *
+     * Erstellt eine Queue von DataWrapper zum Buffern der DataWrapper
+     *
+     * @param dataWrapper ein unstrukturierter DataWrapper, d.h. folgen liegen als ein ganzes Array im DataWrapper
+     * @return Queue von DataWrapper
+     */
+    Queue<DataWrapper> exportFolgenToQueue(DataWrapper dataWrapper);
 }
