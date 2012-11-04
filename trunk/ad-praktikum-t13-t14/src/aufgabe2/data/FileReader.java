@@ -26,11 +26,11 @@ public class FileReader {
     private int[] intArray;
     private double folgenPerIntArray;
     private int currentIntegerCount;
+    private double bufferUsage;
 
     private static final int
     INTEGER_SIZE  = 4,
-    INTEGER_COUNT = 500;
-
+    INTEGER_COUNT = 1000000;
 
     private static int
             byteBufferSizeMax = INTEGER_SIZE*INTEGER_COUNT;
@@ -72,12 +72,12 @@ public class FileReader {
         double bufferAuslastungsVerhaeltnis = ((double)currentFolgeSizeInByte/byteBufferSizeMax);
 
         if(bufferAuslastungsVerhaeltnis < hundertProzent){
-            folgenPerIntArray = (hundertProzent/bufferAuslastungsVerhaeltnis);
+            folgenPerIntArray = (int)(hundertProzent/bufferAuslastungsVerhaeltnis);
             currentByteBufferSize = ((int)folgenPerIntArray) * currentFolgeSizeInByte;
             currentIntegerCount =(int)(currentByteBufferSize / INTEGER_SIZE);
 
         }else{
-            // bufferAuslastungsVerhaeltnis > 100% bedeutet, dass die folge
+            // bufferAuslastungsVerhaeltnis >= 100% bedeutet, dass die folge
             // nicht mit einmal laden in den buffer geladen werden kann
             // bsp bufferAuslastungsVerhaeltnis = 4,7 == 470%
             // => overflow 5,0 == 500% d.h. 5 mal laden um die folge
@@ -93,6 +93,7 @@ public class FileReader {
                     overflow+=1;
                 }
                 currentByteBufferSize = currentFolgeSizeInByte/overflow;
+                System.out.println(fileName+": splited folge in "+overflow+" chunks!");
             }
             folgenPerIntArray = hundertProzent/overflow;
             currentIntegerCount = (int)(currentByteBufferSize / INTEGER_SIZE);
@@ -102,6 +103,9 @@ public class FileReader {
         try{
             fileChanSize = fileChan.size();
             hasNextCount = (int)(fileChanSize/currentByteBufferSize)+1;
+            bufferUsage =((double)currentByteBufferSize)/byteBufferSizeMax;
+            System.out.println(fileName+": BufferUsage = "+String.format("%.2f",bufferUsage*100.0)+ "% von "+(byteBufferSizeMax/1000000)+" MB  , bufferAuslastungsVerhaeltnis = "+ bufferAuslastungsVerhaeltnis );
+            System.out.println(fileName+": CurrentFolgenLength: "+currentFolgeLength+",AnzahlFolgenInIntArray :"+folgenPerIntArray+",  readCalls: "+hasNextCount );
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -126,10 +130,9 @@ public class FileReader {
         if(newCursorPosition < fileChanSize){
             IntBuffer ib = fileChan.map(FileChannel.MapMode.READ_ONLY,currentCursorPosition,currentByteBufferSize).asIntBuffer();
             currentCursorPosition = newCursorPosition;
-
             intArray = new int[currentIntegerCount];
             ib.get(intArray);
-            return DataWrapperImpl.create(intArray,currentIntegerCount);
+            return DataWrapperImpl.create(intArray,currentIntegerCount,0,false);
         }else{
 
             // der lästige rest fall...
@@ -140,20 +143,30 @@ public class FileReader {
             int int_count = (int)(sizeLeft/INTEGER_SIZE);
             intArray = new int[int_count];
             ib.get(intArray);
-            return DataWrapperImpl.create(intArray,int_count);
+            return DataWrapperImpl.create(intArray,int_count,0,false);
         }
     }
 
     public static void main(String[] args) {
-        FileReader reader = create("abc","sortiert.file",10);
-        try {
-            DataWrapper tmp = reader.getIntArray();
-            int[] array = tmp.getData();
-            for (int i = 0; i < array.length ; i++) {
-                System.out.println(array[i]);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+//        FileReader reader = create("abc","sortiert.file",10);
+//        try {
+//            DataWrapper tmp = reader.getIntArray();
+//            int[] array = tmp.getData();
+//            for (int i = 0; i < array.length ; i++) {
+//                System.out.println(array[i]);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//        }
+
+        int[] intput = {1,2,3,4,5,6,7,8,9};
+        int[] folge1 = new int[3];
+        int[] folge2 = new int[3];
+        int[] folge3 = new int[3];
+
+        System.arraycopy(intput, 0, folge1, 0, 3);
+        System.arraycopy(intput, 3, folge2, 0, 3);
+        System.arraycopy(intput, 6, folge3, 0, 3);
+        System.out.println("hallo");
     }
 }
