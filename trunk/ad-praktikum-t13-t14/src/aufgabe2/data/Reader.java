@@ -25,7 +25,7 @@ public class Reader {
 
     public static final int
             INTEGER_SIZE  = 4,
-            INTEGER_COUNT_PER_READ = 4000 ;
+            INTEGER_COUNT_PER_READ = 4;
 
     private static int
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
@@ -42,8 +42,11 @@ public class Reader {
 
         try {
             fileChan = new FileInputStream(fileName).getChannel();
-
-            hasNextCount = (int) (fileChan.size()/byteBufferSize) + 1; // +1 damit der "rest" noch oben drauf kommt
+            if(fileChan.size() % byteBufferSize == 0){
+                hasNextCount =(int) (fileChan.size()/byteBufferSize);
+            }else{
+                hasNextCount = (int) (fileChan.size()/byteBufferSize) + 1; // +1 damit der "rest" noch oben drauf kommt
+            }
 
             fileChanSize = fileChan.size();
 
@@ -71,7 +74,7 @@ public class Reader {
         try{
             long newCursorPosition = currentCursorPosition+byteBufferSize;
             hasNextCount--;
-            if(newCursorPosition < fileChanSize){
+            if(newCursorPosition <= fileChanSize){
                 IntBuffer ib = fileChan.map(FileChannel.MapMode.READ_ONLY,currentCursorPosition,byteBufferSize).asIntBuffer();
                 currentCursorPosition = newCursorPosition;
                 return ib;
