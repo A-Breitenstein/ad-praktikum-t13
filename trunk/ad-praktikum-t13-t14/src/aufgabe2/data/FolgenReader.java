@@ -80,21 +80,31 @@ public class FolgenReader {
             // am anfang noch am ende befindet) und gebe ihn zurück
             long rest = folgenLength-loadProgressOverSizedFolge;
             if( rest <= Reader.INTEGER_COUNT_PER_READ){
-                folge = new  int[(int)rest];
-                intBuffer.get(folge, 0, (int) rest);
-                gotRest = true;
-                loadProgressOverSizedFolge +=rest;
-                remainigIntegerInBuffer-=rest;
-                System.out.println(reader.getFileName()+": FolgenReader::multipleReadsPerFolge() Case: rest ("+rest+") <= Reader.INTEGER_COUNT_PER_READ ("+Reader.INTEGER_COUNT_PER_READ+") ");
-                System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
-                System.out.println(reader.getFileName()+": folgen ende erreicht! returned array laenge: "+folge.length);
-                loadProgressOverSizedFolge = 0;
-                // sollte der rest der größe des buffers entsprechen,
-                // dann befinden sich keine zahlen mehr im buffer und es muss "nachgeladen" werden
-                // für den nächsten durchgang
-                if(rest == Reader.INTEGER_COUNT_PER_READ){
-                    intBuffer.clear();
-                    fillBuffer();
+                // wenn der buffer weniger elemente hat als der rest der folge
+                // da dann ist es keine ganze folge sondern ne kürzere und somit das
+                // ende erreicht
+                if(intBuffer.remaining() < rest){
+                    folge = new int[intBuffer.remaining()];
+                    intBuffer.get(folge,0,intBuffer.remaining());
+                }else{
+                    // ist der rest >= intbuffer.remaining dann ist die folge folge hier zuende
+                    // und es gibt einen rest im buffer der der anfang der neuen folge ist
+                    folge = new  int[(int)rest];
+                    intBuffer.get(folge, 0, (int) rest);
+                    gotRest = true;
+                    loadProgressOverSizedFolge +=rest;
+                    remainigIntegerInBuffer-=rest;
+                    System.out.println(reader.getFileName()+": FolgenReader::multipleReadsPerFolge() Case: rest ("+rest+") <= Reader.INTEGER_COUNT_PER_READ ("+Reader.INTEGER_COUNT_PER_READ+") ");
+                    System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
+                    System.out.println(reader.getFileName()+": folgen ende erreicht! returned array laenge: "+folge.length);
+                    loadProgressOverSizedFolge = 0;
+                    // sollte der rest der größe des buffers entsprechen,
+                    // dann befinden sich keine zahlen mehr im buffer und es muss "nachgeladen" werden
+                    // für den nächsten durchgang
+                    if(rest == Reader.INTEGER_COUNT_PER_READ){
+                        intBuffer.clear();
+                        fillBuffer();
+                    }
                 }
 
                 return DataWrapperImpl.create(folge,folge.length,1,true);
