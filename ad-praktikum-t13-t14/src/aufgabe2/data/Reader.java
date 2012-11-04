@@ -23,9 +23,9 @@ public class Reader {
 
 
 
-    public static final int
+    public static int
             INTEGER_SIZE  = 4,
-            INTEGER_COUNT_PER_READ = 4;
+            INTEGER_COUNT_PER_READ = 3;
 
     private static int
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;

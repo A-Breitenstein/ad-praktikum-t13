@@ -56,6 +56,24 @@ public class FolgenReaderTest {
 
 
     }
-
+    @Test
+    public void testReadRandomFile(){
+        String filename = "testReadRandomFile";
+       TestFileGenerator.createTestFile(filename,1000,25);
+        Reader.INTEGER_COUNT_PER_READ = 1222;
+        FolgenReader fr = FolgenReader.create(filename,filename);
+        DataWrapper wrap;
+        int[] array;
+        long counter = 0;
+        while (fr.HasNextFolge()){
+            wrap = fr.getFolge();
+            array = wrap.getData();
+            for (int i = 0; i <array.length; i++) {
+                System.out.println("counter: "+counter+"  array["+i+"] = "+array[i]);
+                counter++;
+            }
+        }
+        System.out.println("controll counter = "+counter);
+    }
 
 }
