@@ -14,26 +14,27 @@ import java.nio.IntBuffer;
 // Speicheraufwand von FolgenReader kommmt durch Reader zustande, beträgt 2 * byteBufferSize aus Reader
 // setzt sich aus einem Intbuffer und einem nativ int array zusammen die beide die gleiche groeße haben
 public class FolgenReader {
-    public static final int
-            INTEGER_SIZE = 4;
+    // die länge einer zahlen folge
     private int folgenLength;
-    private int folgenCursorPosition;
+
+    // verbleibende Integer Zahlen im IntBuffer
     private int remainigIntegerInBuffer;
 
-    private int previousBufferCapacity;
-
+    // wird benutzt um den fortschritt einer Oversize folge zubeobachten, um bestimmen zu können wann sie zuende ist
     private long loadProgressOverSizedFolge;
-
+    // dient zum makieren eines folgenEndes bei einer oversized folge
     private boolean gotRest;
+    // hier werden die IntBuffer raus geholt
     private Reader reader;
     private IntBuffer intBuffer;
+
+    // gibt an mit welcher folgenlänge die erste phase beginnt
     public static final int INITAL_FOLGEN_LENGTH = 4;
 
 
     private FolgenReader(String name,String fileName){
         reader = Reader.create(name,fileName);
         folgenLength = INITAL_FOLGEN_LENGTH;
-        previousBufferCapacity =0;
 
         initBuffer();
 
@@ -43,16 +44,12 @@ public class FolgenReader {
     }
     private void initBuffer(){
         intBuffer = reader.getIntBuffer();
-        previousBufferCapacity = intBuffer.capacity();
         remainigIntegerInBuffer = intBuffer.capacity();
-        folgenCursorPosition = 0;
-        System.out.println(reader.getFileName()+": Loaded "+intBuffer.capacity()+" Integer in intBuffer");
+        System.out.println(reader.getFileName()+": INITIAL Load!   loaded  "+intBuffer.capacity()+" Integer in intBuffer");
     }
     private void fillBuffer(){
-        previousBufferCapacity = intBuffer.capacity();
         intBuffer = reader.getIntBuffer();
         remainigIntegerInBuffer = intBuffer.capacity();
-        folgenCursorPosition = 0;
         System.out.println(reader.getFileName()+": Loaded "+intBuffer.capacity()+" Integer in intBuffer");
 
 
@@ -92,7 +89,9 @@ public class FolgenReader {
                 System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
                 System.out.println(reader.getFileName()+": folgen ende erreicht! returned array laenge: "+folge.length);
                 loadProgressOverSizedFolge = 0;
-
+                // sollte der rest der größe des buffers entsprechen,
+                // dann befinden sich keine zahlen mehr im buffer und es muss "nachgeladen" werden
+                // für den nächsten durchgang
                 if(rest == Reader.INTEGER_COUNT_PER_READ){
                     intBuffer.clear();
                     fillBuffer();
@@ -121,6 +120,7 @@ public class FolgenReader {
 
         // solange der reader daten hat lesen
         if(remainigIntegerInBuffer == 0 && reader.hasNextIntArrray()){
+            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge(): buffer empty! load requested");
             fillBuffer();
         }
 
@@ -130,14 +130,14 @@ public class FolgenReader {
         // kopiere die restlichen zahlen aus den buffer in den bufferRestArray und hole eine
         // neue ladung integer aus dem reader und fülle die restlichen integer von der geteilten
         // folge in den bufferRestArray ein.
-        if(folgenLength > remainigIntegerInBuffer &&  folgenLength < intBuffer.capacity()){
-            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") > remainigIntegerInBuffer ("+remainigIntegerInBuffer+") &&  folgenLength ("+folgenLength+") < intBuffer.capacity ("+intBuffer.capacity()+")");
+        if(folgenLength > remainigIntegerInBuffer &&  folgenLength <= Reader.INTEGER_COUNT_PER_READ){
+            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") > remainigIntegerInBuffer ("+remainigIntegerInBuffer+") &&  folgenLength ("+folgenLength+") <= Reader.INTEGER_COUNT_PER_READ ("+Reader.INTEGER_COUNT_PER_READ+")");
             int[] bufferRestArray = new int[folgenLength];
-            int lengthRestTilBufferEnd = intBuffer.capacity()- folgenCursorPosition;
-            intBuffer.get(bufferRestArray,0,lengthRestTilBufferEnd);
+            int lengthRestTilBufferEnd = intBuffer.capacity()- intBuffer.position();
+            intBuffer.get(bufferRestArray, 0, lengthRestTilBufferEnd);
             // buffer leeren damit die GC nur noch das objekt weg räumen muss
             intBuffer.clear();
-
+            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() buffer empty! load requested");
             // füllt den buffer mit den nächsten zahlen
             fillBuffer();
             // die länger der folge minus die anzahl der sich bereits befindenen zahlen
@@ -155,19 +155,19 @@ public class FolgenReader {
                 System.arraycopy(bufferRestArray,0,tmp_array,0,lengthRestTilBufferEnd);
                 bufferRestArray = tmp_array;
             }
-            moveFolgenCursor(lengthRestFolgeLength);
+            remainigIntegerInBuffer-=lengthRestFolgeLength;
             folge = bufferRestArray;
         }else if(folgenLength<=remainigIntegerInBuffer){
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") <= remainigIntegerInBuffer ("+remainigIntegerInBuffer+")");
 
             folge = new int[folgenLength];
             intBuffer.get(folge,0,folgenLength);
-            moveFolgenCursor(folgenLength);
+            remainigIntegerInBuffer-=folgenLength;
 
 
         }else {
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: until now unknown !!");
-            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() folgenLength = "+folgenLength+", remainingIntegerInBuffer = "+remainigIntegerInBuffer+" , folgenCursorPosition = "+folgenCursorPosition+" , intBuffer.capacity = "+intBuffer.capacity());
+            System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() folgenLength = "+folgenLength+", remainingIntegerInBuffer = "+remainigIntegerInBuffer+" , intBuffer.position() = "+intBuffer.position()+" , intBuffer.capacity = "+intBuffer.capacity());
         }
         return DataWrapperImpl.create(folge,folge.length,1,true);
     }
@@ -183,48 +183,9 @@ public class FolgenReader {
         return  tmp;
     }
 
-//    @Deprecated
-//    public DataWrapper getBufferRest(){
-//        int[] folge;
-//        DataWrapper tmp = null;
-//        if(folgenLength > Reader.INTEGER_COUNT_PER_READ){
-//            long length = loadProgressOverSizedFolge+remainigIntegerInBuffer;
-//            folge = new int[remainigIntegerInBuffer];
-//            intBuffer.get(folge);
-//            // ist es nicht egal ob am ende der datei die folge komplett ist oder nicht ??
-//            // den es wird eh nicht mehr auf das andere band gewechselt
-//            if(length == folgenLength){
-//                tmp = DataWrapperImpl.create(folge,folge.length,1,true);
-//            }else{
-//                tmp = DataWrapperImpl.create(folge,folge.length,1,false);
-//            }
-//
-//        }else{
-//
-//            if(remainigIntegerInBuffer == folgenLength){
-//                folge = new int[folgenLength];
-//                intBuffer.get(folge);
-//                tmp = DataWrapperImpl.create(folge,folge.length,1,true);
-//            }else if(remainigIntegerInBuffer<folgenLength){
-//                folge = new int[remainigIntegerInBuffer];
-//                intBuffer.get(folge);
-//                tmp = DataWrapperImpl.create(folge,folge.length,1,false);
-//            }else {
-//                System.out.println(reader.getFileName()+": getBufferRest() more then one folgen in rest");
-//            }
-//        }
-//        return tmp;
-//    }
-
     public boolean HasNextFolge(){
-        // fehlt das (previousBufferCapacity > intBuffer.capacity()) kommt es dazu das die
-        // letzte folge nicht beendet wird
 
-        return intBuffer.capacity()!=0; //reader.hasNextIntArrray();// || (previousBufferCapacity> intBuffer.capacity());//|| loadProgressOverSizedFolge !=0;
-    }
-    private void moveFolgenCursor(int length){
-        folgenCursorPosition+=length;
-        remainigIntegerInBuffer-=length;
+        return reader.hasNextIntArrray() || remainigIntegerInBuffer > 0; //intBuffer.capacity()!=0; //reader.hasNextIntArrray();
     }
 
     public void setRunLevel(int runLevel){
