@@ -1,10 +1,7 @@
 package aufgabe2.algorithm;
 
 import aufgabe2.data.DataManagerImpl;
-import aufgabe2.interfaces.DataManager;
-import aufgabe2.interfaces.DataWrapper;
-import aufgabe2.interfaces.MergeInput;
-import aufgabe2.interfaces.MergeOutput;
+import aufgabe2.interfaces.*;
 
 public class ExternerMergeSort {
 
@@ -39,7 +36,7 @@ public class ExternerMergeSort {
 		*/	
 	}
 	
-	private static DataWrapper blockSort(DataWrapper input){ // später wieder zurück zu private
+	private static DataWrapper blockSort(DataWrapper input){
 		/* Das Verfahren zum internen sortieren der speicherblöcke
 		 *  benutzt momentan einen Insertionsort zum Sortieren.
 		 */
@@ -88,11 +85,14 @@ public class ExternerMergeSort {
 	}
 	
 	
-	  private static MergeOutput merge(MergeInput input) {
-		  int[] links  = input.GetInput1();
-		  int[] rechts = input.GetInput2();
-		  int linksLänge = links.length;
-		  int rechtsLänge = rechts.length;
+	  private static MergeInputOutput merge(MergeInputOutput input) {
+		  DataWrapper linksIn  = input.GetInput1();
+		  DataWrapper rechtsIn = input.GetInput2();
+          int[] links = linksIn.getData();
+          int[] rechts = rechtsIn.getData();
+
+		  int linksLänge = linksIn.getSize();
+		  int rechtsLänge = rechtsIn.getSize();
 	      int linksPos=0;
 	      int rechtsPos=0;
 		  int[] merged = new int[linksLänge + rechtsLänge];
@@ -110,7 +110,7 @@ public class ExternerMergeSort {
 	          }
 	      }
 
-		  if (input.GetBlockComplete()) { //Nur wenn keine weiteren Daten zum gleichem Block kommen, Output komplett füllen 
+		  if (input.isBlockComplete()) { //Nur wenn keine weiteren Daten zum gleichem Block kommen, Output komplett füllen
 			  while (linksPos < linksLänge) {
 				  merged[linksPos + rechtsPos] = links[linksPos];
 		          linksPos ++;
@@ -123,9 +123,9 @@ public class ExternerMergeSort {
 		  }
 
 		  int NotMergedCount = (linksLänge + rechtsLänge) - (linksPos + rechtsPos);
-		  MergeOutput.InputStream NotCompleteMergedStream = ( rechtsPos < rechtsLänge ? MergeOutput.InputStream.Input2 : MergeOutput.InputStream.Input1);
+		  MergeInputOutput.InputStream NotCompleteMergedStream = ( rechtsPos < rechtsLänge ? MergeInputOutput.InputStream.INPUT2 : MergeInputOutput.InputStream.INPUT1);
 	      
-		  return null; //wünschenswerte für Erzeugung: MergeOutput.Create(merged, NotMergedCount, NotCompleteMergedStream);
+		  return input; //wünschenswerte für Erzeugung: MergeOutput.Create(merged, NotMergedCount, NotCompleteMergedStream);
 	    }
 
 }

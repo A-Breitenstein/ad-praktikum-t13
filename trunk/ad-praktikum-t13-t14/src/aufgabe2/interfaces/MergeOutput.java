@@ -1,19 +1,21 @@
 package aufgabe2.interfaces;
 
+@Deprecated
 public interface MergeOutput {
 
     /**
-     * Gibt die beinhalteten Datensätze zurück mit GetNotMergedCount() Nullen am Ende 
+     * Gibt die beinhalteten Datensätze zurück ,eventuell mit Nullen am Ende
      *
-     * @return Array von sortierten Integer, am Ende stehen GetNotMergedCount() Nullen
+     * @return Verpackter Array von sortierten Integer
      */
-    int[] GetOutputData();
+     DataWrapper GetOutputData();
 	
     /**
      * Gibt Anzahl der Elemente zurück, welche noch nicht gemerged werden konnten
-     *
+     * Brauchen wir nicht mehr, da die Arrays in DataWrappern verpackt werden.
      * @return Integer >=0
      */
+    @Deprecated
     int GetNotMergedCount();
     
     /**
@@ -25,6 +27,7 @@ public interface MergeOutput {
     
     public enum InputStream {
         Input1, Input2
+        // Eigentlich sollten Enums komplett in Großbuchstaben geschrieben werden, weil sie Konstanten sind.
     }
     
 }
