@@ -66,9 +66,9 @@ public class TestFileGenerator {
             }
             cursorPosition+=byteBufferSize;
             System.out.println(fileName+ " is sorted! congratulations ");
-            System.out.println("fileChannel Size: "+fc.size()+" b");
-            System.out.println("Anzahl der betrachteten Integer Zahlen: "+(CONTROLL_COUNTER+iterations));
-            System.out.println("Cursor_position: "+cursorPosition);
+            System.out.println(fileName+ ": fileChannel Size: "+fc.size()+" b");
+            System.out.println(fileName+ ": Anzahl der betrachteten Integer Zahlen: "+(CONTROLL_COUNTER+iterations));
+            System.out.println(fileName+ ": Cursor_position: "+cursorPosition);
 
 
 
@@ -141,7 +141,7 @@ public class TestFileGenerator {
     }
 
     public static boolean isSorted(String fileName){
-        FileReader reader = FileReader.create("Reader1",fileName,40);
+        FileReader reader = FileReader.create("Reader1",fileName,262144);
         DataWrapper tmp = null;
         long CONTROLL_COUNTER = 0;
         int[] intArray;

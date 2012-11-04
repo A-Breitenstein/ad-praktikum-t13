@@ -45,6 +45,7 @@ public interface DataManager {
     /**
      * Schreibt Blöcke von Datensätzen abwechselnd in zwei Dateien.
      *
+     *
      * @param dataWrapper beinhaltet einen Array mit sortierten Datensätzen
      */
     public void write(DataWrapper dataWrapper);

@@ -17,6 +17,9 @@ import java.util.*;
  * Time: 16:41
  */
 public class DataManagerImpl implements DataManager {
+    // optimal folgenLength ist ne 2er potenz
+    // start könnte bei 8 oder 16 sein
+    public final int folgenLength = 8;
 
     DataWrapper read1;
     DataWrapper read2;
@@ -63,10 +66,10 @@ public class DataManagerImpl implements DataManager {
         groupList.addAll(Arrays.asList(group1,group2));
         currentGroup = groupList.get(0);
 
-        fileReaderMap.put(fileName1,FileReader.create(fileName1,filePath1));
-        fileReaderMap.put(fileName2, FileReader.create(fileName2, filePath2));
-        fileReaderMap.put(fileName3, FileReader.create(fileName3, filePath3));
-        fileReaderMap.put(fileName4, FileReader.create(fileName4, filePath4));
+        fileReaderMap.put(fileName1,FileReader.create(fileName1,filePath1,50));
+        fileReaderMap.put(fileName2, FileReader.create(fileName2, filePath2,50));
+        fileReaderMap.put(fileName3, FileReader.create(fileName3, filePath3,50));
+        fileReaderMap.put(fileName4, FileReader.create(fileName4, filePath4,50));
 
     }
 
