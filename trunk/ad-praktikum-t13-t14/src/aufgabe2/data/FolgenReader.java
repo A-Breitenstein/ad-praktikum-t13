@@ -2,7 +2,11 @@ package aufgabe2.data;
 
 import aufgabe2.interfaces.DataWrapper;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.IntBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,18 +33,41 @@ public class FolgenReader {
     private IntBuffer intBuffer;
 
     // gibt an mit welcher folgenlänge die erste phase beginnt
-    public static final int INITAL_FOLGEN_LENGTH = 4;
+    public static int INITAL_FOLGEN_LENGTH;
 
 
-    private FolgenReader(String name,String fileName){
+    private FolgenReader(String name,String fileName,int folgenLength){
         reader = Reader.create(name,fileName);
-        folgenLength = INITAL_FOLGEN_LENGTH;
-
-        initBuffer();
+        INITAL_FOLGEN_LENGTH = folgenLength;
+        this.folgenLength = INITAL_FOLGEN_LENGTH;
+        remainigIntegerInBuffer = 0;
+        //initBuffer();
 
     }
-    public static FolgenReader create(String name,String fileName){
-        return new FolgenReader(name, fileName);
+    private void reset(){
+        remainigIntegerInBuffer = 0;
+        loadProgressOverSizedFolge = 0;
+        gotRest = false;
+        try {
+            reader.close();
+            reader.close();
+            String fileName = reader.getFileName();
+            File file = new File(fileName);
+
+            System.out.println(file.exists());
+            if(file.delete()){
+                System.out.println(fileName+" resetet");
+            }else{
+                throw new IOException();
+            }
+
+            reader = Reader.create(fileName,fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public static FolgenReader create(String name,String fileName,int folgenLength){
+        return new FolgenReader(name, fileName, folgenLength);
     }
     private void initBuffer(){
         intBuffer = reader.getIntBuffer();
@@ -201,8 +228,12 @@ public class FolgenReader {
     public void setRunLevel(int runLevel){
         folgenLength = (int)(Math.pow(2,runLevel)*INITAL_FOLGEN_LENGTH);
     }
+    public long getFileSize(){
+        return reader.getFileChanSize();
+    }
+
     public static void main(String[] args) {
-        FolgenReader folgenReader = FolgenReader.create("fread1","sortiert.file");
+        FolgenReader folgenReader = FolgenReader.create("fread1","sortiert.file",4);
         int[] array;
         int x = 0;
         DataWrapper tmp;
@@ -213,6 +244,10 @@ public class FolgenReader {
                 System.out.println(array[array.length-1] +"array length:"+array.length);
 //            }
         }
+    }
+
+    public void resetFile(){
+           reset();
     }
 
 

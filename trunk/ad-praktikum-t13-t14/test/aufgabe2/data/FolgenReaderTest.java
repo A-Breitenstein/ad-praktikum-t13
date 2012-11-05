@@ -4,6 +4,8 @@ import aufgabe2.interfaces.DataWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
+
 import static org.junit.Assert.*;
 
 /**
@@ -22,11 +24,11 @@ public class FolgenReaderTest {
 
     @Test
     public void losslessReadTest() throws Exception {
-        int size = 10000;
+        int size = 50000;
         // static final test params in Reader.INTEGER_COUNT_PER_READ   entspricht der buffer größe
         String fileName = "losslessReadTest.file";
         TestFileGenerator.createSortedTestFile(fileName,size);
-        FolgenReader fr = FolgenReader.create("test1",fileName);
+        FolgenReader fr = FolgenReader.create("test1",fileName,4);
         fr.setRunLevel(10);
 
         int[] array;
@@ -61,7 +63,7 @@ public class FolgenReaderTest {
         String filename = "testReadRandomFile";
        TestFileGenerator.createTestFile(filename,1000,25);
         Reader.INTEGER_COUNT_PER_READ = 1222;
-        FolgenReader fr = FolgenReader.create(filename,filename);
+        FolgenReader fr = FolgenReader.create(filename,filename,4);
         DataWrapper wrap;
         int[] array;
         long counter = 0;
@@ -75,5 +77,23 @@ public class FolgenReaderTest {
         }
         System.out.println("controll counter = "+counter);
     }
+    @Test
+    public void testFolgenEndeErreicht(){
+        String filename = "testReadRandomFile";
+        TestFileGenerator.createTestFile(filename,1000,1);
 
+        FolgenReader fr = FolgenReader.create(filename,filename,16);
+        DataWrapper wrap;
+        wrap = fr.getFolge();
+        System.out.println("folgeende erreicht? :"+wrap.isFolgeKomplett());
+        wrap = fr.getFolge();
+        System.out.println("folgeende erreicht? :"+wrap.isFolgeKomplett());
+//        fr.resetFile();
+
+        File file = new File("abc");
+
+
+
+
+    }
 }

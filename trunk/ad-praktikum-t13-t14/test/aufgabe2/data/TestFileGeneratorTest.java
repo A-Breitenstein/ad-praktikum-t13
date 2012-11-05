@@ -20,7 +20,7 @@ public class TestFileGeneratorTest {
 
     @Test
     public void testChecker() throws Exception {
-       TestFileGenerator.createSortedTestFile("sortiert.file", 20000000);
+       TestFileGenerator.createSortedTestFile("sortiert.file", 20000);
 //        assertEquals(true, TestFileGenerator.isSorted_OLD("sortiert.file"));
         assertEquals(true,TestFileGenerator.isSorted("sortiert.file"));
     }
