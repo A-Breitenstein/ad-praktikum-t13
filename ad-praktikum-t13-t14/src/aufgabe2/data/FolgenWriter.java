@@ -204,7 +204,7 @@ public class FolgenWriter {
         folgenWriter.writeFolge(folge2);
         folgenWriter.writeFolge(folge3);
 
-        FolgenReader folgenReader = FolgenReader.create("Test1","newFileFolgeWriter");
+        FolgenReader folgenReader = FolgenReader.create("Test1","newFileFolgeWriter",4);
         DataWrapper  wrap;
         int[] array;
         while(folgenReader.HasNextFolge()){
