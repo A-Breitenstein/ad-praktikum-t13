@@ -12,18 +12,16 @@ final class DataWrapperImpl implements DataWrapper {
 
     private int[] data;
     private int size;
-    private int folgen;
     private boolean folgeKomplett;
 
-    private DataWrapperImpl(int[] data, int size, int folgen, boolean folgeKomplett) {
+    private DataWrapperImpl(int[] data, int size, boolean folgeKomplett) {
         this.data = data;
         this.size = size;
-        this.folgen = folgen;
         this.folgeKomplett = folgeKomplett;
     }
 
-    public static DataWrapper create(int[] data, int size, int folgen, boolean folgeKomplett) {
-        return new DataWrapperImpl(data, size, folgen, folgeKomplett);
+    public static DataWrapper create(int[] data, int size, boolean folgeKomplett) {
+        return new DataWrapperImpl(data, size, folgeKomplett);
     }
 
     //Getter & Setter
@@ -49,17 +47,8 @@ final class DataWrapperImpl implements DataWrapper {
         this.size = size;
     }
 
-    public void setFolgen(int folgen) {
-        this.folgen = folgen;
-    }
-
     public void setFolgeKomplett(boolean folgeKomplett) {
         this.folgeKomplett = folgeKomplett;
-    }
-
-    @Override
-    public int getFolgeAnzahl() {
-        return folgen;
     }
 
     @Override
