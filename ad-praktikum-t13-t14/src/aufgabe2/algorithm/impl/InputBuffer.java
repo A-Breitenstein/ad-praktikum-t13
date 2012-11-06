@@ -4,7 +4,7 @@ import aufgabe2.interfaces.*;
 
 public class InputBuffer {
 	
-	/* Interne Klasse für den Merge-Schritt */ 
+	/* Interne Klasse fï¿½r den Merge-Schritt */ 
 
 	DataManager tapes;
 	Channels currentChannel;
@@ -14,7 +14,7 @@ public class InputBuffer {
 	public	InputBuffer(DataManager data, Channels channel){
 		tapes = data;
 		currentChannel = channel;
-		nächstesHäppchenVomMergeRun(); //erste Zahlenfolge einlesen 
+		naechstesHaeppchenVomMergeRun(); //erste Zahlenfolge einlesen
 	}
 	
 	public enum Channels{
@@ -25,20 +25,20 @@ public class InputBuffer {
 	public int getNext() {
 		int elem = input.getData()[pos];
 		pos++;
-		if (!hasNext()) //then nächsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
+		if (!hasNext()) //then nï¿½chsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
 		{ 
-			nächstesHäppchenVomMergeRun(); //folgende Zahlenfolge einlesen
+			naechstesHaeppchenVomMergeRun(); //folgende Zahlenfolge einlesen
 		}
 		return elem;
 	}
 	
 	public boolean hasNext(){
-		/* Wenn der aktuelle block am ende ist gilt pos == inputgröße */ 
-		return pos < input.getSize(); // am ende des algorithmus hat der input die größe 0. 
+		/* Wenn der aktuelle block am ende ist gilt pos == inputgrï¿½ï¿½e */ 
+		return pos < input.getSize(); // am ende des algorithmus hat der input die grï¿½ï¿½e 0. 
 		
 	}
 	
-	private void nächstesHäppchenVomMergeRun(){
+	private void naechstesHaeppchenVomMergeRun(){
 		input = null;
 		input = (currentChannel == Channels.LEFTCHANNEL ? tapes.readLeftChannel() : tapes.readRightChannel());
 		pos = 0;

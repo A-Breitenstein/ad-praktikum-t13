@@ -1,7 +1,5 @@
 package aufgabe2.data;
 
-import aufgabe2.interfaces.DataWrapper;
-
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -16,9 +14,6 @@ public class FolgenWriter {
     private int folgenLength;
 
     private boolean isLastFolgeReached;
-
-    private long writeProgressOverSizedFolge;
-    private boolean gotRest;
 
     // der byteBuffer hinter dem intBuffer,
     private ByteBuffer byteBuffer;
@@ -191,30 +186,5 @@ public class FolgenWriter {
     }
     public void setFolgenLength(int x){
         folgenLength = x;
-    }
-    public static void main(String[] args) {
-        FolgenWriter folgenWriter = FolgenWriter.create("newFileFolgeWriter");
-        folgenWriter.setRunLevel(0);
-        int[] folge1 = {1,2,3,4};
-        int[] folge2 = {5,6,7,8};
-        int[] folge3 = {9,10};
-
-
-        folgenWriter.writeFolge(folge1);
-        folgenWriter.writeFolge(folge2);
-        folgenWriter.writeFolge(folge3);
-
-        FolgenReader folgenReader = FolgenReader.create("Test1","newFileFolgeWriter",4);
-        DataWrapper  wrap;
-        int[] array;
-        while(folgenReader.hasNextFolge()){
-
-            wrap = folgenReader.getFolge();
-            array = wrap.getData();
-            for (int i = 0; i < wrap.getSize(); i++) {
-                System.out.println(array[i]);
-            }
-
-        }
     }
 }

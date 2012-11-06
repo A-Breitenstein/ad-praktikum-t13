@@ -4,11 +4,7 @@
  */
 package aufgabe2.algorithm.spielerei;
 
-import aufgabe2.data.DataManagerImpl;
-import aufgabe2.interfaces.DataWrapper;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,12 +13,12 @@ import java.util.List;
  */
 public class Mergesort {
 
-    public static void main(String[] args) {
-
-        List<Integer> tobesorted = Arrays.asList(35, 1, 2, 3, 70, 4, 0, 5, 2, 7, 25, -1, 8, 9, 11, 10);
-        List<Integer> sorted = mergeSort(tobesorted);
-        System.out.println(sorted);
-    }
+//    public static void main(String[] args) {
+//
+//        List<Integer> tobesorted = Arrays.asList(35, 1, 2, 3, 70, 4, 0, 5, 2, 7, 25, -1, 8, 9, 11, 10);
+//        List<Integer> sorted = mergeSort(tobesorted);
+//        System.out.println(sorted);
+//    }
 
     private static List<Integer> mergeSort(List<Integer> toBeSorted) {
         int listSize = toBeSorted.size();
