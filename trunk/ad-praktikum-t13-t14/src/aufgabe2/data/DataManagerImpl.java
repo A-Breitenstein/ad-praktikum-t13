@@ -48,9 +48,8 @@ public class DataManagerImpl implements DataManager {
         initialReader.setRunLevel(FolgenReaderInitValue);
         sourceFileSize = initialReader.getFileSize();
     }
-
-    @Override
-    public DataWrapper createDataWrapper(int[] data, int size, boolean folgeKomplett) {
+    @Deprecated
+    private DataWrapper createDataWrapper(int[] data, int size, boolean folgeKomplett) {
         return DataWrapperImpl.create(data, size, folgeKomplett);
     }
 
@@ -64,7 +63,22 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public DataWrapper[] read() {
+    public DataWrapper createDataWrapper() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public DataWrapper readLeftChannel() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public DataWrapper readRightChannel() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Deprecated
+    private DataWrapper[] read() {
         DataWrapper[] dataWrappers = new DataWrapper[2];
 
             fileLeft = folgenReader1.hasNextFolge();

@@ -91,9 +91,23 @@ public class FolgenReaderTest {
 //        fr.resetFile();
 
         File file = new File("abc");
+    }
 
-
-
-
+    @Test
+    public void test_readBigFile(){
+        FolgenReader reader = FolgenReader.create("ding","C:\\Users\\abg667\\Desktop\\testfile.file",2500000000L);
+        System.out.println(reader.getFileSize());
+        int folgenzaehler = 0;
+        DataWrapper wrapp;
+        while (reader.hasNextFolge()){
+            wrapp = reader.getFolge();
+            if(!(wrapp.isFolgeKomplett())){
+                folgenzaehler++;
+                System.out.println("Folgenteil: " + folgenzaehler);
+            }else{
+                System.out.println("Folge Komplett ("+wrapp.getSize()+")");
+                folgenzaehler = 0;
+            }
+        }
     }
 }
