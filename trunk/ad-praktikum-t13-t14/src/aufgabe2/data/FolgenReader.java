@@ -232,19 +232,6 @@ public class FolgenReader {
         return reader.getFileChanSize();
     }
 
-    public static void main(String[] args) {
-        FolgenReader folgenReader = FolgenReader.create("fread1","sortiert.file",4);
-        int[] array;
-        DataWrapper tmp;
-        while(folgenReader.hasNextFolge()){
-            tmp = folgenReader.getFolge();
-            array = tmp.getData();
-//            for (int i = 0; i < array.length; i++) {
-                System.out.println(array[array.length-1] +"array length:"+array.length);
-//            }
-        }
-    }
-
     public void resetFile(){
            reset();
     }

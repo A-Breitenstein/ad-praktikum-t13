@@ -3,9 +3,7 @@ package aufgabe2.data;
 import aufgabe2.interfaces.DataWrapper;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
 
@@ -140,33 +138,11 @@ public class FileReader {
             if(sizeLeft%4 != 0) throw  new IOException();
             IntBuffer ib = fileChan.map(FileChannel.MapMode.READ_ONLY,currentCursorPosition,sizeLeft).asIntBuffer();
             currentCursorPosition+=sizeLeft;
-            int int_count = (int)(sizeLeft/INTEGER_SIZE);
+            int int_count = sizeLeft/INTEGER_SIZE;
             intArray = new int[int_count];
             ib.get(intArray);
             return DataWrapperImpl.create(intArray,int_count,false);
         }
     }
 
-    public static void main(String[] args) {
-//        FileReader reader = create("abc","sortiert.file",10);
-//        try {
-//            DataWrapper tmp = reader.getIntArray();
-//            int[] array = tmp.getData();
-//            for (int i = 0; i < array.length ; i++) {
-//                System.out.println(array[i]);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        }
-
-        int[] intput = {1,2,3,4,5,6,7,8,9};
-        int[] folge1 = new int[3];
-        int[] folge2 = new int[3];
-        int[] folge3 = new int[3];
-
-        System.arraycopy(intput, 0, folge1, 0, 3);
-        System.arraycopy(intput, 3, folge2, 0, 3);
-        System.arraycopy(intput, 6, folge3, 0, 3);
-        System.out.println("hallo");
-    }
 }

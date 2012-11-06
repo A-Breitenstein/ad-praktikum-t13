@@ -12,7 +12,6 @@ import aufgabe2.interfaces.DataWrapper;
 public class DataManagerImpl implements DataManager {
     // optimal folgenLength ist ne 2er potenz
     // start könnte bei 8 oder 16 sein
-    public final int folgenLength = 8;
     private final int FolgenReaderInitValue = 10;
     private int FolgenReaderValue = FolgenReaderInitValue;
 
@@ -24,15 +23,12 @@ public class DataManagerImpl implements DataManager {
     FolgenReader folgenReader1;
     FolgenReader folgenReader2;
 
-    boolean fileLeft = false, fileRight = false, writeSwitch = true, bigSwitch = true;
+    boolean writeSwitch = true, bigSwitch = true;
     //SourceFile
     //private final String sourceFilePath = "zahlenfolge";
     FolgenReader initialReader;
     long sourceFileSize = 0;
     // ca 1.416.872 KB RAM  ( 357923000*4)
-    private final int readerSize = 44740375;
-
-    private final int writerSize = readerSize * 2;
 
     public DataManagerImpl(String sourceFilePath) {
 
@@ -121,13 +117,10 @@ public class DataManagerImpl implements DataManager {
         }
 
             if(dataWrapper.isFolgeKomplett())
-                        if(writeSwitch){
-                            writeSwitch = false;
-                        }else{
-                            writeSwitch = true;
-                        }
+                writeSwitch = !writeSwitch;
 
         if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
+//            System.gc();
             FolgenReaderValue *= 2;
             if(bigSwitch){
                 folgenReader1.resetFile();
@@ -150,7 +143,6 @@ public class DataManagerImpl implements DataManager {
                 bigSwitch = true;
 
             }
-            System.gc();
         }
     }
 
