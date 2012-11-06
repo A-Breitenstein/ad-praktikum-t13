@@ -22,7 +22,7 @@ public class DataWrapperTest {
     public void setUp() throws Exception {
         data0 = new int[]{6};
         size0 = 4;
-        dataWrapper = DataWrapperImpl.create(data0, size0,0,false);
+        dataWrapper = DataWrapperImpl.create(data0, size0,false);
     }
 
     @Test

@@ -17,10 +17,10 @@ import java.nio.IntBuffer;
 // setzt sich aus einem Intbuffer und einem nativ int array zusammen die beide die gleiche groeße haben
 public class FolgenReader {
     // die länge einer zahlen folge
-    private int folgenLength;
+    private long folgenLength;
 
     // verbleibende Integer Zahlen im IntBuffer
-    private int remainigIntegerInBuffer;
+    private long remainigIntegerInBuffer;
 
     // wird benutzt um den fortschritt einer Oversize folge zubeobachten, um bestimmen zu können wann sie zuende ist
     private long loadProgressOverSizedFolge;
@@ -31,15 +31,15 @@ public class FolgenReader {
     private IntBuffer intBuffer;
 
     // gibt an mit welcher folgenlänge die erste phase beginnt
-    public static int INITAL_FOLGEN_LENGTH;
+    public static long INITAL_FOLGEN_LENGTH;
 
 
-    private FolgenReader(String name,String fileName,int folgenLength){
+    private FolgenReader(String name,String fileName,long folgenLength){
         reader = Reader.create(name,fileName);
         INITAL_FOLGEN_LENGTH = folgenLength;
         this.folgenLength = INITAL_FOLGEN_LENGTH;
         remainigIntegerInBuffer = 0;
-        //initBuffer();
+        initBuffer();
 
     }
     private void reset(){
@@ -64,7 +64,7 @@ public class FolgenReader {
             e.printStackTrace();
         }
     }
-    public static FolgenReader create(String name,String fileName,int folgenLength){
+    public static FolgenReader create(String name,String fileName,long folgenLength){
         return new FolgenReader(name, fileName, folgenLength);
     }
     private void initBuffer(){
@@ -167,7 +167,7 @@ public class FolgenReader {
         // folge in den bufferRestArray ein.
         if(folgenLength > remainigIntegerInBuffer &&  folgenLength <= Reader.INTEGER_COUNT_PER_READ){
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") > remainigIntegerInBuffer ("+remainigIntegerInBuffer+") &&  folgenLength ("+folgenLength+") <= Reader.INTEGER_COUNT_PER_READ ("+Reader.INTEGER_COUNT_PER_READ+")");
-            int[] bufferRestArray = new int[folgenLength];
+            int[] bufferRestArray = new int[(int)folgenLength];
             int lengthRestTilBufferEnd = intBuffer.capacity()- intBuffer.position();
             intBuffer.get(bufferRestArray, 0, lengthRestTilBufferEnd);
             // buffer leeren damit die GC nur noch das objekt weg räumen muss
@@ -177,7 +177,7 @@ public class FolgenReader {
             fillBuffer();
             // die länger der folge minus die anzahl der sich bereits befindenen zahlen
             // im bufferRestArray
-            int lengthRestFolgeLength = folgenLength-lengthRestTilBufferEnd;
+            long lengthRestFolgeLength = folgenLength-lengthRestTilBufferEnd;
             int[] tmp_array;
             if(intBuffer.capacity()>0){
                 // die restlichen zahlen einfüllen, der IntBuffer verwaltet einen
@@ -195,8 +195,8 @@ public class FolgenReader {
         }else if(folgenLength<=remainigIntegerInBuffer){
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") <= remainigIntegerInBuffer ("+remainigIntegerInBuffer+")");
 
-            folge = new int[folgenLength];
-            intBuffer.get(folge,0,folgenLength);
+            folge = new int[(int)folgenLength];
+            intBuffer.get(folge,0,(int)folgenLength);
             remainigIntegerInBuffer-=folgenLength;
 
 
@@ -208,6 +208,8 @@ public class FolgenReader {
     }
     public DataWrapper getFolge(){
         DataWrapper tmp;
+        //Important
+        System.gc();
         if(folgenLength > Reader.INTEGER_COUNT_PER_READ){
             //oversize folgen fetch mode
            tmp =  multipleReadsPerFolge();

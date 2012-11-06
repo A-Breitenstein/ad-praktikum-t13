@@ -21,7 +21,7 @@ public class TestFileGenerator {
     public static boolean isSorted_OLD(String fileName){
         FileChannel fc = null;
        // buffer size needs to be divied by 4
-        int byteBufferSize =512;
+        int byteBufferSize =4*357923000;
         long cursorPosition = 0;
         int[] intArray;
         long CONTROLL_COUNTER = 0;

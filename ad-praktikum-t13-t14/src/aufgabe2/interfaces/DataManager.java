@@ -34,14 +34,12 @@ public interface DataManager {
      *
      * Erstellt einen neuen DataWrapper, anstelle der Klasse.
      *
-     * @param data Array von Datensätzen
-     * @param size of Array von Datensätzen
      * @return DataWrapper mit angegebenen Daten
      */
     public DataWrapper createDataWrapper();
     
     // 6.11.2012: 
-    /*statt read() sollen jetzt die einzelnen b�nder gelesen werden, also das linke und das rechte,
+    /*statt read() sollen jetzt die einzelnen b�nder gelesen werden, also das linke und das rechte,
      * Hier die "getter": */ 
     /**
      * 

@@ -14,7 +14,7 @@ final class DataWrapperImpl implements DataWrapper {
     private int size;
     private boolean folgeKomplett;
 
-    private DataWrapperImpl(int[] data, int size, boolean folgeKomplett) {
+    DataWrapperImpl(int[] data, int size, boolean folgeKomplett) {
         this.data = data;
         this.size = size;
         this.folgeKomplett = folgeKomplett;
@@ -25,7 +25,7 @@ final class DataWrapperImpl implements DataWrapper {
     }
 
     public static DataWrapper create(int[] data, int size) {
-        return new DataWrapperImpl(data, size, true);
+        return new DataWrapperImpl( data,  size,true);
     }
 
     //Getter & Setter

@@ -132,7 +132,7 @@ public class FileReader {
             currentCursorPosition = newCursorPosition;
             intArray = new int[currentIntegerCount];
             ib.get(intArray);
-            return DataWrapperImpl.create(intArray,currentIntegerCount,0,false);
+            return DataWrapperImpl.create(intArray,currentIntegerCount,false);
         }else{
 
             // der lästige rest fall...
@@ -143,7 +143,7 @@ public class FileReader {
             int int_count = (int)(sizeLeft/INTEGER_SIZE);
             intArray = new int[int_count];
             ib.get(intArray);
-            return DataWrapperImpl.create(intArray,int_count,0,false);
+            return DataWrapperImpl.create(intArray,int_count,false);
         }
     }
 
