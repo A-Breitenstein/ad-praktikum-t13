@@ -37,6 +37,5 @@ public class DataWrapperTest {
         size1 = dataWrapper.getSize();
 
         assertEquals(size0,size1);
-
     }
 }
