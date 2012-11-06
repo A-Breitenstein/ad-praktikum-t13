@@ -35,12 +35,12 @@ public class FolgenReaderTest {
         DataWrapper dataWrap;
         int controll_counter = 0;
         boolean ausstieg = false;
-        while (fr.HasNextFolge() && !ausstieg){
+        while (fr.hasNextFolge() && !ausstieg){
             dataWrap = fr.getFolge();
             array = dataWrap.getData();
-            for (int i = 0; i < array.length; i++) {
-                if(controll_counter!=array[i]){
-                    System.out.println(array[i] +" != "+controll_counter+ "     data loss ...");
+            for (int anArray : array) {
+                if (controll_counter != anArray) {
+                    System.out.println(anArray + " != " + controll_counter + "     data loss ...");
                     ausstieg = true;
                     break;
                 }
@@ -67,7 +67,7 @@ public class FolgenReaderTest {
         DataWrapper wrap;
         int[] array;
         long counter = 0;
-        while (fr.HasNextFolge()){
+        while (fr.hasNextFolge()){
             wrap = fr.getFolge();
             array = wrap.getData();
             for (int i = 0; i <array.length; i++) {

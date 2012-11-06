@@ -24,6 +24,10 @@ final class DataWrapperImpl implements DataWrapper {
         return new DataWrapperImpl(data, size, folgeKomplett);
     }
 
+    public static DataWrapper create(int[] data, int size) {
+        return new DataWrapperImpl(data, size, true);
+    }
+
     //Getter & Setter
     @Override
     public int[] getData() {

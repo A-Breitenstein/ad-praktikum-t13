@@ -81,9 +81,9 @@ public class FolgenWriter {
             // wenn die länge der folge ein vielfaches von Writer.INTEGER_COUNT_PER_WRITE ist,
             // dann schreibe solange bis die folge abgearbeitet ist
             if(folge.length % Writer.INTEGER_COUNT_PER_WRITE == 0){
-                for (int i = 0; i < folge.length; i++) {
+                for (int aFolge : folge) {
 
-                    intBuffer.put(folge,0,intBuffer.remaining());
+                    intBuffer.put(folge, 0, intBuffer.remaining());
                     writeBuffer();
                 }
 
@@ -207,7 +207,7 @@ public class FolgenWriter {
         FolgenReader folgenReader = FolgenReader.create("Test1","newFileFolgeWriter",4);
         DataWrapper  wrap;
         int[] array;
-        while(folgenReader.HasNextFolge()){
+        while(folgenReader.hasNextFolge()){
 
             wrap = folgenReader.getFolge();
             array = wrap.getData();
