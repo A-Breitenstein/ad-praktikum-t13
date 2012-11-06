@@ -52,4 +52,23 @@ public class Writer {
     public String getFileName(){
         return fileName;
     }
+    public void close(){
+        try {
+            fileChan.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] array = {1,2,3,4,5,6,7,8,9,10};
+        ByteBuffer tmp_byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) *10);
+        IntBuffer tmp_intBuff = tmp_byteBuff.asIntBuffer();
+        tmp_intBuff.put(array);
+        tmp_intBuff.limit(5);
+        Writer w = Writer.create("limitTest");
+        tmp_intBuff.flip();
+        w.writeByteBufferToFile(tmp_byteBuff);
+
+    }
 }
