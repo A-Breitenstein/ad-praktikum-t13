@@ -21,12 +21,6 @@ public interface DataManager {
      */
     public DataWrapper readBlock();
 
-    /**
-     * Liest zwei, bereits mit InsertSort sortierte, DataWrapper.
-     *
-     * @return DataWrapper Array mit größe 2, [0] linker, [1] rechter Datawrapper
-     */
-    public DataWrapper[] read();
 
     /**
      * Schreibt Blöcke von Datensätzen abwechselnd in zwei Dateien.
@@ -44,6 +38,22 @@ public interface DataManager {
      * @param size of Array von Datensätzen
      * @return DataWrapper mit angegebenen Daten
      */
-    public DataWrapper createDataWrapper(int[] data, int size, boolean folgeKomplett);
+    public DataWrapper createDataWrapper();
+    
+    // 6.11.2012: 
+    /*statt read() sollen jetzt die einzelnen b�nder gelesen werden, also das linke und das rechte,
+     * Hier die "getter": */ 
+    /**
+     * 
+     * @return DataWrapper, der die Daten auf dem linken band beinhaltet (vorsortiert!) 
+     */
+    DataWrapper readLeftChannel(); 
+    
+    
+    /**
+     * 
+     * @return DataWrapper, der die Daten auf dem rechten band beinhaltet (vorsortiert!) 
+     */
+    DataWrapper readRightChannel(); 
 
 }
