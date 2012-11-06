@@ -5,8 +5,6 @@ import aufgabe2.interfaces.DataWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.IntBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Created with IntelliJ IDEA.
@@ -97,7 +95,7 @@ public class FolgenReader {
             remainigIntegerInBuffer-=restImBufferBzwAnfangDerNeuenFolge;
             intBuffer.clear();
             fillBuffer();
-            return DataWrapperImpl.create(folge,folge.length,1,false);
+            return DataWrapperImpl.create(folge,folge.length,false);
 
         }else{
             // andernfalls berechne die restliche Anzahl an Integern um die folge zubeenden,
@@ -134,7 +132,7 @@ public class FolgenReader {
                     }
                 }
 
-                return DataWrapperImpl.create(folge,folge.length,1,true);
+                return DataWrapperImpl.create(folge,folge.length,true);
             }else{
                 int size = intBuffer.capacity();
                 folge = new int[size];
@@ -146,7 +144,7 @@ public class FolgenReader {
                 System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
                 intBuffer.clear();
                 fillBuffer();
-                return DataWrapperImpl.create(folge,folge.length,1,false);
+                return DataWrapperImpl.create(folge,folge.length,false);
             }
 
         }
@@ -206,10 +204,10 @@ public class FolgenReader {
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: until now unknown !!");
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() folgenLength = "+folgenLength+", remainingIntegerInBuffer = "+remainigIntegerInBuffer+" , intBuffer.position() = "+intBuffer.position()+" , intBuffer.capacity = "+intBuffer.capacity());
         }
-        return DataWrapperImpl.create(folge,folge.length,1,true);
+        return DataWrapperImpl.create(folge,folge.length,true);
     }
     public DataWrapper getFolge(){
-        DataWrapper tmp = null;
+        DataWrapper tmp;
         if(folgenLength > Reader.INTEGER_COUNT_PER_READ){
             //oversize folgen fetch mode
            tmp =  multipleReadsPerFolge();
@@ -220,7 +218,7 @@ public class FolgenReader {
         return  tmp;
     }
 
-    public boolean HasNextFolge(){
+    public boolean hasNextFolge(){
 
         return reader.hasNextIntArrray() || remainigIntegerInBuffer > 0; //intBuffer.capacity()!=0; //reader.hasNextIntArrray();
     }
@@ -235,9 +233,8 @@ public class FolgenReader {
     public static void main(String[] args) {
         FolgenReader folgenReader = FolgenReader.create("fread1","sortiert.file",4);
         int[] array;
-        int x = 0;
         DataWrapper tmp;
-        while(folgenReader.HasNextFolge()){
+        while(folgenReader.hasNextFolge()){
             tmp = folgenReader.getFolge();
             array = tmp.getData();
 //            for (int i = 0; i < array.length; i++) {
