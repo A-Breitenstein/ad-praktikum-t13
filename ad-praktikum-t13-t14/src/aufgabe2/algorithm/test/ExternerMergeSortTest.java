@@ -13,10 +13,12 @@ import aufgabe2.algorithm.ExternerMergeSort;
 
 public class ExternerMergeSortTest {
 	
-
+	
+// TODO: Neue Tests, zumindest für BlockSort. 
+	
 	@Test
 	public void testBlockSort() {
-		final int STOPPER = Integer.MIN_VALUE;
+	/*	final int STOPPER = Integer.MIN_VALUE;
 		int[] testelems = {6,3,7,2,8,7,345,8,323, 7,3,0,7,23,6,7,-4,546,34};
 		
 	//	DataWrapper t = DataWrapperImpl.create(testelems,testelems.length); 
@@ -27,8 +29,14 @@ public class ExternerMergeSortTest {
 		
 	    assertTrue(Arrays.equals(ExternerMergeSort.blockSort(testelems), expected)); 
 	    		
-	    		
+	  */ 
+		
 
+	}
+	
+	@Test 
+	public void testMergeSortAlgorithm() {
+		
 	}
 
 }
