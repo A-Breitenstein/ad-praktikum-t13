@@ -1,7 +1,5 @@
 package aufgabe2.interfaces;
 
-import java.util.Queue;
-
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -38,20 +36,33 @@ public interface DataManager {
      */
     public DataWrapper createDataWrapper();
     
-    // 6.11.2012: 
-    /*statt read() sollen jetzt die einzelnen b�nder gelesen werden, also das linke und das rechte,
-     * Hier die "getter": */ 
+    // 6.11.2012:
+    //Sowas kommt in die JavaDocs!
+
     /**
      * 
      * @return DataWrapper, der die Daten auf dem linken band beinhaltet (vorsortiert!) 
      */
-    DataWrapper readLeftChannel(); 
-    
-    
+    public DataWrapper readLeftChannel();
+
+
     /**
      * 
      * @return DataWrapper, der die Daten auf dem rechten band beinhaltet (vorsortiert!) 
      */
-    DataWrapper readRightChannel(); 
+    public DataWrapper readRightChannel();
 
+    /**
+     * Prädikat für die existenz einer kommenden Folge auf dem Channel
+     *
+     * @return true if the Channel has a sequence left to give, else false
+     */
+    public boolean leftChannelHasNext();
+
+    /**
+     * Prädikat für die existenz einer kommenden Folge auf dem Channel
+     *
+     * @return true if the Channel has a sequence left to give, else false
+     */
+    public boolean rightChannelHasNext();
 }

@@ -3,9 +3,6 @@ package aufgabe2.data;
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.DataWrapper;
 
-import java.nio.channels.FileChannel;
-import java.util.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -29,7 +26,7 @@ public class DataManagerImpl implements DataManager {
 
     boolean fileLeft = false, fileRight = false, writeSwitch = true, bigSwitch = true;
     //SourceFile
-    private final String sourceFilePath = "zahlenfolge";
+    //private final String sourceFilePath = "zahlenfolge";
     FolgenReader initialReader;
     long sourceFileSize = 0;
     // ca 1.416.872 KB RAM  ( 357923000*4)
@@ -37,7 +34,7 @@ public class DataManagerImpl implements DataManager {
 
     private final int writerSize = readerSize * 2;
 
-    public DataManagerImpl() {
+    public DataManagerImpl(String sourceFilePath) {
 
         folgenWriter1 = FolgenWriter.create(datei3);
         folgenWriter2 = FolgenWriter.create(datei4);
@@ -48,56 +45,71 @@ public class DataManagerImpl implements DataManager {
         initialReader.setRunLevel(FolgenReaderInitValue);
         sourceFileSize = initialReader.getFileSize();
     }
-    @Deprecated
-    private DataWrapper createDataWrapper(int[] data, int size, boolean folgeKomplett) {
-        return DataWrapperImpl.create(data, size, folgeKomplett);
-    }
+
 
     @Override
     public DataWrapper readBlock() {
         if(initialReader.hasNextFolge()){
             return initialReader.getFolge();
         }else{
-            return createDataWrapper(new int[0], 0, true);
+            return DataWrapperImpl.create(new int[0], 0, true);
         }
     }
 
     @Override
     public DataWrapper createDataWrapper() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return DataWrapperImpl.create(new int[0], 0, true);
     }
 
     @Override
     public DataWrapper readLeftChannel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if(leftChannelHasNext()){
+            return folgenReader1.getFolge();
+        }else {
+            return createDataWrapper();
+        }
     }
 
     @Override
     public DataWrapper readRightChannel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        if(rightChannelHasNext()){
+            return folgenReader2.getFolge();
+        }else {
+            return createDataWrapper();
+        }
     }
 
-    @Deprecated
-    private DataWrapper[] read() {
-        DataWrapper[] dataWrappers = new DataWrapper[2];
-
-            fileLeft = folgenReader1.hasNextFolge();
-
-            if(fileLeft){
-                dataWrappers[0] = folgenReader1.getFolge();
-            }else{
-                dataWrappers[0] = createDataWrapper(new int[0],0,true);
-            }
-
-            fileRight = folgenReader2.hasNextFolge();
-
-            if(fileRight){
-                dataWrappers[1] = folgenReader2.getFolge();
-            }else{
-                dataWrappers[1] = createDataWrapper(new int[0], 0, true);
-            }
-        return dataWrappers;
+    @Override
+    public boolean leftChannelHasNext() {
+        return folgenReader1.hasNextFolge();
     }
+
+    @Override
+    public boolean rightChannelHasNext() {
+        return folgenReader2.hasNextFolge();
+    }
+
+//    @Deprecated
+//    private DataWrapper[] read() {
+//        DataWrapper[] dataWrappers = new DataWrapper[2];
+//
+//            fileLeft = folgenReader1.hasNextFolge();
+//
+//            if(fileLeft){
+//                dataWrappers[0] = folgenReader1.getFolge();
+//            }else{
+//                dataWrappers[0] = DataWrapperImpl.create(new int[0], 0, true);
+//            }
+//
+//            fileRight = folgenReader2.hasNextFolge();
+//
+//            if(fileRight){
+//                dataWrappers[1] = folgenReader2.getFolge();
+//            }else{
+//                dataWrappers[1] = DataWrapperImpl.create(new int[0], 0, true);
+//            }
+//        return dataWrappers;
+//    }
 
     @Override
     public void write(DataWrapper dataWrapper) {
@@ -115,7 +127,7 @@ public class DataManagerImpl implements DataManager {
                             writeSwitch = true;
                         }
 
-        if(!(fileLeft) && !(fileRight)){
+        if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
             FolgenReaderValue *= 2;
             if(bigSwitch){
                 folgenReader1.resetFile();
