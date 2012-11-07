@@ -34,8 +34,8 @@ public interface DataManager {
      *
      * @return DataWrapper mit angegebenen Daten
      */
-    public DataWrapper createDataWrapper();
-    
+    public DataWrapper createOuputChannel();
+
     // 6.11.2012:
     //Sowas kommt in die JavaDocs!
 

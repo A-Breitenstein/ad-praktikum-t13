@@ -7,7 +7,7 @@ public class ExternerMergeSort {
 
 	public static void sort(String inputFile, String outputFile) {
 		DataManager tapes = new DataManagerImpl(inputFile); // InputFile
-															// Ã¼bergeben,
+															// übergeben,
 															// Konstruktor mit
 															// angebbarem
 															// Dateinamen bitte?
@@ -17,20 +17,19 @@ public class ExternerMergeSort {
 												// initialisierung
 		while (data.getSize() > 0) { // solange das "band" nicht leer ist
 			blockSort_insertion(data.getData(), 0, data.getSize()-1);// Sortieren
-			tapes.write(data); // zurï¿½ckschreiben
-			data = tapes.readBlock(); // lese wieder von "band" 1
+			tapes.write(data); // zur?ckschreiben
+			data = tapes.readBlock(); //lese wieder von "band" 1
 		}
-
-		// Mergen
-		while (merge(tapes)) {// Merge fÃ¼r jeden Block aufrufen, bis keine
-								// BlÃ¶cke mehr kommen
-			// der merge tut schon alles, also do nothing
+		
+		//Mergen
+		while(merge(tapes)){//Merge für jeden Block aufrufen, bis keine Blöcke mehr kommen
+			 //der merge tut schon alles, also do nothing
 		}
-
+		
 	}
 
-	// AuswÃ¤hlen, welcher sortieralgo fÃ¼r die blÃ¶cke verwendet wird:
-	// IF blockgrÃ¶ÃŸe > 30 then blockSort_quick
+	// Auswählen, welcher sortieralgo für die blöcke verwendet wird:
+	// IF blockgröße > 30 then blockSort_quick
 
 	static void blockSort_insertion(int[] data, int links, int rechts) {
 		for (int i = links + 1; i <= rechts; i++) {
@@ -45,6 +44,46 @@ public class ExternerMergeSort {
 		}
 
 	}
+	
+	  private static boolean merge(DataManager ioTapes) {
+		  
+		  InputBuffer linksIn  = new InputBuffer(ioTapes, InputBuffer.Channels.LEFTCHANNEL);
+		  InputBuffer rechtsIn = new InputBuffer(ioTapes, InputBuffer.Channels.RIGHTCHANNEL);
+          
+		  OutputBuffer output = new OutputBuffer(ioTapes);
+		  
+		  if ((!linksIn.hasNext()) && (!rechtsIn.hasNext()))
+			  return false; //Keine weiteren Blöcke, die Sortiert werden könnten
+		  
+		  while (linksIn.hasNext() && rechtsIn.hasNext()){
+
+              int linksElem = linksIn.getNext();
+	          int rechtsElem = rechtsIn.getNext();
+
+              if (linksElem <= rechtsElem) {
+	        	  output.push(linksElem);
+                  linksIn.pos++;
+	          } else {
+	        	  output.push(rechtsElem);
+                  rechtsIn.pos++;
+	          }
+		  }
+		  
+		  while (linksIn.hasNext()){
+			  output.push(linksIn.getNext());
+              linksIn.pos++;
+          }
+		  
+		  while (rechtsIn.hasNext()){
+			  output.push(rechtsIn.getNext());
+              rechtsIn.pos++;
+          }
+		  
+		  output.storeInTape();
+		  
+		  return true;
+	        	  
+	      }
 
 	static void blockSort_quick(int[] data, int links, int rechts) {
 		if (rechts - links < 9) {
@@ -79,38 +118,5 @@ public class ExternerMergeSort {
 
 	}
 
-	private static boolean merge(DataManager ioTapes) {
-
-		InputBuffer linksIn = new InputBuffer(ioTapes,
-				InputBuffer.Channels.LEFTCHANNEL);
-		InputBuffer rechtsIn = new InputBuffer(ioTapes,
-				InputBuffer.Channels.RIGHTCHANNEL);
-
-		OutputBuffer output = new OutputBuffer(ioTapes);
-
-		if ((!linksIn.hasNext()) && (!rechtsIn.hasNext()))
-			return false; // Keine weiteren BlÃ¶cke, die Sortiert werden kÃ¶nnten
-
-		while (linksIn.hasNext() && rechtsIn.hasNext()) {
-			int linksElem = linksIn.getNext();
-			int rechtsElem = rechtsIn.getNext();
-			if (linksElem <= rechtsElem) {
-				output.push(linksElem);
-			} else {
-				output.push(rechtsElem);
-			}
-		}
-
-		while (linksIn.hasNext())
-			output.push(linksIn.getNext());
-
-		while (rechtsIn.hasNext())
-			output.push(rechtsIn.getNext());
-
-		output.storeInTape();
-
-		return true;
-
-	}
 
 }

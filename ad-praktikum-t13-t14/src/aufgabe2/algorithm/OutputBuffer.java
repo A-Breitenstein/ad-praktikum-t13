@@ -33,7 +33,7 @@ class OutputBuffer {
 	
 	private void createNextOutput(){
 		output = null;
-		output = tapes.createDataWrapper();
+		output = tapes.createOuputChannel();
 		pos = 0;
 	}
 

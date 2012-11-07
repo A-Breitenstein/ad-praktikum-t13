@@ -1,5 +1,6 @@
 package aufgabe2.data;
 
+import aufgabe2.interfaces.DataWrapper;
 import org.junit.Test;
 
 /**
@@ -12,15 +13,22 @@ public class FolgeWriterTest {
     @Test
     public void testWrite10kInteger(){
         int size = 10000;
-        Reader.INTEGER_COUNT_PER_READ = 5000;
         FolgenWriter fr = FolgenWriter.create("10kIntegerTest");
         fr.setFolgenLength(size);
         int[] array = new int[size];
         for (int i = 0; i < size; i++) {
             array[i] = i+1;
         }
-        fr.writeFolge(array);
 
+        fr.writeFolge(DataWrapperImpl.create(array,size,false));
+        fr.close();
+        FolgenReader reader = FolgenReader.create("10kIntegerTest","10kIntegerTest",10000);
+        DataWrapper wrap;
+        wrap = reader.getFolge();
+        array = wrap.getData();
+        for (int i = 0; i < array.length; i++) {
+            System.out.println(array[i]);
+        }
 
     }
 }

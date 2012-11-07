@@ -17,7 +17,7 @@ public class DataManagerImpl implements DataManager {
 
     //Linkes File, rechtes File
 
-    final String datei1 = "file1", datei2 = "file2", datei3 = "file3", datei4 = "file4";
+    private String datei1 = "file1", datei2 = "file2", datei3 = "file3", datei4 = "file4";
     FolgenWriter folgenWriter1;
     FolgenWriter folgenWriter2;
     FolgenReader folgenReader1;
@@ -31,6 +31,10 @@ public class DataManagerImpl implements DataManager {
     // ca 1.416.872 KB RAM  ( 357923000*4)
 
     public DataManagerImpl(String sourceFilePath) {
+        datei1 = sourceFilePath+"1";
+        datei2 = sourceFilePath+"2";
+        datei3 = sourceFilePath+"3";
+        datei4 = sourceFilePath+"4";
 
         folgenWriter1 = FolgenWriter.create(datei3);
         folgenWriter2 = FolgenWriter.create(datei4);
@@ -53,8 +57,12 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
-    public DataWrapper createDataWrapper() {
-        return DataWrapperImpl.create(new int[0], 0, true);
+    public DataWrapper createOuputChannel() {
+        return DataWrapperImpl.create(new int[Writer.INTEGER_COUNT_PER_WRITE], 0, true);
+    }
+
+    private DataWrapper createEmptyDataWrapper() {
+        return DataWrapperImpl.create(new int[0],0,false);
     }
 
     @Override
@@ -62,7 +70,7 @@ public class DataManagerImpl implements DataManager {
         if(leftChannelHasNext()){
             return folgenReader1.getFolge();
         }else {
-            return createDataWrapper();
+            return createEmptyDataWrapper();
         }
     }
 
@@ -71,7 +79,7 @@ public class DataManagerImpl implements DataManager {
         if(rightChannelHasNext()){
             return folgenReader2.getFolge();
         }else {
-            return createDataWrapper();
+            return createEmptyDataWrapper();
         }
     }
 
@@ -111,48 +119,56 @@ public class DataManagerImpl implements DataManager {
     public void write(DataWrapper dataWrapper) {
 
         if(writeSwitch){
-            folgenWriter1.writeFolge(dataWrapper.getData());
+            folgenWriter1.writeFolge(dataWrapper);
         }else{
-            folgenWriter2.writeFolge(dataWrapper.getData());
+            folgenWriter2.writeFolge(dataWrapper);
         }
 
             if(dataWrapper.isFolgeKomplett())
                 writeSwitch = !writeSwitch;
 
-        if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
-//            System.gc();
-            FolgenReaderValue *= 2;
-            if(bigSwitch){
-                folgenReader1.resetFile();
-                folgenReader2.resetFile();
-                folgenReader1 = FolgenReader.create(datei3,datei3,FolgenReaderValue);
-                folgenReader2 = FolgenReader.create(datei4,datei4,FolgenReaderValue);
-                folgenWriter1 = FolgenWriter.create(datei1);
-                folgenWriter2 = FolgenWriter.create(datei2);
+        if(!initialReader.hasNextFolge()){
+            if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
+             System.gc();
 
-                bigSwitch = false;
+                if(bigSwitch){
+                    folgenWriter1.close();
+                    folgenWriter2.close();
+                    folgenReader1.resetFile();
+                    folgenReader2.resetFile();
+                    folgenReader1 = FolgenReader.create(datei3,datei3,FolgenReaderValue);
+                    folgenReader2 = FolgenReader.create(datei4,datei4,FolgenReaderValue);
+                    folgenWriter1 = FolgenWriter.create(datei1);
+                    folgenWriter2 = FolgenWriter.create(datei2);
 
-            } else {
-                folgenReader1.resetFile();
-                folgenReader2.resetFile();
-                folgenReader1 = FolgenReader.create(datei1,datei1,FolgenReaderValue);
-                folgenReader2 = FolgenReader.create(datei2,datei2,FolgenReaderValue);
-                folgenWriter1 = FolgenWriter.create(datei3);
-                folgenWriter2 = FolgenWriter.create(datei4);
+                    bigSwitch = false;
 
-                bigSwitch = true;
+                } else {
+                    folgenWriter1.close();
+                    folgenWriter2.close();
+                    folgenReader1.resetFile();
+                    folgenReader2.resetFile();
+                    folgenReader1 = FolgenReader.create(datei1,datei1,FolgenReaderValue);
+                    folgenReader2 = FolgenReader.create(datei2,datei2,FolgenReaderValue);
+                    folgenWriter1 = FolgenWriter.create(datei3);
+                    folgenWriter2 = FolgenWriter.create(datei4);
 
+                    bigSwitch = true;
+
+                }
+                FolgenReaderValue *= 2;
             }
         }
     }
 
     //Java-Garbage-Collection-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    private void GB_Test() {
+    public static void main(String[] args)
+     {
         int value = 1;
         int[] a;
         while(value < 268435456){
             //ohne garbage collector bombt er den ram voll
-            System.gc();
+            //System.gc();
             a = new int[value];
             value*=2;
             System.out.println(value);

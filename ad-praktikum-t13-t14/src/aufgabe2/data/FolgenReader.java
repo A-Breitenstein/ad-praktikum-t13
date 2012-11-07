@@ -4,6 +4,7 @@ import aufgabe2.interfaces.DataWrapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.BufferUnderflowException;
 import java.nio.IntBuffer;
 
 /**
@@ -52,9 +53,8 @@ public class FolgenReader {
             String fileName = reader.getFileName();
             File file = new File(fileName);
 
-            System.out.println(file.exists());
             if(file.delete()){
-                System.out.println(fileName+" resetet");
+                System.out.println(fileName+": resetet");
             }else{
                 throw new IOException();
             }
@@ -182,12 +182,16 @@ public class FolgenReader {
             if(intBuffer.capacity()>0){
                 // die restlichen zahlen einfüllen, der IntBuffer verwaltet einen
                 // eigenen cursor ~~
-                for (int i = lengthRestTilBufferEnd; i < folgenLength; i++) {
-                    bufferRestArray[i] = intBuffer.get();
+                try{
+                    for (int i = lengthRestTilBufferEnd; i < folgenLength; i++) {
+                        bufferRestArray[i] = intBuffer.get();
+                    }
+                }catch(BufferUnderflowException e){
+                    System.out.println("hqwekqjwe");
                 }
             }else if(intBuffer.capacity()==0){
                 tmp_array = new int[lengthRestTilBufferEnd];
-                System.arraycopy(bufferRestArray,0,tmp_array,0,lengthRestTilBufferEnd);
+                System.arraycopy(bufferRestArray, 0, tmp_array, 0, lengthRestTilBufferEnd);
                 bufferRestArray = tmp_array;
             }
             remainigIntegerInBuffer-=lengthRestFolgeLength;
@@ -226,7 +230,11 @@ public class FolgenReader {
     }
 
     public void setRunLevel(int runLevel){
-        folgenLength = (int)(Math.pow(2,runLevel)*INITAL_FOLGEN_LENGTH);
+        //folgenLength = (int)(Math.pow(2,runLevel)*INITAL_FOLGEN_LENGTH);
+        folgenLength = runLevel;
+    }
+    public  void setFolgenLength(long length){
+        folgenLength = length;
     }
     public long getFileSize(){
         return reader.getFileChanSize();

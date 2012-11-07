@@ -26,7 +26,7 @@ public class TestFileGeneratorTest {
     }
     @Test
     public void testcreateTestFile() throws Exception {
-        TestFileGenerator.createTestFile("C:\\Users\\abg667\\Desktop\\testfile.file", 160000000, 17);
+        TestFileGenerator.createTestFile("C:\\Users\\abg667\\Desktop\\testfile.file", 160000000, 8);
 //        assertEquals(false, TestFileGenerator.isSorted("testfile.file"));
     }
 

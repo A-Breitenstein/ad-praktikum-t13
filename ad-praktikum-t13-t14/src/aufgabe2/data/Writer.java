@@ -17,7 +17,7 @@ import java.nio.channels.FileChannel;
 public class Writer {
     private FileChannel fileChan;
     private String fileName;
-    public static int INTEGER_COUNT_PER_WRITE = 2 * Reader.INTEGER_COUNT_PER_READ ;
+    public static int INTEGER_COUNT_PER_WRITE = 3 * Reader.INTEGER_COUNT_PER_READ ;
     private Writer(String fileName){
         this.fileName = fileName;
         try{
