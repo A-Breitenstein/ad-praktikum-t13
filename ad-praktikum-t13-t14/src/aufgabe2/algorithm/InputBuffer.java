@@ -1,10 +1,10 @@
-package aufgabe2.algorithm.impl;
+package aufgabe2.algorithm;
 
 import aufgabe2.interfaces.*;
 
-public class InputBuffer {
+class InputBuffer {
 	
-	/* Interne Klasse f�r den Merge-Schritt */ 
+	/* Interne Klasse für Merge-Schritt */ 
 
 	DataManager tapes;
 	Channels currentChannel;
@@ -25,7 +25,7 @@ public class InputBuffer {
 	public int getNext() {
 		int elem = input.getData()[pos];
 		pos++;
-		if (!hasNext()) //then n�chsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
+		if (!hasNext()) //then nächsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
 		{ 
 			naechstesHaeppchenVomMergeRun(); //folgende Zahlenfolge einlesen
 		}
@@ -33,8 +33,8 @@ public class InputBuffer {
 	}
 	
 	public boolean hasNext(){
-		/* Wenn der aktuelle block am ende ist gilt pos == inputgr��e */ 
-		return pos < input.getSize(); // am ende des algorithmus hat der input die gr��e 0. 
+		/* Wenn der aktuelle block am ende ist gilt pos == inputgröße */ 
+		return pos < input.getSize(); // am ende des algorithmus hat der input die größe. 
 		
 	}
 	

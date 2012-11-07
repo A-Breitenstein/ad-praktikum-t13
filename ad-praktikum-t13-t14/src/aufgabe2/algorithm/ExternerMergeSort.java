@@ -1,6 +1,5 @@
 package aufgabe2.algorithm;
 
-import aufgabe2.algorithm.impl.*;
 import aufgabe2.data.DataManagerImpl;
 import aufgabe2.interfaces.*;
 
@@ -9,24 +8,24 @@ public class ExternerMergeSort {
 	
 	
 	public static void sort(String inputFile, String outputFile){
-		DataManager tapes = new DataManagerImpl(); //InputFile Ã¼bergeben, Konstruktor mit angebbarem Dateinamen bitte? 
+		DataManager tapes = new DataManagerImpl(inputFile); //InputFile Ã¼bergeben, Konstruktor mit angebbarem Dateinamen bitte? 
 		
 		//Blockweise Sortierung
 		DataWrapper data = tapes.readBlock(); //lese von "band" 1; initialisierung
 		while (data.getSize() > 0){ //solange das "band" nicht leer ist
 			blockSort(data);//Sortieren
-			tapes.write(data); // zurückschreiben
+			tapes.write(data); // zurï¿½ckschreiben
 			data = tapes.readBlock(); //lese wieder von "band" 1
 		}
 		
 		//Mergen
-		while(merge(tapes)){//Merge für jeden Block aufrufen, bis keine Blöcke mehr kommen
+		while(merge(tapes)){//Merge fÃ¼r jeden Block aufrufen, bis keine BlÃ¶cke mehr kommen
 			 //der merge tut schon alles, also do nothing
 		}
 		
 	}
 	
-	private static void blockSort(DataWrapper data){
+	 static void blockSort(DataWrapper data){
 		/* Das Verfahren zum internen sortieren der speicherblÃ¶cke
 		 *  benutzt momentan einen Insertionsort zum Sortieren.
 		 *  Arbeitet direkt auf dem dataWrapper  
@@ -35,7 +34,7 @@ public class ExternerMergeSort {
 		int[] unpacked = data.getData();
 		
 		
-		for(int i = 1  ; i <= unpacked.length; i++ ) {
+		for(int i = 1; i < data.getSize(); i++ ) {
 			int j = i; 
 			int itemToSort = unpacked[i]; 
 			while(j >0 && unpacked[j-1] > itemToSort) {
@@ -56,7 +55,7 @@ public class ExternerMergeSort {
 		  OutputBuffer output = new OutputBuffer(ioTapes);
 		  
 		  if ((!linksIn.hasNext()) && (!rechtsIn.hasNext()))
-			  return false; //Keine weiteren Blöcke, die Sortiert werden könnten
+			  return false; //Keine weiteren BlÃ¶cke, die Sortiert werden kÃ¶nnten
 		  
 		  while (linksIn.hasNext() && rechtsIn.hasNext()){
 			  int linksElem = linksIn.getNext();
@@ -77,51 +76,6 @@ public class ExternerMergeSort {
 		  output.storeInTape();
 		  
 		  return true;
-		  
-		  /*
-		  int[] links = linksIn.getData();
-          int[] rechts = rechtsIn.getData();
-
-		  int linksLänge = linksIn.getSize();
-		  int rechtsLänge = rechtsIn.getSize();
-	      int linksPos=0;
-	      int rechtsPos=0;
-	      int outputPos=0;
-		  DataWrapper mergedDW = inputTapes.createDataWrapper();
-	      int[] merged = mergedDW.getData();
-	      //if (mergedDW.getSize() == merged.length)
-	      
-		  while ( linksPos < linksLänge && rechtsPos < rechtsLänge) {
-			  int linksElem = links[linksPos];
-	          int rechtsElem = rechts[rechtsPos];
-	            
-	          if (linksElem <= rechtsElem) {
-	        	  merged[outputPos] = linksElem;
-	        	  linksPos ++;
-	        	  outputPos ++;
-	        	  if (linksPos == linksLänge){
-	        		  linksIn = inputTapes.readLeftChannel();
-	        		  linksPos=0;
-	        		  links = linksIn.getData();
-	        		  linksLänge = linksIn.getSize();	  
-	        	  }
-	          } else {
-	        	  merged[outputPos] = rechtsElem;
-	        	  rechtsPos ++;
-	        	  outputPos ++;
-	        	  if (rechtsPos == rechtsLänge){
-	        		  rechtsIn = inputTapes.readRightChannel();
-	        		  rechtsPos=0;
-	        		  rechts = rechtsIn.getData();
-	        		  rechtsLänge = rechtsIn.getSize();	        	  }
-	          }
-	          if(outputPos == merged.length){
-	        	  mergedDW.setSize(merged.length);
-	        	  inputTapes.write(mergedDW);
-	        	  mergedDW = null;
-	        	  mergedDW = inputTapes.createDataWrapper();
-	        	  outputPos = 0;
-	          }*/
 	        	  
 	      }
 
