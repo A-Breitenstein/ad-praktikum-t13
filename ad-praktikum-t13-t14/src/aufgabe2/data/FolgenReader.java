@@ -179,15 +179,23 @@ public class FolgenReader {
             // im bufferRestArray
             long lengthRestFolgeLength = folgenLength-lengthRestTilBufferEnd;
             int[] tmp_array;
+            // wäre auch ne möglichkeit intBuffer.capacity()>0 && lengthRestFolgeLength<=intBuffer.remaining()
             if(intBuffer.capacity()>0){
                 // die restlichen zahlen einfüllen, der IntBuffer verwaltet einen
                 // eigenen cursor ~~
+                int i = lengthRestTilBufferEnd;
                 try{
-                    for (int i = lengthRestTilBufferEnd; i < folgenLength; i++) {
+                    for (i = lengthRestTilBufferEnd; i < folgenLength; i++) {
                         bufferRestArray[i] = intBuffer.get();
                     }
+                 // der sonderfall mit dem dateiende~~
+                 // wrird hierdurch abgefangen und bearbeitet
                 }catch(BufferUnderflowException e){
-                    System.out.println("hqwekqjwe");
+                    System.out.println(reader.getFileName()+": BufferUnderflow fix");
+                    tmp_array = new int[i];
+                    System.arraycopy(bufferRestArray, 0, tmp_array, 0, lengthRestTilBufferEnd);
+                    bufferRestArray = tmp_array;
+                    lengthRestFolgeLength = intBuffer.capacity();
                 }
             }else if(intBuffer.capacity()==0){
                 tmp_array = new int[lengthRestTilBufferEnd];
@@ -198,8 +206,13 @@ public class FolgenReader {
             folge = bufferRestArray;
         }else if(folgenLength<=remainigIntegerInBuffer){
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: folgenLength ("+folgenLength+") <= remainigIntegerInBuffer ("+remainigIntegerInBuffer+")");
-
-            folge = new int[(int)folgenLength];
+            try{
+                folge = new int[(int)folgenLength];
+            }catch (NegativeArraySizeException e){
+                System.out.println("NegativeArraySizeException!!!!!! IntegerOverflow");
+                e.printStackTrace();
+                System.exit(0);
+            }
             intBuffer.get(folge,0,(int)folgenLength);
             remainigIntegerInBuffer-=folgenLength;
 

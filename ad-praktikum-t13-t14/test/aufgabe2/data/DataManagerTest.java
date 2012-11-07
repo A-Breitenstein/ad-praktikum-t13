@@ -31,6 +31,9 @@ public class DataManagerTest {
     }
     @Test
     public void tenKIntegerTEst(){
+        long x = 1342172280;
+        System.out.println(x*2);
+
         TestFileGenerator.createTestFile("DataManagerTest",1000,10);
         ExternerMergeSort.sort("DataManagerTest","");
 

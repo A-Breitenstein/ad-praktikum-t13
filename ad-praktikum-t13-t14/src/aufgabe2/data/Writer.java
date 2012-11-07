@@ -1,9 +1,6 @@
 package aufgabe2.data;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
@@ -17,7 +14,7 @@ import java.nio.channels.FileChannel;
 public class Writer {
     private FileChannel fileChan;
     private String fileName;
-    public static int INTEGER_COUNT_PER_WRITE = 3 * Reader.INTEGER_COUNT_PER_READ ;
+    public static long INTEGER_COUNT_PER_WRITE = 3 * Reader.INTEGER_COUNT_PER_READ ;
     private Writer(String fileName){
         this.fileName = fileName;
         try{
@@ -44,7 +41,13 @@ public class Writer {
     }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
          try{
-             fileChan.write(byteBuffer);
+             try{
+                fileChan.write(byteBuffer);
+             }catch (NullPointerException e){
+                System.out.println(fileName+": NullPointerException Fix");
+                fileChan =  new FileOutputStream(fileName).getChannel();
+                fileChan.write(byteBuffer);
+             }
          }catch (IOException e){
 
          }

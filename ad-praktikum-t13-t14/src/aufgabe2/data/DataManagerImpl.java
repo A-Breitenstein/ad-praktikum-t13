@@ -58,7 +58,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public DataWrapper createOuputChannel() {
-        return DataWrapperImpl.create(new int[Writer.INTEGER_COUNT_PER_WRITE], 0, true);
+        return DataWrapperImpl.create(new int[(int)Writer.INTEGER_COUNT_PER_WRITE], 0, true);
     }
 
     private DataWrapper createEmptyDataWrapper() {
@@ -156,6 +156,7 @@ public class DataManagerImpl implements DataManager {
                     bigSwitch = true;
 
                 }
+                System.out.println("mal 2");
                 FolgenReaderValue *= 2;
             }
         }
