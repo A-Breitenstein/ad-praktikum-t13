@@ -32,7 +32,7 @@ public class FolgenWriter {
     }
     private void initBuffer(){
         // buffer der maximalen groeße erstellen
-        byteBuffer = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * Writer.INTEGER_COUNT_PER_WRITE);
+        byteBuffer = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * (int)Writer.INTEGER_COUNT_PER_WRITE);
         // bytebuffer als intbuffer interpretieren
         intBuffer = byteBuffer.asIntBuffer();
     }

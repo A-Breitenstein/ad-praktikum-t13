@@ -25,11 +25,11 @@ public class Reader {
 
 
 
-    public static int
+    public static long
             INTEGER_SIZE  = 4,
             INTEGER_COUNT_PER_READ = 1000;//178961500/6;
 
-    private static int
+    private static long
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
 
     public static Reader create(String name,String fileName){
