@@ -87,6 +87,7 @@ public class TestFileGenerator {
 
     private static void writeIntArray(FileChannel fc,int[] array) {
         try {
+            System.gc();
             ByteBuffer byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * array.length);
             IntBuffer intBuff = byteBuff.asIntBuffer();
             intBuff.put(array);
@@ -120,6 +121,7 @@ public class TestFileGenerator {
     }
 
     private static int[] initRandomArray(int arraySize, int upperBound, int lowerBound) {
+        System.gc();
         int array[] = new int[arraySize];
         Random random = new Random();
 

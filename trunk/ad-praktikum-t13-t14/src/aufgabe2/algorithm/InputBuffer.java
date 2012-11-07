@@ -23,12 +23,15 @@ class InputBuffer {
 	}
 	
 	public int getNext() {
-		int elem = input.getData()[pos];
-		pos++;
-		if (!hasNext()) //then nächsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
+        int elem;
+
+        if (!hasNext()) //then nächsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
 		{ 
 			naechstesHaeppchenVomMergeRun(); //folgende Zahlenfolge einlesen
-		}
+
+        }
+
+        elem = input.getData()[pos];
 		return elem;
 	}
 	

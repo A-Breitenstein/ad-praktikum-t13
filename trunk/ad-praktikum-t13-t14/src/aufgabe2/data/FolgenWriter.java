@@ -73,9 +73,15 @@ public class FolgenWriter {
     public void writeFolge(DataWrapper wrap){
         // wenn die folgenLaenge gleich dem restlichem platz im buffer entspricht,
         // dann du die folge rein und schreib sie raus
+        System.out.println(fileWriter.getFileName()+": Bufferauslastung: "+((double)intBuffer.position())/intBuffer.capacity());
 
         int[] folge = wrap.getData();
         int folgenLaenge = wrap.getSize();
+        if(folgenLaenge>Writer.INTEGER_COUNT_PER_WRITE){
+            System.out.println(fileWriter.getFileName()+": folgenLaenge zu lang, dass tut weeehh  meeehh");
+            System.exit(1);
+        }
+
         if(folgenLaenge == intBuffer.remaining()){
             intBuffer.put(wrap.getData(),0,folgenLaenge);
             writeBuffer();
@@ -98,7 +104,7 @@ public class FolgenWriter {
             }
         }
     }
-
+    @Deprecated
     private void multipleWritesPerFolge(int[] folge) {
         // da bei den oversizedfolgen nicht gilt das sie immer gleich lang sind
         // bis zum ende (bezieht sich auf die int arrays, die folgen sind schon immer gleich lang aber
@@ -136,7 +142,7 @@ public class FolgenWriter {
 
         }
     }
-
+    @Deprecated
     private void singleWritesPerFolge(int[] folge) {
         // wenn die folge.length von der folgenLength abweicht => folge ist die Letzte folge die geschrieben wird
         // da nur die letzte folge eine andere groeße haben kann.

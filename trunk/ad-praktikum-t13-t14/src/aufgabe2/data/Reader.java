@@ -2,7 +2,9 @@ package aufgabe2.data;
 
 import aufgabe2.interfaces.DataWrapper;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
@@ -25,7 +27,7 @@ public class Reader {
 
     public static int
             INTEGER_SIZE  = 4,
-            INTEGER_COUNT_PER_READ = 178961500/4;
+            INTEGER_COUNT_PER_READ = 1000;//178961500/6;
 
     private static int
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
@@ -40,9 +42,16 @@ public class Reader {
         this.fileName = fileName;
 
         try {
+            try{
             fileChan = new FileInputStream(fileName).getChannel();
+            }catch(FileNotFoundException e){
+                File file = new File(fileName);
+                file.createNewFile();
+                fileChan = new FileInputStream(fileName).getChannel();
+            }
+
             if(fileChan.size() % byteBufferSize == 0){
-                hasNextCount =(int) (fileChan.size()/byteBufferSize);
+            hasNextCount =(int) (fileChan.size()/byteBufferSize);
             }else{
                 hasNextCount = (int) (fileChan.size()/byteBufferSize) + 1; // +1 damit der "rest" noch oben drauf kommt
             }
