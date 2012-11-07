@@ -51,7 +51,6 @@ public class ExternerMergeSort {
 				InputBuffer.Channels.LEFTCHANNEL);
 		InputBuffer rechtsIn = new InputBuffer(ioTapes,
 				InputBuffer.Channels.RIGHTCHANNEL);
-
 		OutputBuffer output = new OutputBuffer(ioTapes);
 
 		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
@@ -88,7 +87,7 @@ public class ExternerMergeSort {
 	}
 
 	static void blockSort_quick(int[] data, int links, int rechts) {
-		if (rechts - links < 9) {
+		if (rechts - links < 10) {
 			blockSort_insertion(data, links, rechts);
 		} else {
 			int positionPivot = quickSwap(data, links, rechts);
@@ -115,6 +114,35 @@ public class ExternerMergeSort {
 		swap(data, i, rechts); // Pivotelement in die Mitte tauschen
 		return i;
 	}
+
+	//Von http://www.pohlig.de/Unterricht/Inf2002/Tag49/31.2.2_QuickSort_die_Implementierung.htm geklauter Code
+	//ermittlung des pivot modifiziert, läuft gleichmäßiger (ganz kleines bischen schnleller) als unsere eigene implementierung 
+	   static void quickSort2(int[] liste, int untereGrenze, int obereGrenze) {
+		    int links = untereGrenze;
+		    int rechts = obereGrenze;
+		    int pivot = Math.min(liste[rechts], Math.max(liste[0], liste[((untereGrenze + obereGrenze) / 2)]));
+		    do {
+		      while (liste[links] < pivot) {
+		        links++;
+		      }
+		      while (pivot < liste[rechts]) {
+		        rechts--;
+		      }
+		      if (links <= rechts) {
+		        int tmp = liste[links];
+		        liste[links] = liste[rechts];
+		        liste[rechts] = tmp;
+		        links++;
+		        rechts--;
+		      }
+		    } while (links <= rechts);
+		    if (untereGrenze < rechts) {
+		       quickSort2(liste, untereGrenze, rechts);
+		    }
+		    if (links < obereGrenze) {
+		        quickSort2(liste, links, obereGrenze);
+		    }
+		  }
 
 	private static void swap(int[] data, int pos1, int pos2) {
 		int tmp = data[pos1];

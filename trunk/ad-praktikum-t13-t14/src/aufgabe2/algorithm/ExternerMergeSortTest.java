@@ -4,6 +4,7 @@ import static junit.framework.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Random;
 
 import org.junit.*;
 
@@ -54,12 +55,50 @@ public class ExternerMergeSortTest {
 		assertEquals(expected, test); 
 	}
 	
+	@Test @Ignore
+	public void testBlockSort_Time() {
+		long duration=0;
+		int durchläufe=30;
+		for (int i=0; i<durchläufe; i++){
+			int[] testelems = initRandomArray(1000000, 10000000, -1000000);
+			DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
+			long start = System.currentTimeMillis();
+			ExternerMergeSort.blockSort_quick(test.getData(),0,testelems.length-1);
+			duration += System.currentTimeMillis() - start;
+			assertTrue(isSorted(testelems));
+		}
+		System.out.println("Dauer der Sortierung (durchschnittlich): " + (duration / durchläufe) + "ms");
+	}
 	
-	@Test //@Ignore 
+	
+	@Test @Ignore 
 	public void testMergeSortAlgorithm() {
 		TestFileGenerator.createTestFile("DataManagerTest",100,10);
         ExternerMergeSort.sort("DataManagerTest","");
         assertTrue(TestFileGenerator.isSorted("DataManagerTest"));
 	}
+	
+    private static int[] initRandomArray(int arraySize, int upperBound, int lowerBound) {
+        System.gc();
+        int array[] = new int[arraySize];
+        Random random = new Random();
+
+        upperBound += (1 + Math.abs(lowerBound));
+
+        for(int i = 0; i < array.length; i++){
+            array[i] = random.nextInt(upperBound)+lowerBound;
+        }
+
+        return array;
+    }
+    private static boolean isSorted(int[] data){
+    	if(data.length==0)
+    		return true;
+    	for (int i = 1; i < data.length; i++) {
+			if(data[i-1]>data[i])
+				return false;
+		}
+    	return true;
+    }
 
 }
