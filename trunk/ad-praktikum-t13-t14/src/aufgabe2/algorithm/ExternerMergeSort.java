@@ -7,7 +7,7 @@ public class ExternerMergeSort {
 
 	public static void sort(String inputFile, String outputFile) {
 		DataManager tapes = new DataManagerImpl(inputFile); // InputFile
-															// übergeben,
+															// Ã¼bergeben,
 															// Konstruktor mit
 															// angebbarem
 															// Dateinamen bitte?
@@ -16,20 +16,20 @@ public class ExternerMergeSort {
 		DataWrapper data = tapes.readBlock(); // lese von "band" 1;
 												// initialisierung
 		while (data.getSize() > 0) { // solange das "band" nicht leer ist
-			blockSort_insertion(data.getData(), 0, data.getSize()-1);// Sortieren
-			tapes.write(data); // zur?ckschreiben
-			data = tapes.readBlock(); //lese wieder von "band" 1
+			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
+			tapes.write(data); // zurÃ¼ckschreiben
+			data = tapes.readBlock(); // lese wieder von "band" 1
 		}
-		
-		//Mergen
-		while(merge(tapes)){//Merge für jeden Block aufrufen, bis keine Blöcke mehr kommen
-			 //der merge tut schon alles, also do nothing
+
+		// Mergen
+		while (merge(tapes)) {// Merge fÃ¼r jeden Block aufrufen, bis keine
+								// BlÃ¶cke mehr kommen
+			// der merge tut schon alles, also do nothing
 		}
-		
 	}
 
-	// Auswählen, welcher sortieralgo für die blöcke verwendet wird:
-	// IF blockgröße > 30 then blockSort_quick
+	// AuswÃ¤hlen, welcher sortieralgo fÃ¼r die blÃ¶cke verwendet wird:
+	// IF blockgrÃ¶ÃŸe > 30 then blockSort_quick
 
 	static void blockSort_insertion(int[] data, int links, int rechts) {
 		for (int i = links + 1; i <= rechts; i++) {
@@ -44,46 +44,48 @@ public class ExternerMergeSort {
 		}
 
 	}
-	
-	  private static boolean merge(DataManager ioTapes) {
-		  
-		  InputBuffer linksIn  = new InputBuffer(ioTapes, InputBuffer.Channels.LEFTCHANNEL);
-		  InputBuffer rechtsIn = new InputBuffer(ioTapes, InputBuffer.Channels.RIGHTCHANNEL);
-          
-		  OutputBuffer output = new OutputBuffer(ioTapes);
-		  
-		  if ((!linksIn.hasNext()) && (!rechtsIn.hasNext()))
-			  return false; //Keine weiteren Blöcke, die Sortiert werden könnten
-		  
-		  while (linksIn.hasNext() && rechtsIn.hasNext()){
 
-              int linksElem = linksIn.getNext();
-	          int rechtsElem = rechtsIn.getNext();
+	private static boolean merge(DataManager ioTapes) {
 
-              if (linksElem <= rechtsElem) {
-	        	  output.push(linksElem);
-                  linksIn.pos++;
-	          } else {
-	        	  output.push(rechtsElem);
-                  rechtsIn.pos++;
-	          }
-		  }
-		  
-		  while (linksIn.hasNext()){
-			  output.push(linksIn.getNext());
-              linksIn.pos++;
-          }
-		  
-		  while (rechtsIn.hasNext()){
-			  output.push(rechtsIn.getNext());
-              rechtsIn.pos++;
-          }
-		  
-		  output.storeInTape();
-		  
-		  return true;
-	        	  
-	      }
+		InputBuffer linksIn = new InputBuffer(ioTapes,
+				InputBuffer.Channels.LEFTCHANNEL);
+		InputBuffer rechtsIn = new InputBuffer(ioTapes,
+				InputBuffer.Channels.RIGHTCHANNEL);
+
+		OutputBuffer output = new OutputBuffer(ioTapes);
+
+		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
+			return false; // Keine weiteren BlÃ¶cke, die Sortiert werden kÃ¶nnten
+
+		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
+
+			int linksElem = linksIn.getCurrent();
+			int rechtsElem = rechtsIn.getCurrent();
+
+			if (linksElem <= rechtsElem) {
+				output.push(linksElem);
+				linksIn.moveNext();
+			} else {
+				output.push(rechtsElem);
+				rechtsIn.moveNext();
+			}
+		}
+
+		while (linksIn.hasCurrent()) {
+			output.push(linksIn.getCurrent());
+			linksIn.moveNext();
+		}
+
+		while (rechtsIn.hasCurrent()) {
+			output.push(rechtsIn.getCurrent());
+			rechtsIn.moveNext();
+		}
+
+		output.storeInTape();
+
+		return true;
+
+	}
 
 	static void blockSort_quick(int[] data, int links, int rechts) {
 		if (rechts - links < 9) {
@@ -97,26 +99,27 @@ public class ExternerMergeSort {
 
 	private static int quickSwap(int[] data, int links, int rechts) {
 
-		int pivot = data[links];
-		while (links < rechts) {
-			if (data[links] < pivot) {
-				links++;
-				continue;
+		int i = links;
+		int j = rechts - 1; // Starte mit j links vom Pivotelement
+		int pivot = data[rechts];
+		while (i <= j) {
+			while ((data[i] <= pivot) && (i < rechts))
+				i++;
+			while ((links <= j) && (data[j] > pivot))
+				j--;
+			// a[j].key â‰¤ pivot
+			if (i < j) {
+				swap(data, i, j);
 			}
-			if (data[rechts] > pivot) {
-				rechts--;
-				continue;
-			}
-			// swap;
-			int tmp = data[links];
-			data[links] = data[rechts];
-			data[rechts] = tmp;
-			links++;
 		}
-
-		return links;
-
+		swap(data, i, rechts); // Pivotelement in die Mitte tauschen
+		return i;
 	}
 
+	private static void swap(int[] data, int pos1, int pos2) {
+		int tmp = data[pos1];
+		data[pos1] = data[pos2];
+		data[pos2] = tmp;
+	}
 
 }

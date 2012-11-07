@@ -4,13 +4,13 @@ import aufgabe2.interfaces.*;
 
 class InputBuffer {
 	
-	/* Interne Klasse fÃ¼r Merge-Schritt */ 
+	/* Interne Klasse für Merge-Schritt */ 
 
-	DataManager tapes;
-	Channels currentChannel;
-	DataWrapper input;
-	int pos = 0;
-	
+	private DataManager tapes;
+	private Channels currentChannel;
+	private DataWrapper input;
+	private int pos = 0;
+			
 	public	InputBuffer(DataManager data, Channels channel){
 		tapes = data;
 		currentChannel = channel;
@@ -22,23 +22,28 @@ class InputBuffer {
 		RIGHTCHANNEL
 	}
 	
-	public int getNext() {
-        int elem;
-
-        if (!hasNext()) //then nÃ¤chsten block holen oder wenn der algorithmus vorbei ist, zumindest versuchen.
-		{ 
-			naechstesHaeppchenVomMergeRun(); //folgende Zahlenfolge einlesen
-
-        }
-
-        elem = input.getData()[pos];
-		return elem;
+	/**
+	 * Gibt das aktuelle Element zurück, sofern eines existiert
+	 * @return
+	 */
+	public int getCurrent(){
+		return input.getData()[pos];
 	}
-	
-	public boolean hasNext(){
-		/* Wenn der aktuelle block am ende ist gilt pos == inputgrÃ¶ÃŸe */ 
-		return pos < input.getSize(); // am ende des algorithmus hat der input die grÃ¶ÃŸe. 
-		
+	/**
+	 * Gibt zurück, ob es noch ein aktuelles Element gibt, welches zurückgegeben werden kann
+	 * @return
+	 */
+	public boolean hasCurrent(){
+		return pos < input.getSize();
+	}
+	/**
+	 * Verschiebt das aktuelle Element um 1 nach rechts. Es wird kein Fehler ausgegeben, wenn hasCurrent==false ist.
+	 */
+	public void moveNext(){
+		pos ++;
+		if (!hasCurrent()){
+			naechstesHaeppchenVomMergeRun();
+		}	
 	}
 	
 	private void naechstesHaeppchenVomMergeRun(){
