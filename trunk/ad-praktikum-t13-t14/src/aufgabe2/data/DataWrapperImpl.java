@@ -1,5 +1,8 @@
 package aufgabe2.data;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 import aufgabe2.interfaces.DataWrapper;
 
 /**
@@ -8,7 +11,7 @@ import aufgabe2.interfaces.DataWrapper;
  * Date: 30.10.12
  * Time: 11:50
  */
-final class DataWrapperImpl implements DataWrapper {
+ final class DataWrapperImpl implements DataWrapper {
 
     private int[] data;
     private int size;
@@ -58,5 +61,12 @@ final class DataWrapperImpl implements DataWrapper {
     @Override
     public boolean isFolgeKomplett() {
         return folgeKomplett;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+    	if (o == this) return true;
+    	if (!(o instanceof DataWrapper)) return false;
+    	return Arrays.equals(this.getData(), ((DataWrapper) o).getData()) && this.getSize() == ((DataWrapper) o).getSize(); 	
     }
 }

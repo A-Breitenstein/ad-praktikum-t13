@@ -1,9 +1,9 @@
-package aufgabe2.algorithm.impl;
+package aufgabe2.algorithm;
 
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.DataWrapper;
 
-public class OutputBuffer {
+class OutputBuffer {
 	
 	DataManager tapes; 
 	DataWrapper output; 
