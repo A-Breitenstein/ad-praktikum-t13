@@ -54,6 +54,7 @@ import aufgabe2.interfaces.DataWrapper;
         this.size = size;
     }
 
+    @Override
     public void setFolgeKomplett(boolean folgeKomplett) {
         this.folgeKomplett = folgeKomplett;
     }

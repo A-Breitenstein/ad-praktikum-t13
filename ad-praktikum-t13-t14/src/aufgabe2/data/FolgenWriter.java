@@ -241,4 +241,9 @@ public class FolgenWriter {
     public void setFolgenLength(int x){
         folgenLength = x;
     }
+
+    @Override
+    public String toString() {
+        return fileWriter.getFileName();
+    }
 }

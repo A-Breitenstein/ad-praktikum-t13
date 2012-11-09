@@ -4,9 +4,9 @@ import aufgabe2.interfaces.*;
 
 class InputBuffer {
 	
-	/* Interne Klasse für Merge-Schritt */ 
+	/* Interne Klasse fï¿½r Merge-Schritt */ 
 
-	private DataManager tapes;
+	public DataManager tapes;
 	private Channels currentChannel;
 	private DataWrapper input;
 	private int pos = 0;
@@ -23,14 +23,14 @@ class InputBuffer {
 	}
 	
 	/**
-	 * Gibt das aktuelle Element zurück, sofern eines existiert
+	 * Gibt das aktuelle Element zurï¿½ck, sofern eines existiert
 	 * @return
 	 */
 	public int getCurrent(){
 		return input.getData()[pos];
 	}
 	/**
-	 * Gibt zurück, ob es noch ein aktuelles Element gibt, welches zurückgegeben werden kann
+	 * Gibt zurï¿½ck, ob es noch ein aktuelles Element gibt, welches zurï¿½ckgegeben werden kann
 	 * @return
 	 */
 	public boolean hasCurrent(){
@@ -47,8 +47,12 @@ class InputBuffer {
 	}
 	
 	private void naechstesHaeppchenVomMergeRun(){
-		input = null;
-		input = (currentChannel == Channels.LEFTCHANNEL ? tapes.readLeftChannel() : tapes.readRightChannel());
+        if (input == null || !input.isFolgeKomplett()) {
+            input = null;
+            input = (currentChannel == Channels.LEFTCHANNEL ? tapes.readLeftChannel() : tapes.readRightChannel());
+        } else {
+            input.setSize(0);
+        }
 		pos = 0;
 	}
 }

@@ -13,7 +13,9 @@ public class DataManagerImpl implements DataManager {
     // optimal folgenLength ist ne 2er potenz
     // start könnte bei 8 oder 16 sein
     private final int FolgenReaderInitValue = 10;
-    private int FolgenReaderValue = FolgenReaderInitValue;
+    private long FolgenReaderValue = FolgenReaderInitValue;
+
+    private long initFileFolgenLength;
 
     //Linkes File, rechtes File
 
@@ -43,7 +45,9 @@ public class DataManagerImpl implements DataManager {
 
         initialReader = FolgenReader.create("InitialReader", sourceFilePath,FolgenReaderInitValue);
         initialReader.setRunLevel(FolgenReaderInitValue);
+
         sourceFileSize = initialReader.getFileSize();
+        initFileFolgenLength = sourceFileSize/4;
     }
 
 
@@ -58,7 +62,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public DataWrapper createOuputChannel() {
-        return DataWrapperImpl.create(new int[(int)Writer.INTEGER_COUNT_PER_WRITE], 0, true);
+        return DataWrapperImpl.create(new int[(int)Writer.INTEGER_COUNT_PER_WRITE], 0, false);
     }
 
     private DataWrapper createEmptyDataWrapper() {
@@ -132,6 +136,9 @@ public class DataManagerImpl implements DataManager {
              System.gc();
 
                 if(bigSwitch){
+                    if(FolgenReaderValue>initFileFolgenLength){
+                        System.out.println((!writeSwitch?folgenWriter1:folgenWriter2));
+                    }
                     folgenWriter1.close();
                     folgenWriter2.close();
                     folgenReader1.resetFile();
@@ -144,6 +151,9 @@ public class DataManagerImpl implements DataManager {
                     bigSwitch = false;
 
                 } else {
+                    if(FolgenReaderValue>initFileFolgenLength){
+                        System.out.println((!writeSwitch?folgenWriter1:folgenWriter2));
+                    }
                     folgenWriter1.close();
                     folgenWriter2.close();
                     folgenReader1.resetFile();
@@ -156,6 +166,9 @@ public class DataManagerImpl implements DataManager {
                     bigSwitch = true;
 
                 }
+//                if(FolgenReaderValue>2*initFileFolgenLength){
+//                    System.exit(0);
+//                }
                 System.out.println("mal 2");
                 FolgenReaderValue *= 2;
             }

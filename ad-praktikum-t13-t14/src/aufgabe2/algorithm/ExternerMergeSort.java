@@ -26,6 +26,7 @@ public class ExternerMergeSort {
 								// Blöcke mehr kommen
 			// der merge tut schon alles, also do nothing
 		}
+        System.out.println("fertig");
 	}
 
 	// Auswählen, welcher sortieralgo für die blöcke verwendet wird:
@@ -53,8 +54,11 @@ public class ExternerMergeSort {
 				InputBuffer.Channels.RIGHTCHANNEL);
 		OutputBuffer output = new OutputBuffer(ioTapes);
 
-		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
-			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
+        if((!linksIn.tapes.leftChannelHasNext() && rechtsIn.tapes.rightChannelHasNext())||(linksIn.tapes.leftChannelHasNext() && !rechtsIn.tapes.rightChannelHasNext()))
+            return false;
+
+//		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
+//			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
 
 		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
 
@@ -79,7 +83,7 @@ public class ExternerMergeSort {
 			output.push(rechtsIn.getCurrent());
 			rechtsIn.moveNext();
 		}
-
+        output.output.setFolgeKomplett(true);
 		output.storeInTape();
 
 		return true;
