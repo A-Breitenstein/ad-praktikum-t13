@@ -53,12 +53,12 @@ public class ExternerMergeSort {
 		InputBuffer rechtsIn = new InputBuffer(ioTapes,
 				InputBuffer.Channels.RIGHTCHANNEL);
 		OutputBuffer output = new OutputBuffer(ioTapes);
+//
+//        if((!linksIn.tapes.leftChannelHasNext() && rechtsIn.tapes.rightChannelHasNext())||(linksIn.tapes.leftChannelHasNext() && !rechtsIn.tapes.rightChannelHasNext()))
+//            return false;
 
-        if((!linksIn.tapes.leftChannelHasNext() && rechtsIn.tapes.rightChannelHasNext())||(linksIn.tapes.leftChannelHasNext() && !rechtsIn.tapes.rightChannelHasNext()))
-            return false;
-
-//		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
-//			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
+		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
+			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
 
 		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
 
