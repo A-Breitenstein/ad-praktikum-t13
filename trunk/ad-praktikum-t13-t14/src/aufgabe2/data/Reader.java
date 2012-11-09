@@ -27,7 +27,7 @@ public class Reader {
 
     public static long
             INTEGER_SIZE  = 4,
-            INTEGER_COUNT_PER_READ = 1000;//178961500/6;
+            INTEGER_COUNT_PER_READ = 178961500/6;
 
     private static long
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
