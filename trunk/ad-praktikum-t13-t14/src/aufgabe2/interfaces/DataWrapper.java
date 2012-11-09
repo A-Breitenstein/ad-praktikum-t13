@@ -47,4 +47,6 @@ public interface DataWrapper {
      * @return
      */
     boolean isFolgeKomplett();
+
+    void setFolgeKomplett(boolean folgeKomplett);
 }

@@ -15,41 +15,39 @@ public class Writer {
     private FileChannel fileChan;
     private String fileName;
     public static long INTEGER_COUNT_PER_WRITE = 3 * Reader.INTEGER_COUNT_PER_READ ;
+    private FileOutputStream fOS;
+
     private Writer(String fileName){
         this.fileName = fileName;
         try{
-            fileChan = new FileOutputStream(fileName).getChannel();
-        }catch (FileNotFoundException e){
-            System.out.println(fileName+" not Found!" );
-            e.printStackTrace();
+            fOS = new FileOutputStream(fileName);
+            fileChan = fOS.getChannel();
+            fileChan.force(true);
+
+        }catch (IOException e){
+
+            System.out.println(fileName+": KONNTE WRITER NICHT ERSTELLEN");
 
         }
     }
     public static Writer create(String fileName){
         return  new Writer(fileName);
     }
-    private void writeIntArray(int[] array) {
-        try {
-            ByteBuffer byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) * array.length);
-            IntBuffer intBuff = byteBuff.asIntBuffer();
-            intBuff.put(array);
-            intBuff.flip();
-            fileChan.write(byteBuff);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
          try{
              try{
                 fileChan.write(byteBuffer);
+                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+(byteBuffer.capacity()/4));
              }catch (NullPointerException e){
-                System.out.println(fileName+": NullPointerException Fix");
-                fileChan =  new FileOutputStream(fileName).getChannel();
-                fileChan.write(byteBuffer);
+                 System.out.println(fileName+": NOTFALL WRITER WURDE ERSTELLT");
+                 fOS = new FileOutputStream(fileName);
+                 fileChan = fOS.getChannel();
+                 fileChan.force(true);
+                 fileChan.write(byteBuffer);
+                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+(byteBuffer.capacity()/4));
              }
          }catch (IOException e){
-
+             System.out.println(fileName+": NOTFALL WRITER NICHT ERSTELLT");
          }
     }
     public String getFileName(){
@@ -58,8 +56,9 @@ public class Writer {
     public void close(){
         try {
             fileChan.close();
+            fOS.close();
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            System.out.println(fileName+": WRITER KONNTE NICHT GECLOSET WERDEN ");
         }
     }
 

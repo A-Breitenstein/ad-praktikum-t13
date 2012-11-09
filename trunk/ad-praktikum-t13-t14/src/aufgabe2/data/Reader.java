@@ -22,7 +22,7 @@ public class Reader {
     private String fileName;
     private String name;
     private int hasNextCount;
-
+    private FileInputStream fIS;
 
 
     public static long
@@ -43,11 +43,15 @@ public class Reader {
 
         try {
             try{
-            fileChan = new FileInputStream(fileName).getChannel();
+                fIS = new FileInputStream(fileName);
+                fileChan = fIS.getChannel();
+
             }catch(FileNotFoundException e){
                 File file = new File(fileName);
                 file.createNewFile();
-                fileChan = new FileInputStream(fileName).getChannel();
+                fIS = new FileInputStream(fileName);
+
+                fileChan = fIS.getChannel();
             }
 
             if(fileChan.size() % byteBufferSize == 0){
@@ -71,7 +75,9 @@ public class Reader {
         return fileChanSize;
     }
     public void close() throws IOException{
+
         fileChan.close();
+        fIS.close();
     }
     public boolean hasNextIntArrray(){
         return hasNextCount > 0;

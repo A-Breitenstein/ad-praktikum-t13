@@ -56,10 +56,9 @@ public class FolgenReader {
             if(file.delete()){
                 System.out.println(fileName+": resetet");
             }else{
-                throw new IOException();
+                System.out.println(fileName+": KONNTE FILE NICHT RESETEN!!!!");
             }
 
-            reader = Reader.create(fileName,fileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,8 +75,9 @@ public class FolgenReader {
         intBuffer = reader.getIntBuffer();
         remainigIntegerInBuffer = intBuffer.capacity();
         System.out.println(reader.getFileName()+": Loaded "+intBuffer.capacity()+" Integer in intBuffer");
-
-
+        if(intBuffer.capacity()==0){
+            System.out.println("eqwej");
+        }
     }
     private DataWrapper multipleReadsPerFolge(){
         int[] folge;
@@ -95,6 +95,7 @@ public class FolgenReader {
             remainigIntegerInBuffer-=restImBufferBzwAnfangDerNeuenFolge;
             intBuffer.clear();
             fillBuffer();
+            System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
             return DataWrapperImpl.create(folge,folge.length,false);
 
         }else{
@@ -238,7 +239,6 @@ public class FolgenReader {
     }
 
     public boolean hasNextFolge(){
-
         return reader.hasNextIntArrray() || remainigIntegerInBuffer > 0; //intBuffer.capacity()!=0; //reader.hasNextIntArrray();
     }
 
@@ -246,13 +246,9 @@ public class FolgenReader {
         //folgenLength = (int)(Math.pow(2,runLevel)*INITAL_FOLGEN_LENGTH);
         folgenLength = runLevel;
     }
-    public  void setFolgenLength(long length){
-        folgenLength = length;
-    }
     public long getFileSize(){
         return reader.getFileChanSize();
     }
-
     public void resetFile(){
            reset();
     }
