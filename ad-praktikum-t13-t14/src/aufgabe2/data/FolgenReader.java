@@ -230,7 +230,8 @@ public class FolgenReader {
         System.gc();
         if(folgenLength > Reader.INTEGER_COUNT_PER_READ){
             //oversize folgen fetch mode
-           tmp =  multipleReadsPerFolge();
+//           tmp =  multipleReadsPerFolge();
+            tmp = multipleReadPerFolge_redesgin();
         }else{
             //normal folgen fetch mode
             tmp = singleReadPerFolge();
@@ -252,6 +253,111 @@ public class FolgenReader {
     public void resetFile(){
            reset();
     }
+    private DataWrapper multipleReadPerFolge_redesgin(){
+        int[] folge;
+        boolean bufferHasMaxSize = intBuffer.remaining() == Reader.INTEGER_COUNT_PER_READ;
+        System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
+        if(intBuffer.remaining() == 0 && reader.hasNextIntArrray()){
+            intBuffer.clear();
+            fillBuffer();
+        }
 
+        if(gotRest && bufferHasMaxSize){
+            int restImBufferBzwAnfangDerNeuenFolge = intBuffer.capacity()-intBuffer.position();
+            folge = getOversizedFolgeFromBuffer( restImBufferBzwAnfangDerNeuenFolge);
+            gotRest = false;
+            System.out.println(reader.getFileName()+": FolgenReader::multipleReadsPerFolge() Case: gotRest restImBufferBzwAnfangDerNeuenFolge: "+restImBufferBzwAnfangDerNeuenFolge + "and bufferHasMaxSize");
+//            intBuffer.clear();
+//            fillBuffer();
+            return DataWrapperImpl.create(folge,folge.length,false);
+
+        }else if(gotRest && !bufferHasMaxSize){
+            int restImBufferBzwAnfangDerNeuenFolge = intBuffer.capacity()-intBuffer.position();
+            gotRest = false;
+            System.out.println(reader.getFileName()+": FolgenReader::multipleReadsPerFolge() Case: gotRest restImBufferBzwAnfangDerNeuenFolge: "+restImBufferBzwAnfangDerNeuenFolge + " and !bufferHasMaxSize:");
+            folge = getOversizedFolgeFromBuffer(restImBufferBzwAnfangDerNeuenFolge);
+            return DataWrapperImpl.create(folge,folge.length,false);
+        }else{
+            long rest = folgenLength - loadProgressOverSizedFolge;
+            if(rest > Reader.INTEGER_COUNT_PER_READ && bufferHasMaxSize){
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") > Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && bufferHasMaxSize");
+                folge = getOversizedFolgeFromBuffer(intBuffer.capacity());
+
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+    //            intBuffer.clear();
+    //            fillBuffer();
+                return DataWrapperImpl.create(folge,folge.length,false);
+
+
+            }else if(rest > Reader.INTEGER_COUNT_PER_READ && !bufferHasMaxSize){
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") > Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && !bufferHasMaxSize");
+                folge = getOversizedFolgeFromBuffer(intBuffer.remaining());
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+
+    //            intBuffer.clear();
+    //            fillBuffer();
+                return DataWrapperImpl.create(folge,folge.length,false);
+
+            }else if( rest == Reader.INTEGER_COUNT_PER_READ && bufferHasMaxSize) {
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") == Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && bufferHasMaxSize");
+                folge = getOversizedFolgeFromBuffer(intBuffer.capacity());
+                loadProgressOverSizedFolge=0;
+    //            intBuffer.clear();
+    //            fillBuffer();
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+                return DataWrapperImpl.create(folge,folge.length,true);
+            }else if( rest == Reader.INTEGER_COUNT_PER_READ && !bufferHasMaxSize){
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") == Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && !bufferHasMaxSize");
+                folge = getOversizedFolgeFromBuffer(intBuffer.remaining());
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+                return DataWrapperImpl.create(folge,folge.length,false);
+
+            }else if(rest < Reader.INTEGER_COUNT_PER_READ && bufferHasMaxSize){
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") < Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && bufferHasMaxSize");
+                int restImBuffer = (int)(Reader.INTEGER_COUNT_PER_READ - rest);
+                folge = getOversizedFolgeFromBuffer(rest);
+                loadProgressOverSizedFolge = 0;
+                gotRest = true;
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+                return DataWrapperImpl.create(folge,folge.length,true);
+
+            }else if(rest < Reader.INTEGER_COUNT_PER_READ && !bufferHasMaxSize){
+                System.out.println(reader.getFileName() + ": FolgenReader::multipleReadsPerFolge() Case: rest (" + rest + ") < Reader.INTEGER_COUNT_PER_READ (" + Reader.INTEGER_COUNT_PER_READ + ") && !bufferHasMaxSize");
+                boolean komplett = true;
+                if(intBuffer.remaining() >= rest){
+                     folge = getOversizedFolgeFromBuffer(rest);
+                     loadProgressOverSizedFolge = 0;
+                     gotRest = true;
+                 }else {
+                    folge = getOversizedFolgeFromBuffer(intBuffer.remaining());
+                    komplett = false;
+                 }
+                System.out.println(reader.getFileName()+": returned array laenge: "+folge.length);
+                return DataWrapperImpl.create(folge,folge.length,komplett);
+
+
+            } else{
+                System.out.println(reader.getFileName()+": FolgenReader::multipleReadsPerFolge_redesign:: unknown case in mutlipleReadsPerFolge");
+                System.out.println(reader.getFileName()+": loadProgressOverSizedFolge: "+loadProgressOverSizedFolge);
+                System.out.println(reader.getFileName()+": folgenLength: "+folgenLength);
+                System.out.println(reader.getFileName()+": gotRest: "+gotRest);
+                System.out.println(reader.getFileName()+": remainigIntegerInBuffer: "+remainigIntegerInBuffer);
+                System.out.println(reader.getFileName()+": buffer capacity: "+intBuffer.capacity());
+                System.out.println(reader.getFileName()+": buffer position: "+intBuffer.position());
+                System.out.println(reader.getFileName()+": buffer remaining: "+intBuffer.remaining());
+                System.out.println(reader.getFileName()+": reader informations: "+reader);
+
+            }
+        }
+        return DataWrapperImpl.create(new int[0],0,false);
+    }
+
+    private int[] getOversizedFolgeFromBuffer(long size){
+        int[] array = new int[(int)size];
+        intBuffer.get(array,0,(int)size);
+        loadProgressOverSizedFolge+=size;
+        remainigIntegerInBuffer-=size;
+        return  array;
+    }
 
 }
