@@ -132,7 +132,6 @@ public class DataManagerImpl implements DataManager {
         //folgenWriter1.
             if(dataWrapper.isFolgeKomplett()){
                 writeSwitch = !writeSwitch;
-                finish = folgenReader1.getFileSize() == sourceFileSize || folgenReader2.getFileSize() == sourceFileSize;
             }
               
         if(!initialReader.hasNextFolge()){
@@ -170,6 +169,7 @@ public class DataManagerImpl implements DataManager {
                     bigSwitch = true;
 
                 }
+                finish = folgenReader1.getFileSize() == sourceFileSize || folgenReader2.getFileSize() == sourceFileSize;
                 if(FolgenReaderValue>2*initFileFolgenLength){
                     //System.exit(0);
                 }
