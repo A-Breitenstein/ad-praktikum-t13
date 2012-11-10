@@ -77,8 +77,9 @@ public class ExternerMergeSort {
 		}
         
 		System.out.println("Verarbeitete Element im Merge-Schritt: " + output.counter);	 		
-		if (output.counter == 10000){
+		if (output.counter >= 6000){
 			int a = 4;
+			a++;
 		}
 		
 		output.closeBuffer();
