@@ -45,14 +45,13 @@ public class ExternerMergeSort {
 				InputBuffer.Channels.LEFTCHANNEL);
 		InputBuffer rechtsIn = new InputBuffer(ioTapes,
 				InputBuffer.Channels.RIGHTCHANNEL);
-		OutputBuffer output = new OutputBuffer(ioTapes);
-//
-//        if((!linksIn.tapes.leftChannelHasNext() && rechtsIn.tapes.rightChannelHasNext())||(linksIn.tapes.leftChannelHasNext() && !rechtsIn.tapes.rightChannelHasNext()))
-//            return false;
-
+			
+		//Terminierung: wenn Beiden Input-Channels schon zu beginn an leer ist, dann gibt es nix zu mergen...
 		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
 			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
 
+        OutputBuffer output = new OutputBuffer(ioTapes);
+    	
 		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
 
 			int linksElem = linksIn.getCurrent();
@@ -77,6 +76,11 @@ public class ExternerMergeSort {
 			rechtsIn.moveNext();
 		}
         
+		System.out.println("Verarbeitete Element im Merge-Schritt: " + output.counter);	 		
+		if (output.counter == 10000){
+			int a = 4;
+		}
+		
 		output.closeBuffer();
 
 		return true;

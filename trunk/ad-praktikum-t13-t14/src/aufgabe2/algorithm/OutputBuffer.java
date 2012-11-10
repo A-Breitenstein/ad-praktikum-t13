@@ -15,7 +15,7 @@ class OutputBuffer {
 	private DataManager tapes; 
 	private DataWrapper output; //Der Speicher, in welchem die Elemente gespeichert werden können
 	private int pos = 0; //Der Index im Array, an welcher das nächste Element (bei Push) im output gespeichert werden werden kann
-	
+	int counter = 0; //temporär, für Debug...
 	/**
 	 * Erzeugt eine neue Instanz von OutputBuffer
 	 * @param data Die Schnittstelle, an welche die Daten weitergeleitet werden sollen
@@ -31,13 +31,12 @@ class OutputBuffer {
 	 */
 	public void push(int val){
 		output.getData()[pos] = val;
-		
-		if (pos+1 == output.getData().length){ //ist der erhaltene Speicher voll?
-			storeInTape();
+		counter ++;
+		pos++;
+		if (pos == output.getData().length){ //ist der erhaltene Speicher voll?
+			storeInTape(); //da Pos schon um 1 erhöht wurde, ist es damit die anzahl der Elemente
 			createNextOutput();	
-		} else {
-			pos++ ;
-		}
+		} 
 		
 	}
 	
@@ -55,7 +54,7 @@ class OutputBuffer {
 	 * Speichert die Daten im Output im DataManager
 	 */
 	private void storeInTape(){
-		output.setSize(pos);
+		output.setSize(pos);//Da Pos den Index des NÄCHSTEN zu schreibendes Elementes enthält, ist Pos = Size  
 		tapes.write(output);
 	}
 	
