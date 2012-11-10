@@ -5,6 +5,11 @@ import aufgabe2.interfaces.*;
 
 public class ExternerMergeSort {
 
+	/**
+	 * Sortiert die angegebene externe Datei, welche ausschließlich aus 4-Byte-Integer-Zahlen besteht
+	 * @param inputFile Der Pfad der Datei, welche sortiert werden soll
+	 * @param outputFile Der Ort, wohin die sortierte Folge gespeichert werden soll (WIRD ZUR ZEIT NOCH IGNORIERT!)
+	 */
 	public static void sort(String inputFile, String outputFile) {
 		DataManager tapes = new DataManagerImpl(inputFile); // InputFile
 															// übergeben,
@@ -29,23 +34,11 @@ public class ExternerMergeSort {
         System.out.println("fertig");
 	}
 
-	// Auswählen, welcher sortieralgo für die blöcke verwendet wird:
-	// IF blockgröße > 30 then blockSort_quick
-
-	static void blockSort_insertion(int[] data, int links, int rechts) {
-		for (int i = links + 1; i <= rechts; i++) {
-			int j = i;
-			int itemToSort = data[i];
-			while (j > 0 && data[j - 1] > itemToSort) {
-				// insert
-				data[j] = data[j - 1];
-				j = j - 1;
-			}
-			data[j] = itemToSort;
-		}
-
-	}
-
+	/**
+	 * Führt einen ganzen Datenblock zusammen
+	 * @param ioTapes die Datenquelle
+	 * @return ob es Daten zum Zusammenführen gab.
+	 */
 	private static boolean merge(DataManager ioTapes) {
 
 		InputBuffer linksIn = new InputBuffer(ioTapes,
@@ -83,13 +76,42 @@ public class ExternerMergeSort {
 			output.push(rechtsIn.getCurrent());
 			rechtsIn.moveNext();
 		}
-        output.output.setFolgeKomplett(true);
-		output.storeInTape();
+        
+		output.closeBuffer();
 
 		return true;
 
 	}
 
+	//Sortieralgorithmen-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+	
+	/**
+	 * Sortiert die Daten von der linken bis zur rechten Grenze mit InsertionSort
+	 * @param data das Array, auf welchem sortiert werden soll
+	 * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
+	 * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
+	 */
+	static void blockSort_insertion(int[] data, int links, int rechts) {
+		for (int i = links + 1; i <= rechts; i++) {
+			int j = i;
+			int itemToSort = data[i];
+			while (j > 0 && data[j - 1] > itemToSort) {
+				// insert
+				data[j] = data[j - 1];
+				j = j - 1;
+			}
+			data[j] = itemToSort;
+		}
+
+	}
+	
+	/**
+	 *Sortiert die Daten von der linken bis zur rechten Grenze mit QuickSort
+	 * @param data das Array, auf welchem sortiert werden soll
+	 * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
+	 * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
+	 * @return
+	 */
 	static void blockSort_quick(int[] data, int links, int rechts) {
 		if (rechts - links < 10) {
 			blockSort_insertion(data, links, rechts);
@@ -100,6 +122,13 @@ public class ExternerMergeSort {
 		}
 	}
 
+	/**
+	 * Hilfsmethode für blockSort_quick: Ermittelt ein Pivot-Element und sortiert die liste so, dass alle Elemente kleiner als das Pivot-Element links davon stehen, die größeren Element rechts
+	 * @param data das Array, auf welchem sortiert werden soll
+	 * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
+	 * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
+	 * @return der Index des Pivot-ELements
+	 */
 	private static int quickSwap(int[] data, int links, int rechts) {
 
 		int i = links;
@@ -119,8 +148,21 @@ public class ExternerMergeSort {
 		return i;
 	}
 
+	/**
+	 * Hilfsmethode für quickSwap: vertauscht zwei Elemente miteinander 
+	 * @param data das Array, auf welchem vertauscht werden soll
+	 * @param pos1 der Index des 1. Elements
+	 * @param pos2 der Index des 2. Elements
+	 */
+	private static void swap(int[] data, int pos1, int pos2) {
+		int tmp = data[pos1];
+		data[pos1] = data[pos2];
+		data[pos2] = tmp;
+	}
+	
 	//Von http://www.pohlig.de/Unterricht/Inf2002/Tag49/31.2.2_QuickSort_die_Implementierung.htm geklauter Code
-	//ermittlung des pivot modifiziert, läuft gleichmäßiger (ganz kleines bischen schnleller) als unsere eigene implementierung 
+	//ermittlung des pivot modifiziert, läuft gleichmäßiger (ganz kleines bischen schnleller) als unsere eigene implementierung
+	//wird zur Zeit nicht verwendet.
 	   static void quickSort2(int[] liste, int untereGrenze, int obereGrenze) {
 		    int links = untereGrenze;
 		    int rechts = obereGrenze;
@@ -148,10 +190,5 @@ public class ExternerMergeSort {
 		    }
 		  }
 
-	private static void swap(int[] data, int pos1, int pos2) {
-		int tmp = data[pos1];
-		data[pos1] = data[pos2];
-		data[pos2] = tmp;
-	}
 
 }
