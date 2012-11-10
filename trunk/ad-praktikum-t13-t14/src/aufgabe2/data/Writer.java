@@ -16,6 +16,8 @@ public class Writer {
     private String fileName;
     public static long INTEGER_COUNT_PER_WRITE = 3 * Reader.INTEGER_COUNT_PER_READ ;
     private FileOutputStream fOS;
+    private long overAllWriteCount = 0;
+
 
     private Writer(String fileName){
         this.fileName = fileName;
@@ -35,16 +37,19 @@ public class Writer {
     }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
          try{
+             int size = byteBuffer.capacity()/4;
              try{
                 fileChan.write(byteBuffer);
-                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+(byteBuffer.capacity()/4));
+                 overAllWriteCount+=size;
+                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+size);
              }catch (NullPointerException e){
                  System.out.println(fileName+": NOTFALL WRITER WURDE ERSTELLT");
                  fOS = new FileOutputStream(fileName);
                  fileChan = fOS.getChannel();
                  fileChan.force(true);
                  fileChan.write(byteBuffer);
-                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+(byteBuffer.capacity()/4));
+                 overAllWriteCount+=size;
+                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+size);
              }
          }catch (IOException e){
              System.out.println(fileName+": NOTFALL WRITER NICHT ERSTELLT");
@@ -55,8 +60,12 @@ public class Writer {
     }
     public void close(){
         try {
-            fileChan.close();
-            fOS.close();
+            // wenn er zu dem zeitpunkt hier null ist, dann wurder er nicht benutzt
+            if(fileChan != null){
+                fileChan.close();
+                fOS.close();
+            }
+            System.out.println(fileName+": was successfully closed! this writer has written "+overAllWriteCount+" integer");
         } catch (IOException e) {
             System.out.println(fileName+": WRITER KONNTE NICHT GECLOSET WERDEN ");
         }

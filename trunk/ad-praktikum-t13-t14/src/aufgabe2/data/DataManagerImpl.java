@@ -166,9 +166,9 @@ public class DataManagerImpl implements DataManager {
                     bigSwitch = true;
 
                 }
-//                if(FolgenReaderValue>2*initFileFolgenLength){
-//                    System.exit(0);
-//                }
+                if(FolgenReaderValue>2*initFileFolgenLength){
+                    System.exit(0);
+                }
                 System.out.println("mal 2");
                 FolgenReaderValue *= 2;
             }
