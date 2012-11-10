@@ -73,9 +73,9 @@ public class ExternerMergeSortTest {
 	
 	@Test 
 	public void testMergeSortAlgorithm() {
-		TestFileGenerator.createTestFile("DataManagerTest",100,10);
+		TestFileGenerator.createTestFile("DataManagerTest",1000,10);
         ExternerMergeSort.sort("DataManagerTest","");
-        assertTrue(TestFileGenerator.isSorted("DataManagerTest"));
+        assertTrue(TestFileGenerator.isSorted("DataManagerTest2"));
 	}
 	
     private static int[] initRandomArray(int arraySize, int upperBound, int lowerBound) {

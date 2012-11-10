@@ -26,6 +26,7 @@ public class DataManagerImpl implements DataManager {
     FolgenReader folgenReader2;
 
     boolean writeSwitch = true, bigSwitch = true;
+    boolean finish = false;
     //SourceFile
     //private final String sourceFilePath = "zahlenfolge";
     FolgenReader initialReader;
@@ -48,6 +49,7 @@ public class DataManagerImpl implements DataManager {
 
         sourceFileSize = initialReader.getFileSize();
         initFileFolgenLength = sourceFileSize/4;
+        
     }
 
 
@@ -71,7 +73,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public DataWrapper readLeftChannel() {
-        if(leftChannelHasNext()){
+        if(leftChannelHasNext() && !finish){
             return folgenReader1.getFolge();
         }else {
             return createEmptyDataWrapper();
@@ -80,7 +82,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public DataWrapper readRightChannel() {
-        if(rightChannelHasNext()){
+        if(rightChannelHasNext() && !finish){
             return folgenReader2.getFolge();
         }else {
             return createEmptyDataWrapper();
@@ -127,10 +129,12 @@ public class DataManagerImpl implements DataManager {
         }else{
             folgenWriter2.writeFolge(dataWrapper);
         }
-
-            if(dataWrapper.isFolgeKomplett())
+        //folgenWriter1.
+            if(dataWrapper.isFolgeKomplett()){
                 writeSwitch = !writeSwitch;
-
+                finish = folgenReader1.getFileSize() == sourceFileSize || folgenReader2.getFileSize() == sourceFileSize;
+            }
+              
         if(!initialReader.hasNextFolge()){
             if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
              System.gc();
@@ -167,7 +171,7 @@ public class DataManagerImpl implements DataManager {
 
                 }
                 if(FolgenReaderValue>2*initFileFolgenLength){
-                    System.exit(0);
+                    //System.exit(0);
                 }
                 System.out.println("mal 2");
                 FolgenReaderValue *= 2;
