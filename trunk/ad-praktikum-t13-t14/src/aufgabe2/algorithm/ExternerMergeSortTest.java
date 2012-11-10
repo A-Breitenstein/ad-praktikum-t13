@@ -58,8 +58,8 @@ public class ExternerMergeSortTest {
 	@Test @Ignore
 	public void testBlockSort_Time() {
 		long duration=0;
-		int durchläufe=30;
-		for (int i=0; i<durchläufe; i++){
+		int durchlaeufe = 30;
+		for (int i=0; i<durchlaeufe; i++){
 			int[] testelems = initRandomArray(1000000, 10000000, -1000000);
 			DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
 			long start = System.currentTimeMillis();
@@ -67,11 +67,11 @@ public class ExternerMergeSortTest {
 			duration += System.currentTimeMillis() - start;
 			assertTrue(isSorted(testelems));
 		}
-		System.out.println("Dauer der Sortierung (durchschnittlich): " + (duration / durchläufe) + "ms");
+		System.out.println("Dauer der Sortierung (durchschnittlich): " + (duration / durchlaeufe) + "ms");
 	}
 	
 	
-	@Test @Ignore 
+	@Test 
 	public void testMergeSortAlgorithm() {
 		TestFileGenerator.createTestFile("DataManagerTest",100,10);
         ExternerMergeSort.sort("DataManagerTest","");
