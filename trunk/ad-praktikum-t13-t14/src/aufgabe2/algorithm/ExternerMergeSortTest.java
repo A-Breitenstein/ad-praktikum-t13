@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.io.File;
 
 import org.junit.*;
 
@@ -73,10 +74,25 @@ public class ExternerMergeSortTest {
 	
 	@Test 
 	public void testMergeSortAlgorithm() {
-		TestFileGenerator.createTestFile("DataManagerTest",1000,10);
-        ExternerMergeSort.sort("DataManagerTest","");
-        assertTrue(TestFileGenerator.isSorted("DataManagerTest2"));
+		String InputFilePath = "DataManagerTest";
+		String outputFilePath = null;
+		TestFileGenerator.createTestFile(InputFilePath,1000,10);
+		outputFilePath = ExternerMergeSort.sort(InputFilePath);
+		
+        System.out.println("Sortieren abgeschlossen. Prüfe sortierung...");
+        assertTrue(TestFileGenerator.isSorted(outputFilePath));
+        
+        //Aufräumen
+        deleteFile(InputFilePath);
+        deleteFile(outputFilePath);
 	}
+	
+	private static void deleteFile(String path){
+		File file = new File(path);
+		if (file.exists())
+			file.delete();
+	}
+	
 	
     private static int[] initRandomArray(int arraySize, int upperBound, int lowerBound) {
         System.gc();

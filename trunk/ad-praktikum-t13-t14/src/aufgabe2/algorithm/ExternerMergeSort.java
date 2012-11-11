@@ -7,15 +7,12 @@ public class ExternerMergeSort {
 
 	/**
 	 * Sortiert die angegebene externe Datei, welche ausschließlich aus 4-Byte-Integer-Zahlen besteht
-	 * @param inputFile Der Pfad der Datei, welche sortiert werden soll
-	 * @param outputFile Der Ort, wohin die sortierte Folge gespeichert werden soll (WIRD ZUR ZEIT NOCH IGNORIERT!)
+	 * @param inputFile Der Pfad der Datei, welche sortiert werden soll. An jenem Verzeichnis muss
+	 * 		  Platz sein für eine weitere Datei mit der gleichen Größe. 
+	 * @return Der Pfad der sortierten Datei
 	 */
-	public static void sort(String inputFile, String outputFile) {
-		DataManager tapes = new DataManagerImpl(inputFile); // InputFile
-															// übergeben,
-															// Konstruktor mit
-															// angebbarem
-															// Dateinamen bitte?
+	public static String sort(String inputFile) {
+		DataManager tapes = new DataManagerImpl(inputFile); 
 
 		// Blockweise Sortierung
 		DataWrapper data = tapes.readBlock(); // lese von "band" 1;
@@ -33,7 +30,7 @@ public class ExternerMergeSort {
 		}
         System.out.println("fertig");
         tapes.closeAllChannelsIfOpen();
-        tapes.signSortedFile();
+        return tapes.signSortedFile();
 	}
 
 	/**

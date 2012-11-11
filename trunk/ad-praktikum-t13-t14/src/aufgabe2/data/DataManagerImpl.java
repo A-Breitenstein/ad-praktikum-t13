@@ -19,7 +19,7 @@ public class DataManagerImpl implements DataManager {
     // optimal folgenLength ist ne 2er potenz
     // start könnte bei 8 oder 16 sein
 
-    private static int FolgenReaderInitValue = 10;
+    private static int FolgenReaderInitValue = 500;
     private long FolgenReaderValue = FolgenReaderInitValue;
 
     private long initFileFolgenLength;
@@ -147,7 +147,7 @@ public class DataManagerImpl implements DataManager {
             }
               
         if(!initialReader.hasNextFolge()){
-            if(!(leftChannelHasNext()) && !(rightChannelHasNext())){
+            if(!(leftChannelHasNext()) && !(rightChannelHasNext())){ //&& dataWrapper.isFolgeKomplett()
              System.gc();
 
                 if(bigSwitch){
@@ -203,7 +203,7 @@ public class DataManagerImpl implements DataManager {
         System.gc();
     }
     //Create TargetFile
-    public void signSortedFile(){
+    public String signSortedFile(){
         long dSize1 = 0, dSize2 = 0, dSize3 = 0, dSize4 = 0;
         boolean found = false;
         File usedFiles;
@@ -272,8 +272,10 @@ public class DataManagerImpl implements DataManager {
                     }
             }
 
+            return endFileRenamed.getAbsolutePath();
         }else {
             System.out.println(String.valueOf("Keine Enddatei gefunden!"));
+            return null;
         }
     }
 
