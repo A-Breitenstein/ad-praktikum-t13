@@ -163,7 +163,7 @@ public class FolgenReader {
     }
 
     private DataWrapper singleReadPerFolge(){
-
+        boolean folgekomplett = true;
 
         // solange der reader daten hat lesen
         if(remainigIntegerInBuffer == 0 && reader.hasNextIntArrray()){
@@ -213,6 +213,7 @@ public class FolgenReader {
                 tmp_array = new int[lengthRestTilBufferEnd];
                 System.arraycopy(bufferRestArray, 0, tmp_array, 0, lengthRestTilBufferEnd);
                 bufferRestArray = tmp_array;
+                folgekomplett = false;
             }
             remainigIntegerInBuffer-=lengthRestFolgeLength;
             folge = bufferRestArray;
@@ -233,7 +234,7 @@ public class FolgenReader {
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() Case: until now unknown !!");
             System.out.println(reader.getFileName()+": FolgenReader::singleReadPerFolge() folgenLength = "+folgenLength+", remainingIntegerInBuffer = "+remainigIntegerInBuffer+" , intBuffer.position() = "+intBuffer.position()+" , intBuffer.capacity = "+intBuffer.capacity());
         }
-        return DataWrapperImpl.create(folge,folge.length,true);
+        return DataWrapperImpl.create(folge,folge.length,folgekomplett);
     }
     public DataWrapper getFolge(){
         DataWrapper tmp;

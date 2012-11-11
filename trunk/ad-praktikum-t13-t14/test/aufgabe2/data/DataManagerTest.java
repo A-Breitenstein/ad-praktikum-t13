@@ -20,7 +20,7 @@ public class DataManagerTest {
         FolgenWriter writer = FolgenWriter.create("DataManagerTest");
         writer.writeFolge(wrap);
         writer.close();
-        ExternerMergeSort.sort("DataManagerTest","");
+        ExternerMergeSort.sort("DataManagerTest");
 
 //        FolgenReader reader = FolgenReader.create("DataManagerTest3","DataManagerTest3",10);
 //        for(int elem : reader.getFolge().getData()){
@@ -31,13 +31,17 @@ public class DataManagerTest {
     }
     @Test
     public void tenKIntegerTEst(){
+        // also die FolgenReaderInitValue muss ein vielfaches der gesamt folge sein!!
+        // sonst bugt es und er hört nicht auf
+        int anzahlZahlenProSchreibVorgang = 10000;
+        int anzahlSchreibVorgaenge = 1;
+        TestFileGenerator.createTestFile("DataManagerTest",anzahlZahlenProSchreibVorgang,anzahlSchreibVorgaenge);
+        Reader.setInegerCountPerRead(2048);   // 2097152 =>  ca 8mb lese buffer dadurch ist der schreibbuffer 24mb groß ( 3*8)
+        DataManagerImpl.setFolgenReaderInitValue(100); // hier bitte ein vielfaches von anzahlZahlenProSchreibVorgang * anzahlSchreibVorgaenge
+        ExternerMergeSort.sort("DataManagerTest");
 
-        TestFileGenerator.createTestFile("DataManagerTest",1000,1);
-        Reader.setInegerCountPerRead(2048);
-        DataManagerImpl.setFolgenReaderInitValue(64);
-        ExternerMergeSort.sort("DataManagerTest","");
-        // zur kontrolle im ordner gucken welches file das größte ist und dann beim ReadTest
-        // den filename angeben und kontrollieren lassen
+
+        assertTrue(TestFileGenerator.isSorted("EnddateiSorted"));
 
     }
     @Test
