@@ -89,7 +89,7 @@ public class Reader {
         fIS.close();
     }
     public boolean hasNextIntArrray(){
-        return hasNextCount > 0;
+        return (fileChanSize - currentCursorPosition) > 0;//hasNextCount > 0;
     }
     public String toString(){
         String tmp = "Reader has IOException ....";
