@@ -73,6 +73,10 @@ public class Writer {
         }
     }
 
+    public boolean isOpen(){
+        return fileChan.isOpen();
+    }
+
     public static void main(String[] args) {
         int[] array = {1,2,3,4,5,6,7,8,9,10};
         ByteBuffer tmp_byteBuff = ByteBuffer.allocate((Integer.SIZE / Byte.SIZE) *10);

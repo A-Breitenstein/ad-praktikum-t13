@@ -43,6 +43,17 @@ public class FolgenReader {
         initBuffer();
 
     }
+    public boolean isOpen(){
+        return reader.isOpen();
+    }
+    public void close(){
+        try {
+            reader.close();
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
     private void reset(){
         remainigIntegerInBuffer = 0;
         loadProgressOverSizedFolge = 0;

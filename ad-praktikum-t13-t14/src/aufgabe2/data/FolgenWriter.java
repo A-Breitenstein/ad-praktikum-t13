@@ -247,4 +247,7 @@ public class FolgenWriter {
     public String toString() {
         return fileWriter.getFileName();
     }
+    public boolean isOpen(){
+        return fileWriter.isOpen();
+    }
 }

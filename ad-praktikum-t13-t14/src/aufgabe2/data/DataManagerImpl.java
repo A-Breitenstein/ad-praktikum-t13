@@ -3,6 +3,12 @@ package aufgabe2.data;
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.DataWrapper;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -21,6 +27,7 @@ public class DataManagerImpl implements DataManager {
     //Linkes File, rechtes File
 
     private String datei1 = "file1", datei2 = "file2", datei3 = "file3", datei4 = "file4";
+    String[] dateiNamen;
     FolgenWriter folgenWriter1;
     FolgenWriter folgenWriter2;
     FolgenReader folgenReader1;
@@ -41,6 +48,8 @@ public class DataManagerImpl implements DataManager {
         datei2 = sourceFilePath+"2";
         datei3 = sourceFilePath+"3";
         datei4 = sourceFilePath+"4";
+
+        dateiNamen = new String[]{datei1, datei2, datei3, datei4};
 
         folgenWriter1 = FolgenWriter.create(datei3);
         folgenWriter2 = FolgenWriter.create(datei4);
@@ -179,6 +188,92 @@ public class DataManagerImpl implements DataManager {
                 System.out.println("mal 2");
                 FolgenReaderValue *= 2;
             }
+        }
+    }
+    public void closeAllChannelsIfOpen(){
+        if(folgenReader1.isOpen())
+            folgenReader1.close();
+        if(folgenReader2.isOpen())
+            folgenReader2.close();
+        if(folgenWriter1.isOpen())
+            folgenWriter1.close();
+        if(folgenWriter2.isOpen())
+            folgenWriter2.close();
+        //falls es noetig sein sollte
+        System.gc();
+    }
+    //Create TargetFile
+    public void signSortedFile(){
+        long dSize1 = 0, dSize2 = 0, dSize3 = 0, dSize4 = 0;
+        boolean found = false;
+        File usedFiles;
+        Path path;
+
+        final String endDateiSorted = "EnddateiSorted";
+        String enddateiName = "";
+
+
+        try {
+            dSize1 = Files.size(Paths.get(datei1));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
+            dSize2 = Files.size(Paths.get(datei2));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
+            dSize3 = Files.size(Paths.get(datei3));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        try {
+            dSize4 = Files.size(Paths.get(datei4));
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
+        if(sourceFileSize == dSize1){
+            enddateiName = datei1;
+            found = !found;
+        }else if (sourceFileSize == dSize2){
+            enddateiName = datei2;
+            found = !found;
+        }else if(sourceFileSize == dSize3){
+            enddateiName = datei3;
+            found = !found;
+        }else if (sourceFileSize == dSize4){
+            enddateiName = datei4;
+            found = !found;
+        }
+
+        if(found){
+            File endFile = new File(enddateiName);
+            File endFileRenamed = new File(endDateiSorted);
+
+            if(endFile.renameTo(endFileRenamed)){
+                System.out.println("Erfolgreiche umbenennung: "+enddateiName+" -> "+endDateiSorted);
+            }else{
+                System.out.println("Unerfolgreiche umbenennung: "+enddateiName+" -> "+endDateiSorted);
+            }
+
+            for (String dateiName : dateiNamen){
+//                endFile = new File(dateiName);
+                if(endFile.exists())
+                    System.gc();
+                    try{
+                        path = Paths.get(dateiName);
+
+                        if(Files.exists(path))
+                            Files.delete(path);
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+            }
+
+        }else {
+            System.out.println(String.valueOf("Keine Enddatei gefunden!"));
         }
     }
 
