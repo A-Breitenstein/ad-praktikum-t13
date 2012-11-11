@@ -69,8 +69,10 @@ public interface DataManager {
     /**
      *  Loescht alle Dateien bis auf die, die dieselbe Groeße hat wie die Ausgangsdatei.
      *  Diese wird umbenannt.(Umbenennen, dann rest löschen)
+     *  
+     *  @return der vollständige Pfad der sortierten Datei
      */
-    public void signSortedFile();
+    public String signSortedFile();
 
     /**
      * Schließt alle offen FileChannels.
