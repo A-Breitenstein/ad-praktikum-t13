@@ -12,7 +12,8 @@ import aufgabe2.interfaces.DataWrapper;
 public class DataManagerImpl implements DataManager {
     // optimal folgenLength ist ne 2er potenz
     // start könnte bei 8 oder 16 sein
-    private final int FolgenReaderInitValue = 10;
+
+    private static int FolgenReaderInitValue = 10;
     private long FolgenReaderValue = FolgenReaderInitValue;
 
     private long initFileFolgenLength;
@@ -32,7 +33,9 @@ public class DataManagerImpl implements DataManager {
     FolgenReader initialReader;
     long sourceFileSize = 0;
     // ca 1.416.872 KB RAM  ( 357923000*4)
-
+    public static void setFolgenReaderInitValue(int count){
+         FolgenReaderInitValue = count;
+    }
     public DataManagerImpl(String sourceFilePath) {
         datei1 = sourceFilePath+"1";
         datei2 = sourceFilePath+"2";

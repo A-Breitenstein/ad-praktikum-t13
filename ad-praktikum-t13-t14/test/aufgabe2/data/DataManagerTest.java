@@ -33,37 +33,26 @@ public class DataManagerTest {
     public void tenKIntegerTEst(){
 
         TestFileGenerator.createTestFile("DataManagerTest",1000,10);
+        Reader.setInegerCountPerRead(2048);
+        DataManagerImpl.setFolgenReaderInitValue(64);
         ExternerMergeSort.sort("DataManagerTest","");
 
-//        FolgenReader reader = FolgenReader.create("DataManagerTest3","DataManagerTest3",10);
-//        for(int elem : reader.getFolge().getData()){
-//            System.out.println(elem);
-//        }
-
+        // zur kontrolle im ordner gucken welches file das größte ist und dann beim ReadTest
+        // den filename angeben und kontrollieren lassen
 
     }
     @Test
     public void ReadTest(){
         FolgenReader reader = FolgenReader.create("DataManagerTest1","DataManagerTest1",1000);
-//        for(int elem : reader.getFolge().getData()){
-//            System.out.println(elem);
-//        }
-//        reader = FolgenReader.create("DataManagerTest2","DataManagerTest2",1000);
-//        for(int elem : reader.getFolge().getData()){
-//            System.out.println(elem);
-//        }
-//
-        reader = FolgenReader.create("DataManagerTest3","DataManagerTest3",10000);
-        for(int elem : reader.getFolge().getData()){
-            System.out.println(elem);
-        }
-//
-//        reader = FolgenReader.create("DataManagerTest4","DataManagerTest4",1000);
-//        for(int elem : reader.getFolge().getData()){
-//            System.out.println(elem);
-//        }
+        String filename = "DataManagerTest3";
+        reader = FolgenReader.create(filename,filename,10000);
+       while(reader.hasNextFolge()){
+            for(int elem : reader.getFolge().getData()){
+                System.out.println(elem);
+            }
+       }
 
-        assertTrue(TestFileGenerator.isSorted("DataManagerTest3"));
+        assertTrue(TestFileGenerator.isSorted(filename));
     }
 
 
