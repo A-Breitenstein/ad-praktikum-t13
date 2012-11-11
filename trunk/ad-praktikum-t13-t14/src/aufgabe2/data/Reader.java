@@ -33,6 +33,11 @@ public class Reader {
     private static long
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
 
+
+    public static void setInegerCountPerRead(int count){
+        INTEGER_COUNT_PER_READ = count;
+        byteBufferSize = INTEGER_SIZE*INTEGER_COUNT_PER_READ;
+    }
     public static Reader create(String name,String fileName){
         return new Reader(name, fileName);
     }

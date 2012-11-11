@@ -49,10 +49,11 @@ public class FolgenWriter {
         // damit keine nullen in die datei geschrieben werden Oder sogar müll
         // der sich noch im buffer befindet
         if(intBuffer.remaining()==0){
-            intBuffer.flip();
+//            intBuffer.flip();
 
             // warum byteBuffer? weil der intbuffer nur ne view auf den bytebuffer ist
             fileWriter.writeByteBufferToFile(byteBuffer);
+            intBuffer.clear();
         }else{
             // daten von dem zugroßen buffer (intBuffer) umschaufeln in den tmp_intbuffe um sie
             // korekt wegschreiben zukönnen.

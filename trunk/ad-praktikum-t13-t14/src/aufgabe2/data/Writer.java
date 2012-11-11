@@ -40,6 +40,8 @@ public class Writer {
              int size = byteBuffer.capacity()/4;
              try{
                 fileChan.write(byteBuffer);
+                 byteBuffer.clear(); // <--------- WTFX? ich wusste nicht das man den byteBuffer auch clearen muss
+                 // wenn man auf nen intbuffer hat ... und auf die clear called wtf..
                  overAllWriteCount+=size;
                  System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+size);
              }catch (NullPointerException e){

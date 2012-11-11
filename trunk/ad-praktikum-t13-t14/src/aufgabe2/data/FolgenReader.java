@@ -194,7 +194,7 @@ public class FolgenReader {
                 }catch(BufferUnderflowException e){
                     System.out.println(reader.getFileName()+": BufferUnderflow fix");
                     tmp_array = new int[i];
-                    System.arraycopy(bufferRestArray, 0, tmp_array, 0, lengthRestTilBufferEnd);
+                    System.arraycopy(bufferRestArray, 0, tmp_array, 0, i);
                     bufferRestArray = tmp_array;
                     lengthRestFolgeLength = intBuffer.capacity();
                 }

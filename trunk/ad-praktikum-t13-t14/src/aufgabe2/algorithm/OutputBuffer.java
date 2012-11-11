@@ -31,12 +31,13 @@ class OutputBuffer {
 	 */
 	public void push(int val){
 		output.getData()[pos] = val;
-		counter ++;
-		pos++;
-		if (pos == output.getData().length){ //ist der erhaltene Speicher voll?
-			storeInTape(); //da Pos schon um 1 erhöht wurde, ist es damit die anzahl der Elemente
-			createNextOutput();	
-		} 
+
+        counter ++;
+        pos++;
+        if (pos == output.getData().length){ //ist der erhaltene Speicher voll?
+            storeInTape(); //da Pos schon um 1 erhöht wurde, ist es damit die anzahl der Elemente
+            createNextOutput();
+        }
 		
 	}
 	
