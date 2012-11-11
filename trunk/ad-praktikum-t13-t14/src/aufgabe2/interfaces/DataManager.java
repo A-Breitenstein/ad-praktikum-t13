@@ -65,4 +65,15 @@ public interface DataManager {
      * @return true if the Channel has a sequence left to give, else false
      */
     public boolean rightChannelHasNext();
+
+    /**
+     *  Loescht alle Dateien bis auf die, die dieselbe Groeße hat wie die Ausgangsdatei.
+     *  Diese wird umbenannt.(Umbenennen, dann rest löschen)
+     */
+    public void signSortedFile();
+
+    /**
+     * Schließt alle offen FileChannels.
+     */
+    public void closeAllChannelsIfOpen();
 }

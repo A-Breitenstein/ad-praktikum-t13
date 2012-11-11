@@ -32,11 +32,10 @@ public class DataManagerTest {
     @Test
     public void tenKIntegerTEst(){
 
-        TestFileGenerator.createTestFile("DataManagerTest",1000,10);
+        TestFileGenerator.createTestFile("DataManagerTest",1000,1);
         Reader.setInegerCountPerRead(2048);
         DataManagerImpl.setFolgenReaderInitValue(64);
         ExternerMergeSort.sort("DataManagerTest","");
-
         // zur kontrolle im ordner gucken welches file das größte ist und dann beim ReadTest
         // den filename angeben und kontrollieren lassen
 

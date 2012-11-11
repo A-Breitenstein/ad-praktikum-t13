@@ -80,6 +80,9 @@ public class Reader {
     public long getFileChanSize(){
         return fileChanSize;
     }
+    public boolean isOpen(){
+        return fileChan.isOpen();
+    }
     public void close() throws IOException{
 
         fileChan.close();

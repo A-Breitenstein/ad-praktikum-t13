@@ -32,6 +32,8 @@ public class ExternerMergeSort {
 			// der merge tut schon alles, also do nothing
 		}
         System.out.println("fertig");
+        tapes.closeAllChannelsIfOpen();
+        tapes.signSortedFile();
 	}
 
 	/**

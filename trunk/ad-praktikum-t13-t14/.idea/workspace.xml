@@ -1,23 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" line="85" />
-    <bookmark url="file://$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java" line="49" />
+    <bookmark url="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" line="114" />
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="0f4010e9-2a3a-4296-bf9c-593d8c09f2df" name="Default" comment="t13: Praktikumstermin, fix das Sven!">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" afterPath="$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java" afterPath="$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/DataWrapperImpl.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/DataWrapperImpl.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/Reader.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/Reader.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/data/Writer.java" afterPath="$PROJECT_DIR$/src/aufgabe2/data/Writer.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/interfaces/DataWrapper.java" afterPath="$PROJECT_DIR$/src/aufgabe2/interfaces/DataWrapper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/aufgabe2/data/FolgenReaderTest.java" afterPath="$PROJECT_DIR$/test/aufgabe2/data/FolgenReaderTest.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java" afterPath="$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java" afterPath="$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java" />
     </list>
     <ignored path="ad-praktikum-t13-t14.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,20 +54,7 @@
       </breakpoint>
     </exception_breakpoints>
     <line_breakpoints>
-      <breakpoint url="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" line="57" class="aufgabe2.algorithm.ExternerMergeSort" package="aufgabe2.algorithm">
-        <option name="ENABLED" value="true" />
-        <option name="LOG_ENABLED" value="false" />
-        <option name="LOG_EXPRESSION_ENABLED" value="false" />
-        <option name="SUSPEND_POLICY" value="SuspendAll" />
-        <option name="COUNT_FILTER_ENABLED" value="false" />
-        <option name="COUNT_FILTER" value="0" />
-        <option name="CONDITION_ENABLED" value="false" />
-        <option name="CLASS_FILTERS_ENABLED" value="false" />
-        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
-        <option name="CONDITION" value="" />
-        <option name="LOG_MESSAGE" value="" />
-      </breakpoint>
-      <breakpoint url="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java" line="78" class="aufgabe2.data.FolgenReader" package="aufgabe2.data">
+      <breakpoint url="file://$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java" line="26" class="aufgabe2.data.DataManagerTest" package="aufgabe2.data">
         <option name="ENABLED" value="true" />
         <option name="LOG_ENABLED" value="false" />
         <option name="LOG_EXPRESSION_ENABLED" value="false" />
@@ -131,8 +115,8 @@
       <property name="field_breakpoints_groupByClasses" value="true" />
       <property name="method_breakpoints_groupByClasses" value="true" />
       <property name="exception_breakpoints_viewId" value="TABLE" />
-      <property name="field_breakpoints_viewId" value="TABLE" />
       <property name="exception_breakpoints_groupByClasses" value="true" />
+      <property name="field_breakpoints_viewId" value="TABLE" />
       <property name="method_breakpoints_groupByMethods" value="false" />
     </ui_properties>
   </component>
@@ -141,19 +125,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="DataManagerImpl.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="DataManagerImpl.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="91" column="35" selection-start="2743" selection-end="2743" vertical-scroll-proportion="0.0">
+            <state line="197" column="36" selection-start="6508" selection-end="6508" vertical-scroll-proportion="1.1117319">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FolgenWriter.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java">
+      <file leaf-file-name="DataManagerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="54" column="0" selection-start="1760" selection-end="1760" vertical-scroll-proportion="0.0">
+            <state line="37" column="53" selection-start="1193" selection-end="1193" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FolgeWriterTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/FolgeWriterTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="13" selection-start="187" selection-end="187" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -162,7 +155,7 @@
       <file leaf-file-name="ExternerMergeSort.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="56" column="157" selection-start="1813" selection-end="1813" vertical-scroll-proportion="0.0">
+            <state line="34" column="28" selection-start="1275" selection-end="1275" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -171,34 +164,16 @@
       <file leaf-file-name="DataManager.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="0" selection-start="1786" selection-end="1786" vertical-scroll-proportion="0.0">
+            <state line="75" column="40" selection-start="2078" selection-end="2078" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="System.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.7.0/src.zip!/java/lang/System.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="487" column="30" selection-start="19231" selection-end="19231" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FolgenReader.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="FolgenReader.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="240" column="34" selection-start="11963" selection-end="11963" vertical-scroll-proportion="0.5263158">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Reader.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Reader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="0" selection-start="1324" selection-end="1324" vertical-scroll-proportion="0.0">
+            <state line="46" column="28" selection-start="1481" selection-end="1481" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -207,25 +182,25 @@
       <file leaf-file-name="Writer.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Writer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="0" selection-start="951" selection-end="951" vertical-scroll-proportion="0.0">
+            <state line="73" column="28" selection-start="2543" selection-end="2543" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Buffer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.7.0/src.zip!/java/nio/Buffer.java">
+      <file leaf-file-name="FolgenWriter.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="491" column="0" selection-start="15584" selection-end="15584" vertical-scroll-proportion="0.0">
+            <state line="249" column="25" selection-start="11303" selection-end="11303" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="InputBuffer.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java">
+      <file leaf-file-name="Reader.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Reader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="10" selection-start="131" selection-end="131" vertical-scroll-proportion="0.0">
+            <state line="81" column="5" selection-start="2117" selection-end="2117" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -244,19 +219,19 @@
         <option value="$PROJECT_DIR$/test/aufgabe2/data/FolgeWriterTest.java" />
         <option value="$PROJECT_DIR$/test/aufgabe2/data/TestFileGeneratorTest.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/data/TestFileGenerator.java" />
-        <option value="$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java" />
-        <option value="$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/algorithm/OutputBuffer.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/data/DataWrapperImpl.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSortTest.java" />
-        <option value="$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java" />
         <option value="$PROJECT_DIR$/test/aufgabe2/data/FolgenReaderTest.java" />
-        <option value="$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java" />
-        <option value="$PROJECT_DIR$/src/aufgabe2/data/Reader.java" />
-        <option value="$PROJECT_DIR$/src/aufgabe2/data/Writer.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java" />
+        <option value="$PROJECT_DIR$/src/aufgabe2/data/Reader.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java" />
+        <option value="$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java" />
+        <option value="$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java" />
         <option value="$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java" />
+        <option value="$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java" />
+        <option value="$PROJECT_DIR$/src/aufgabe2/data/Writer.java" />
+        <option value="$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java" />
       </list>
     </option>
   </component>
@@ -265,10 +240,9 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1696" />
-    <option name="height" value="1036" />
+    <option name="x" value="658" />
+    <option name="width" value="708" />
+    <option name="height" value="738" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -324,10 +298,6 @@
               <option name="myItemId" value="ad-praktikum-t13-t14" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -357,94 +327,10 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="aufgabe2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="aufgabe2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="data" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="aufgabe2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="algorithm" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ad-praktikum-t13-t14" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -465,9 +351,9 @@
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.includeInheritedMembers" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CreateTestDialog.RecentsKey">
@@ -492,6 +378,13 @@
             <option name="mySupportsDeletion" value="false" />
             <option name="myCanBeAbsent" value="false" />
             <option name="myId" value="UPDATED" />
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\ExternerMergeSortTest.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\OutputBuffer.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\data\Reader.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\data\DataManagerImpl.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\data\FolgenWriter.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\data\Writer.java</PATH>
+            <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\data\FolgenReader.java</PATH>
           </FILE-GROUP>
           <FILE-GROUP>
             <option name="myUpdateName" value="Created" />
@@ -513,10 +406,6 @@
             <option name="mySupportsDeletion" value="false" />
             <option name="myCanBeAbsent" value="false" />
             <option name="myId" value="RESTORED" />
-            <PATH vcs="svn" revision="36">Z:\AI3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\ExternerMergeSort.java</PATH>
-            <PATH vcs="svn" revision="36">Z:\AI3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\ExternerMergeSortTest.java</PATH>
-            <PATH vcs="svn" revision="36">Z:\AI3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\InputBuffer.java</PATH>
-            <PATH vcs="svn" revision="36">Z:\AI3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\OutputBuffer.java</PATH>
           </FILE-GROUP>
         </FILE-GROUP>
         <FILE-GROUP>
@@ -553,6 +442,8 @@
           <option name="mySupportsDeletion" value="false" />
           <option name="myCanBeAbsent" value="false" />
           <option name="myId" value="MERGED" />
+          <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\test\aufgabe2\data\DataManagerTest.java</PATH>
+          <PATH vcs="svn" revision="43">D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\src\aufgabe2\algorithm\ExternerMergeSort.java</PATH>
         </FILE-GROUP>
         <FILE-GROUP>
           <option name="myUpdateName" value="Not in repository" />
@@ -749,6 +640,24 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="" />
@@ -775,24 +684,6 @@
       <envs />
       <properties />
       <listeners />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -899,7 +790,7 @@
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
     <option name="FORCE_UPDATE" value="false" />
     <option name="IGNORE_EXTERNALS" value="false" />
-    <configuration useDefault="true">C:\Users\abg667\AppData\Roaming\Subversion</configuration>
+    <configuration useDefault="true">C:\Users\Qiqi\AppData\Roaming\Subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
@@ -907,20 +798,20 @@
     <option name="myMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14" />
-          <option name="myCopyRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14" />
+          <option name="myVcsRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14" />
+          <option name="myCopyRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14" />
         </SvnCopyRootSimple>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14\.idea" />
-          <option name="myCopyRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14\.idea" />
+          <option name="myVcsRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\.idea" />
+          <option name="myCopyRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14\.idea" />
         </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14" />
-          <option name="myCopyRoot" value="Z:\AI3\AD\ad-praktikum-t13-t14" />
+          <option name="myVcsRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14" />
+          <option name="myCopyRoot" value="D:\Alex\HAW\AI-3\AD\ad-praktikum-t13-t14" />
         </SvnCopyRootSimple>
       </list>
     </option>
@@ -947,26 +838,26 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1036" extended-state="6" />
-    <editor active="true" />
+    <frame x="658" y="0" width="708" height="738" extended-state="0" />
+    <editor active="false" />
     <layout>
-      <window_info id="Dilbert" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41597337" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39434275" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Dilbert" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.45225224" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3927928" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37328768" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.6244292" sideWeight="0.49785408" order="3" side_tool="false" content_ui="tabs" x="1687" y="0" width="1055" height="1020" />
+      <window_info id="Debug" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.52612615" sideWeight="0.49785408" order="3" side_tool="false" content_ui="tabs" x="728" y="357" width="333" height="265" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.23630136" sideWeight="0.49785408" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19063927" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5063063" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32876712" sideWeight="0.49785408" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2152054" sideWeight="0.6255708" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21459228" sideWeight="0.6757991" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="false" weight="0.9063927" sideWeight="0.49785408" order="2" side_tool="false" content_ui="tabs" x="1688" y="2" width="1664" height="1046" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40930232" sideWeight="0.4848485" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5927928" sideWeight="0.9946004" order="2" side_tool="false" content_ui="tabs" x="836" y="132" width="376" height="473" />
       <window_info id="Documentation" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" x="92" y="92" width="1496" height="836" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -1079,67 +970,9 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0/jre/lib/rt.jar!/sun/reflect/NativeMethodAccessorImpl.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="28" selection-start="470" selection-end="470" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0/jre/lib/rt.jar!/sun/reflect/DelegatingMethodAccessorImpl.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="28" selection-start="407" selection-end="407" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.10.jar!/org/junit/runners/BlockJUnit4ClassRunner.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="19" selection-start="424" selection-end="424" vertical-scroll-proportion="-7.04">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/OutputBuffer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="0" selection-start="525" selection-end="525" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/FolgenReaderTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="0" selection-start="984" selection-end="984" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="21" selection-start="959" selection-end="959" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Reader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="0" selection-start="1324" selection-end="1324" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="54" column="0" selection-start="1760" selection-end="1760" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0/src.zip!/java/nio/Buffer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="491" column="0" selection-start="15584" selection-end="15584" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="31" column="0" selection-start="525" selection-end="525" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/InputBuffer.java">
@@ -1149,44 +982,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.7.0/src.zip!/java/lang/System.java">
+    <entry file="jar://D:/Program Files/Java/jdk1.7.0/src.zip!/java/nio/Buffer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="487" column="30" selection-start="19231" selection-end="19231" vertical-scroll-proportion="0.0">
+        <state line="491" column="0" selection-start="15584" selection-end="15584" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/lib/junit-4.10.jar!/org/junit/runners/model/FrameworkMethod.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Reader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="81" column="5" selection-start="2117" selection-end="2117" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Writer.java">
+    <entry file="jar://D:/Program Files/Java/jdk1.7.0/src.zip!/java/io/FileWriter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="0" selection-start="951" selection-end="951" vertical-scroll-proportion="0.0">
+        <state line="106" column="14" selection-start="3617" selection-end="3617" vertical-scroll-proportion="0.36942676">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java">
+    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/TestFileGeneratorTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="157" selection-start="1813" selection-end="1813" vertical-scroll-proportion="0.0">
+        <state line="14" column="13" selection-start="283" selection-end="283" vertical-scroll-proportion="0.24203822">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/DataManagerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="53" selection-start="1193" selection-end="1193" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/FolgeWriterTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="13" selection-start="187" selection-end="187" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test/aufgabe2/data/FolgenReaderTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="44" column="58" selection-start="1238" selection-end="1238" vertical-scroll-proportion="-1.6280624">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/aufgabe2/interfaces/DataManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="0" selection-start="1786" selection-end="1786" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="35" selection-start="2743" selection-end="2743" vertical-scroll-proportion="0.0">
+        <state line="75" column="40" selection-start="2078" selection-end="2078" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="240" column="34" selection-start="11963" selection-end="11963" vertical-scroll-proportion="0.5263158">
+        <state line="46" column="28" selection-start="1481" selection-end="1481" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/aufgabe2/algorithm/ExternerMergeSort.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="34" column="28" selection-start="1275" selection-end="1275" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/Writer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="73" column="28" selection-start="2543" selection-end="2543" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/FolgenWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="249" column="25" selection-start="11303" selection-end="11303" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/aufgabe2/data/DataManagerImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="197" column="36" selection-start="6508" selection-end="6508" vertical-scroll-proportion="1.1117319">
           <folding />
         </state>
       </provider>
