@@ -33,27 +33,27 @@ public class DataManagerTest {
     public void tenKIntegerTEst(){
         // also die FolgenReaderInitValue muss ein vielfaches der gesamt folge sein!!
         // sonst bugt es und er hört nicht auf
-        int anzahlZahlenProSchreibVorgang = 10000;
-        int anzahlSchreibVorgaenge = 1;
-        TestFileGenerator.createTestFile("DataManagerTest",anzahlZahlenProSchreibVorgang,anzahlSchreibVorgaenge);
-        Reader.setInegerCountPerRead(2048);   // 2097152 =>  ca 8mb lese buffer dadurch ist der schreibbuffer 24mb groß ( 3*8)
-        DataManagerImpl.setFolgenReaderInitValue(100); // hier bitte ein vielfaches von anzahlZahlenProSchreibVorgang * anzahlSchreibVorgaenge
+        int anzahlZahlenProSchreibVorgang = 1000000;
+        int anzahlSchreibVorgaenge = 10;
+//        TestFileGenerator.createTestFile("DataManagerTest",anzahlZahlenProSchreibVorgang,anzahlSchreibVorgaenge);
+        Reader.setInegerCountPerRead(2500000);   // 2097152 =>  ca 8mb lese buffer dadurch ist der schreibbuffer 24mb groß ( 3*8)
+        DataManagerImpl.setFolgenReaderInitValue(1000000); // hier bitte ein vielfaches von anzahlZahlenProSchreibVorgang * anzahlSchreibVorgaenge
         ExternerMergeSort.sort("DataManagerTest");
 
 
-        assertTrue(TestFileGenerator.isSorted("EnddateiSorted"));
+        //assertTrue(TestFileGenerator.isSorted("EnddateiSorted"));
 
     }
     @Test
     public void ReadTest(){
-        FolgenReader reader = FolgenReader.create("DataManagerTest1","DataManagerTest1",1000);
-        String filename = "DataManagerTest3";
-        reader = FolgenReader.create(filename,filename,10000);
-       while(reader.hasNextFolge()){
-            for(int elem : reader.getFolge().getData()){
-                System.out.println(elem);
-            }
-       }
+        FolgenReader reader;
+        String filename = "DataManagerTest2";
+//        reader = FolgenReader.create(filename,filename,10000);
+//      while(reader.hasNextFolge()){
+//            for(int elem : reader.getFolge().getData()){
+//                System.out.println(elem);
+//            }
+//       }
 
         assertTrue(TestFileGenerator.isSorted(filename));
     }

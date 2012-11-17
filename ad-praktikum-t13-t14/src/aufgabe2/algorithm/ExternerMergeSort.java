@@ -3,6 +3,9 @@ package aufgabe2.algorithm;
 import aufgabe2.data.DataManagerImpl;
 import aufgabe2.interfaces.*;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class ExternerMergeSort {
 
 	/**
@@ -12,13 +15,14 @@ public class ExternerMergeSort {
 	 * @return Der Pfad der sortierten Datei
 	 */
 	public static String sort(String inputFile) {
-		DataManager tapes = new DataManagerImpl(inputFile); 
-
+		DataManager tapes = new DataManagerImpl(inputFile);
+        ExecutorService threadPool = Executors.newCachedThreadPool();
 		// Blockweise Sortierung
 		DataWrapper data = tapes.readBlock(); // lese von "band" 1;
 												// initialisierung
 		while (data.getSize() > 0) { // solange das "band" nicht leer ist
-			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
+//			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
+            QuickSortMultiThreaded.sort(data.getData(),0,data.getSize() - 1,threadPool);
 			tapes.write(data); // zurückschreiben
 			data = tapes.readBlock(); // lese wieder von "band" 1
 		}
@@ -29,8 +33,9 @@ public class ExternerMergeSort {
 			// der merge tut schon alles, also do nothing
 		}
         System.out.println("fertig");
-        tapes.closeAllChannelsIfOpen();
-        return tapes.signSortedFile();
+        //tapes.closeAllChannelsIfOpen();
+       // return tapes.signSortedFile();
+        return "guck im projekt verzeichnis";
 	}
 
 	/**

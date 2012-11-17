@@ -158,6 +158,7 @@ public class TestFileGenerator {
                         if(intArray[i]>intArray[i+1]){
                             System.out.println(intArray[i] +" ist großer als "+intArray[i+1]);
                             System.out.println(fileName+ " nicht richtig sortiert!");
+                            System.out.println("controll-counter: "+CONTROLL_COUNTER);
                             reader.close();
                             return false;
                         }

@@ -28,7 +28,7 @@ public class FileReader {
 
     private static final int
     INTEGER_SIZE  = 4,
-    INTEGER_COUNT = 1000000;
+    INTEGER_COUNT = 2000000;
 
     private static int
             byteBufferSizeMax = INTEGER_SIZE*INTEGER_COUNT;
