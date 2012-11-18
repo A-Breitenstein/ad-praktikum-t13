@@ -23,7 +23,7 @@ public class ExternerMergeSort {
 		while (data.getSize() > 0) { // solange das "band" nicht leer ist
 //			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
             QuickSortMultiThreaded.sort(data.getData(),0,data.getSize() - 1,threadPool);
-			tapes.write(data); // zurückschreiben
+			tapes.writeBlock(data); // zurückschreiben
 			data = tapes.readBlock(); // lese wieder von "band" 1
 		}
 
@@ -45,16 +45,14 @@ public class ExternerMergeSort {
 	 */
 	private static boolean merge(DataManager ioTapes) {
 
-		InputBuffer linksIn = new InputBuffer(ioTapes,
-				InputBuffer.Channels.LEFTCHANNEL);
-		InputBuffer rechtsIn = new InputBuffer(ioTapes,
-				InputBuffer.Channels.RIGHTCHANNEL);
+		InputBuffer linksIn = ioTapes.readLeftChannel(); //new InputBuffer(ioTapes,InputBuffer.Channels.LEFTCHANNEL);
+		InputBuffer rechtsIn = ioTapes.readLeftChannel(); //new InputBuffer(ioTapes, InputBuffer.Channels.RIGHTCHANNEL);
 			
 		//Terminierung: wenn Beiden Input-Channels schon zu beginn an leer ist, dann gibt es nix zu mergen...
 		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
 			return false; // Keine weiteren Blöcke, die Sortiert werden könnten
 
-        OutputBuffer output = new OutputBuffer(ioTapes);
+        OutputBuffer output = ioTapes.createOuputBuffer(); //new OutputBuffer(ioTapes);
     	
 		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
 
@@ -80,13 +78,8 @@ public class ExternerMergeSort {
 			rechtsIn.moveNext();
 		}
         
-		System.out.println("Verarbeitete Element im Merge-Schritt: " + output.counter);	 		
-		if (output.counter >= 6000){
-			int a = 4;
-			a++;
-		}
-		
-		output.closeBuffer();
+				
+		output.finishBlock();
 
 		return true;
 

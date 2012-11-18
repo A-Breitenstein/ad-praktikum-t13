@@ -26,15 +26,15 @@ public class Reader {
     private FileInputStream fIS;
 
 
-    public static long
+    public long
             INTEGER_SIZE  = 4,
             INTEGER_COUNT_PER_READ = 1000;//178961500/6;
 
-    private static long
+    private long
             byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
 
 
-    public static void setInegerCountPerRead(int count){
+    public void setInegerCountPerRead(int count){
         INTEGER_COUNT_PER_READ = count;
         byteBufferSize = INTEGER_SIZE*INTEGER_COUNT_PER_READ;
     }

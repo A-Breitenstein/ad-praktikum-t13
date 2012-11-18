@@ -29,6 +29,7 @@ public interface DataWrapper {
      *
      * @param data Array von Datensätzen
      */
+    @Deprecated
     void setData(int[] data);
 
     /**
@@ -46,7 +47,8 @@ public interface DataWrapper {
      *
      * @return
      */
+    @Deprecated
     boolean isFolgeKomplett();
-
+    @Deprecated
     void setFolgeKomplett(boolean folgeKomplett);
 }
