@@ -19,6 +19,8 @@ public class DataManagerImpl implements DataManager {
     // optimal folgenLength ist ne 2er potenz
     // start könnte bei 8 oder 16 sein
 
+	
+	
     private static int FolgenReaderInitValue = 500;
     private long FolgenReaderValue = FolgenReaderInitValue;
 

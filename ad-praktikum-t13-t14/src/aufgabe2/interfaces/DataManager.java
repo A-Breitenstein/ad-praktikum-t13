@@ -26,31 +26,31 @@ public interface DataManager {
      *
      * @param dataWrapper beinhaltet einen Array mit sortierten Datensätzen
      */
-    public void write(DataWrapper dataWrapper);
+    public void writeBlock(DataWrapper dataWrapper);
 
     /**
      *
-     * Erstellt einen neuen DataWrapper, anstelle der Klasse.
+     * Stellt einen Kanal zum schreiben der gemergeten Zahlen bereit
      *
-     * @return DataWrapper mit angegebenen Daten
+     * @return OutputBuffer
      */
-    public DataWrapper createOuputChannel();
+    public OutputBuffer createOuputBuffer();
 
     // 6.11.2012:
     //Sowas kommt in die JavaDocs!
 
     /**
      * 
-     * @return DataWrapper, der die Daten auf dem linken band beinhaltet (vorsortiert!) 
+     * @return InputBuffer, der die Daten auf dem linken band beinhaltet (vorsortiert!) 
      */
-    public DataWrapper readLeftChannel();
+    public InputBuffer readLeftChannel();
 
 
     /**
      * 
-     * @return DataWrapper, der die Daten auf dem rechten band beinhaltet (vorsortiert!) 
+     * @return InputBuffer, der die Daten auf dem rechten band beinhaltet (vorsortiert!) 
      */
-    public DataWrapper readRightChannel();
+    public InputBuffer readRightChannel();
 
     /**
      * Prädikat für die existenz einer kommenden Folge auf dem Channel

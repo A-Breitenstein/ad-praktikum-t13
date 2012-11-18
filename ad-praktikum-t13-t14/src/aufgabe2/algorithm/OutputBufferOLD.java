@@ -10,7 +10,7 @@ import aufgabe2.interfaces.DataWrapper;
  * @author Markus Bruhn
  *
  */
-class OutputBuffer {
+class OutputBufferOLD {
 	
 	private DataManager tapes; 
 	private DataWrapper output; //Der Speicher, in welchem die Elemente gespeichert werden können
@@ -20,7 +20,7 @@ class OutputBuffer {
 	 * Erzeugt eine neue Instanz von OutputBuffer
 	 * @param data Die Schnittstelle, an welche die Daten weitergeleitet werden sollen
 	 */
-	public OutputBuffer(DataManager data){
+	public OutputBufferOLD(DataManager data){
 		tapes = data;
 		createNextOutput();
 	}

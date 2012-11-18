@@ -9,7 +9,7 @@ import aufgabe2.interfaces.*;
  * @author Markus Bruhn
  *
  */
-class InputBuffer {
+class InputBufferOLD {
 
 	public DataManager tapes;
 	private Channels currentChannel; //Soll vom linkem oder rechtem InputChannel gelesen werden?
@@ -21,7 +21,7 @@ class InputBuffer {
 	 * @param data Die Quelle für die Daten
 	 * @param channel Legt fest,ob vom linken oder rechtem Channel gelesen werden soll (data.readLeftChannel/readRightChannel)
 	 */
-	public	InputBuffer(DataManager data, Channels channel){
+	public	InputBufferOLD(DataManager data, Channels channel){
 		tapes = data;
 		currentChannel = channel;
 		naechstesHaeppchenVomMergeRun(); //erste Zahlenfolge einlesen
