@@ -9,7 +9,7 @@ public class InputBufferImpl implements InputBuffer{
 	private final static IntBuffer ZEROBUFFER = IntBuffer.allocate(0);
     private IOScheduler scheduler;
 	private Reader reader; //der einzige Leser auf diese Datei
-	private IntBuffer currentBuffer = ZEROBUFFER; //Die aktuelle Quelle, aus der gerade die CurrentElemente geholt werden (wechselt, wenn die Quelle zuendegelsen wurde)
+	private IntBuffer currentBuffer = ZEROBUFFER; //Die aktuelle Quelle, aus der gerade die CurrentElemente geholt werden (wechselt, wenn die Quelle zuende gelesen wurde). Die Größe des currentBuffer ist maximal BUFFERSIZE_MERGEREAD 
 	private ReaderJob backgroundReader; //Der aktuelle Leseauftrag 
 	private int blockSize;
 	private int blockPos = -1; //Der Index des aktuellen Elements (vom Blockanfang aus gesehen, nicht im currentBuffer)
@@ -26,7 +26,7 @@ public class InputBufferImpl implements InputBuffer{
 		this.blockSize = blockSize;
 		this.scheduler = scheduler;
 		reader = Reader.create(filePath, filePath);
-		reader.setInegerCountPerRead(Constants.BUFFERSIZE_MERGEREAD / 4); //Pro Integer werden 4 Bytes benötigt 
+		reader.setInegerCountPerRead((int)(Constants.BUFFERSIZE_MERGEREAD / Constants.INTSIZE)); //Pro Integer werden 4 Bytes benötigt 
 		
 		if (reader.hasNextIntArrray()){ //Gibt es Elemente in der Datei?
 			pushReaderJob(); //Lesejob erzeugen
@@ -53,7 +53,7 @@ public class InputBufferImpl implements InputBuffer{
 	 */
 	void simulateNextBlock(){
 		blockPos = -1;
-		moveNext();//Erstes Element einlesen
+		moveNext();//Erstes Element des neuen Blocks einlesen
 	}
 	
 	@Override
@@ -72,12 +72,12 @@ public class InputBufferImpl implements InputBuffer{
 			if (currentBuffer.hasRemaining()){
 				current = currentBuffer.get();
 				blockPos ++;
-			} else { //Buffer komplett gelesen --> nächsten, hoffentlich schon fertig geladenen Buffer holen (ansonnsten dauert es etwas)
+			} else { //Buffer komplett ausgelesen --> nächsten, hoffentlich schon fertig geladenen Buffer holen (ansonnsten dauert es etwas)
 				
 				if(backgroundReader != null) {
 					currentBuffer = null; //Speicherplatz freigeben
-					currentBuffer = backgroundReader.getIntBuffer(); //Hier wird ggf. gewartet, bis der Job erledigt ist.
-					backgroundReader = null; //Reader hat seinen Job getahn
+					currentBuffer = backgroundReader.getIntBuffer(); //hier wird ggf. gewartet, bis der Job erledigt ist.
+					backgroundReader = null; //Reader hat seinen Job getan
 					if (reader.hasNextIntArrray()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
 						pushReaderJob(); 
 					}
