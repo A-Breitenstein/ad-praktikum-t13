@@ -2,6 +2,9 @@ package aufgabe2.data;
 
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.DataWrapper;
+import aufgabe2.interfaces.InputBuffer;
+import aufgabe2.interfaces.OutputBuffer;
+import static aufgabe2.data.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +19,154 @@ import java.nio.file.Paths;
  * Time: 16:41
  */
 public class DataManagerImpl implements DataManager {
-    // optimal folgenLength ist ne 2er potenz
-    // start könnte bei 8 oder 16 sein
+	
+	private String sourceFilePath, file1Path, file2Path, file3Path, file4Path;
+	private FolgenReader initReader;
+	private FolgenWriter initWriter1, initWriter2, activeInitWriter;
+	private InputBufferImpl mergeInput1, mergeInput2;
+	private OutputBufferImpl mergeOutput1, mergeOutput2, activeMergeOutput;
+	private final DataWrapper ZERODATAWRAPPER = DataWrapperImpl.create(new int[0], 0, true);
+	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
+	private IOScheduler scheduler = new IOScheduler();
+	private int switchState = 0;//Evtl. als Enum: "0" = Read File1 & File2, "1" = Read File3 & File4 (Write die jeweils anderen beiden). 
+	private long integersToSort;
+	private long storedIntegers;
+	
+	public DataManagerImpl(String sourceFilePath) {
+		this.sourceFilePath = sourceFilePath;
+		file1Path = sourceFilePath+"1";
+		file1Path = sourceFilePath+"2";
+		file1Path = sourceFilePath+"3";
+		file1Path = sourceFilePath+"4";
+		
+		initReader = FolgenReader.create("InitialReader", sourceFilePath, INITBLOCKSIZE);
+		initWriter1 = FolgenWriter.create(file1Path, (int)BUFFERSIZE_SORTWRITE);
+        initWriter2 = FolgenWriter.create(file2Path, (int)BUFFERSIZE_SORTWRITE);
+        activeInitWriter = initWriter1;
+        readerBlockSize = INITBLOCKSIZE;
+        integersToSort = initReader.getFileSize() / INTSIZE;
+    }
+	
+	@Override
+	public DataWrapper readBlock() {
+		if(initReader.hasNextFolge()){
+            return initReader.getFolge();
+        } else {
+            return ZERODATAWRAPPER;
+        }
+	}
+
+	@Override
+	public void writeBlock(DataWrapper dataWrapper) {
+		activeInitWriter.writeFolge(dataWrapper);
+		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben		
+	}
+
+	private void closeInitIO(){
+		if(initReader != null){//Wurde der Kram bereits geschlossen (und freigegeben)?
+			initReader.close();
+			initWriter1.close();
+			initWriter2.close();
+			initReader = null;
+			initWriter1 = null;
+			initWriter2 = null;
+		}
+	}
+
+
+	/**
+	 * Muss von OutputBuffer aufgerufen werden, wenn dort das Ende des Blocks signalisiert wurde
+	 */
+	void finishBlock(){
+		storedIntegers += readerBlockSize * 2; //wenn ein Rest gespeichert wurde, ist der tatsächliche Wert natürlich etwas kleiner, aber es wird so oder So ein Switch gemacht.
+		if (storedIntegers >= integersToSort) {
+			if ( readerBlockSize * 2 < integersToSort){ //kann hier terminiert werden?
+				switchChannels();
+			}
+		} else {
+			mergeInput1.simulateNextBlock();
+			mergeInput2.simulateNextBlock();
+			activeMergeOutput = (activeMergeOutput == mergeOutput1 ? mergeOutput2 : mergeOutput1); //Den nächsten Run auf die andere der beiden Dateien schreiben
+		}	
+	}
+	
+	private void switchChannels(){
+		if(mergeInput1 == null){
+			closeInitIO();
+		} else {
+			closeBuffers();
+			readerBlockSize *= 2; //BlockSize verdoppeln
+		}
+		if (switchState == 0){
+			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler);
+			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler);
+			mergeOutput1 = new OutputBufferImpl(file3Path, this);
+			mergeOutput1 = new OutputBufferImpl(file4Path, this);
+		} else {
+			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler);
+			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler);
+			mergeOutput1 = new OutputBufferImpl(file1Path, this);
+			mergeOutput1 = new OutputBufferImpl(file2Path, this);
+		}
+		switchState = (switchState == 0 ? 1 :0);
+		storedIntegers = 0;
+		activeMergeOutput = mergeOutput1;
+	}
+	private void closeBuffers(){
+		try {
+			mergeInput1.close();
+			mergeInput2.close();
+			mergeOutput1.close();
+			mergeOutput2.close();
+		} catch (IOException e) {
+			System.err.println("Fehler beim Schließen der Dateien. Sortiervorgang wird abgebrochen.");
+			System.exit(0);
+		}
+	}
+	
+	@Override
+	public InputBuffer readLeftChannel() {
+		return mergeInput1;
+	}
+
+	@Override
+	public InputBuffer readRightChannel() {
+		return mergeInput2;
+	}
+	@Override
+	public OutputBuffer createOuputBuffer() {
+		return activeMergeOutput;
+	}
+
+	@Override
+	public void closeAllChannelsIfOpen() {
+		closeBuffers();
+		
+	}
+	
+	@Override
+	public boolean leftChannelHasNext() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean rightChannelHasNext() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String signSortedFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+    
 
 	
-	
+	/*
     private static int FolgenReaderInitValue = 500;
     private long FolgenReaderValue = FolgenReaderInitValue;
 
@@ -281,18 +427,5 @@ public class DataManagerImpl implements DataManager {
         }
     }
 
-    //Java-Garbage-Collection-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    public static void main(String[] args)
-     {
-        int value = 1;
-        int[] a;
-        while(value < 268435456){
-            //ohne garbage collector bombt er den ram voll
-            //System.gc();
-            a = new int[value];
-            value*=2;
-            System.out.println(value);
-            System.out.println("Sollte: "+ ((double)value*4/1024/1024/1024) + " GByte");
-        }
-    }
+    */
 }
