@@ -52,30 +52,9 @@ public interface DataManager {
      */
     public InputBuffer readRightChannel();
 
-    /**
-     * Prädikat für die existenz einer kommenden Folge auf dem Channel
-     *
-     * @return true if the Channel has a sequence left to give, else false
-     */
-    public boolean leftChannelHasNext();
 
     /**
-     * Prädikat für die existenz einer kommenden Folge auf dem Channel
-     *
-     * @return true if the Channel has a sequence left to give, else false
+     * Schließt alle offen FileChannels und gibt den Pfad der sortierten Datei zurück.
      */
-    public boolean rightChannelHasNext();
-
-    /**
-     *  Loescht alle Dateien bis auf die, die dieselbe Groeße hat wie die Ausgangsdatei.
-     *  Diese wird umbenannt.(Umbenennen, dann rest löschen)
-     *  
-     *  @return der vollständige Pfad der sortierten Datei
-     */
-    public String signSortedFile();
-
-    /**
-     * Schließt alle offen FileChannels.
-     */
-    public void closeAllChannelsIfOpen();
+    public String completeSort();
 }

@@ -1,5 +1,7 @@
 package aufgabe2.data;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -19,7 +21,10 @@ public class IOScheduler extends Thread {
 	 * @param job - der in einem Hintergrundthread zu bearbeitende Job
 	 */
 	public void pushJob(IOJob job){
-		throw new NotImplementedException();
+		job.setMemoryLock(new ReentrantLock());
+		job.prepareRun();
+		job.runJob();// Testweise synchron ausführen
+		//throw new NotImplementedException();
 	}
 	
 	/**

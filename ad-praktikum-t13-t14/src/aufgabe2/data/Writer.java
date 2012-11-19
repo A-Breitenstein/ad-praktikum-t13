@@ -41,7 +41,7 @@ public class Writer {
                  byteBuffer.clear(); // <--------- WTFX? ich wusste nicht das man den byteBuffer auch clearen muss
                  // wenn man auf nen intbuffer hat ... und auf die clear called wtf..
                  overAllWriteCount+=size;
-                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+size);
+                 System.out.println(fileName+": erfolgreich geschrieben: "+size);
              }catch (NullPointerException e){
                  System.out.println(fileName+": NOTFALL WRITER WURDE ERSTELLT");
                  fOS = new FileOutputStream(fileName);
@@ -49,7 +49,7 @@ public class Writer {
                  fileChan.force(true);
                  fileChan.write(byteBuffer);
                  overAllWriteCount+=size;
-                 System.out.println(fileName+": ERFOLGREICH GESCHRIEBEN: "+size);
+                 System.out.println(fileName+": erfolgreich geschrieben: "+size);
              }
          }catch (IOException e){
              System.out.println(fileName+": NOTFALL WRITER NICHT ERSTELLT");

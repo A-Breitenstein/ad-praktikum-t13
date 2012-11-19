@@ -25,8 +25,7 @@ public class InputBufferImpl implements InputBuffer{
 	public InputBufferImpl(String filePath, int blockSize, IOScheduler scheduler){
 		this.blockSize = blockSize;
 		this.scheduler = scheduler;
-		reader = Reader.create(filePath, filePath);
-		reader.setInegerCountPerRead((int)(Constants.BUFFERSIZE_MERGEREAD / Constants.INTSIZE)); //Pro Integer werden 4 Bytes benötigt 
+		reader = Reader.create(filePath, (int)Constants.BUFFERSIZE_MERGEREAD);
 		
 		if (reader.hasNextIntArrray()){ //Gibt es Elemente in der Datei?
 			pushReaderJob(); //Lesejob erzeugen
@@ -76,7 +75,7 @@ public class InputBufferImpl implements InputBuffer{
 				
 				if(backgroundReader != null) {
 					currentBuffer = null; //Speicherplatz freigeben
-					currentBuffer = backgroundReader.getIntBuffer(); //hier wird ggf. gewartet, bis der Job erledigt ist.
+					currentBuffer = backgroundReader.getIntBuffer();//hier wird ggf. gewartet, bis der Job erledigt ist.
 					backgroundReader = null; //Reader hat seinen Job getan
 					if (reader.hasNextIntArrray()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
 						pushReaderJob(); 

@@ -1,7 +1,5 @@
 package aufgabe2.data;
 
-import aufgabe2.interfaces.DataWrapper;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,32 +19,23 @@ public class Reader {
     private long currentCursorPosition;
     private long fileChanSize;
     private String fileName;
-    private String name;
     private int hasNextCount;
     private FileInputStream fIS;
+    private final long byteBufferSize;
+    public final long INTEGER_COUNT_PER_READ;
 
-
-    public long
-            INTEGER_SIZE  = 4,
-            INTEGER_COUNT_PER_READ = 1000;//178961500/6;
-
-    private long
-            byteBufferSize = INTEGER_SIZE* INTEGER_COUNT_PER_READ;
-
-
-    public void setInegerCountPerRead(int count){
-        INTEGER_COUNT_PER_READ = count;
-        byteBufferSize = INTEGER_SIZE*INTEGER_COUNT_PER_READ;
-    }
-    public static Reader create(String name,String fileName){
-        return new Reader(name, fileName);
+    public static Reader create(String fileName, int bufferSize){
+        return new Reader(fileName, bufferSize);
     }
 
 
-    private Reader(String name, String fileName){
-        this.name = name;
+    private Reader(String fileName, int bufferSize){
+        if (bufferSize % Constants.INTSIZE != 0)
+        	throw new IllegalArgumentException("BuferSize muss ein Vielfaches von 4 sein.");
         this.fileName = fileName;
-
+        this.byteBufferSize = bufferSize;
+        INTEGER_COUNT_PER_READ = bufferSize / Constants.INTSIZE;
+        
         try {
             try{
                 fIS = new FileInputStream(fileName);

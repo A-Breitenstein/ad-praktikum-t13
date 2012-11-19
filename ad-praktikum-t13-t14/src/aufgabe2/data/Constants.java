@@ -7,7 +7,7 @@ final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = 3 * (long)(1024 * 1024 * 1024); // = 3 GB
+	public static final long BUFFERSIZE_APPLICATION = 800;//(long)(0.25 * 1024 * 1024 * 1024); // = 250 MB
 	/**
 	 * Die Größe eines Integers in Bytes
 	 */
@@ -22,7 +22,7 @@ final class Constants {
 	/**
 	 * Die Größe der Runs beim ersten Durchlauf (=Sortieren)
 	 */
-	public static final int INITBLOCKSIZE = (int)(BUFFERSIZE_SORTARRAY / 4);
+	public static final int INITBLOCKINTEGERS = (int)(BUFFERSIZE_SORTARRAY / 4);
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Lesen
