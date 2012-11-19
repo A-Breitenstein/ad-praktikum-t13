@@ -73,7 +73,7 @@ public class FolgenWriter {
     public void writeFolge(DataWrapper wrap){
         // wenn die folgenLaenge gleich dem restlichem platz im buffer entspricht,
         // dann du die folge rein und schreib sie raus
-        System.out.println(fileWriter.getFileName()+": Bufferauslastung: "+((double)intBuffer.position())/intBuffer.capacity());
+        //System.out.println(fileWriter.getFileName()+": Bufferauslastung: "+((double)intBuffer.position())/intBuffer.capacity());
 
         int[] folge = wrap.getData();
         int folgenLaenge = wrap.getSize();

@@ -1,8 +1,8 @@
 package aufgabe2.data;
 
 import java.nio.IntBuffer;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
-import sun.awt.Mutex;
 
 /**
  * Ein Job zum Einlesen aus einem Stream. Das Ergebnis ist ein IntBuffer.
@@ -14,15 +14,13 @@ public class ReaderJob implements IOJob{
 	private Reader reader;
 	private IntBuffer result;
 	private ReentrantLock memoryLock;
-	private Mutex jobFinished;
+	private Semaphore jobFinished = new Semaphore(0);
 	
 	/**
 	 * Konstruktor
 	 * @param reader - die Quelle, von welcher getIntBuffer() aufgerufen werden soll
 	 */
 	public ReaderJob(Reader reader){
-		jobFinished = new Mutex();
-		jobFinished.lock();//Sperren, bis Run beendet ist
 		this.reader = reader;
 	}
 	
@@ -33,7 +31,13 @@ public class ReaderJob implements IOJob{
 	 * @return
 	 */
 	public IntBuffer getIntBuffer(){
-		jobFinished.lock(); //Warten, bis der Job erledigt ist
+		
+		try {
+			jobFinished.acquire();//Warten, bis der Job erledigt ist
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		} 
 		IntBuffer returnValue = result;
 		result = null; //Speicher freigeben (innerhalb dieser Klasse)
 		memoryLock.unlock(); //Signalisieren, dass der Speicher anderseitig verwendet werden darf
@@ -59,6 +63,7 @@ public class ReaderJob implements IOJob{
 	@Override
 	public void runJob() {
 		result = reader.getIntBuffer(); //das ist alles...
+		jobFinished.release();
 	}
 
 }

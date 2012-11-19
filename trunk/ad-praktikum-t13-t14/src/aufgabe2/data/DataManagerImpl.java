@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.NumberFormat;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,23 +29,29 @@ public class DataManagerImpl implements DataManager {
 	private final DataWrapper ZERODATAWRAPPER = DataWrapperImpl.create(new int[0], 0, true);
 	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
 	private IOScheduler scheduler = new IOScheduler();
-	private int switchState = 0;//Evtl. als Enum: "0" = Read File1 & File2, "1" = Read File3 & File4 (Write die jeweils anderen beiden). 
+	private switchStates switchState = switchStates.undef; 
+	private modie modus = modie.QuickSort;
 	private long integersToSort;
 	private long storedIntegers;
+	
 	
 	public DataManagerImpl(String sourceFilePath) {
 		this.sourceFilePath = sourceFilePath;
 		file1Path = sourceFilePath+"1";
-		file1Path = sourceFilePath+"2";
-		file1Path = sourceFilePath+"3";
-		file1Path = sourceFilePath+"4";
+		file2Path = sourceFilePath+"2";
+		file3Path = sourceFilePath+"3";
+		file4Path = sourceFilePath+"4";
 		
-		initReader = FolgenReader.create("InitialReader", sourceFilePath, INITBLOCKSIZE);
+		initReader = FolgenReader.create("InitialReader", sourceFilePath, INITBLOCKINTEGERS);
 		initWriter1 = FolgenWriter.create(file1Path, (int)BUFFERSIZE_SORTWRITE);
         initWriter2 = FolgenWriter.create(file2Path, (int)BUFFERSIZE_SORTWRITE);
         activeInitWriter = initWriter1;
-        readerBlockSize = INITBLOCKSIZE;
+        readerBlockSize = INITBLOCKINTEGERS;
         integersToSort = initReader.getFileSize() / INTSIZE;
+        
+        System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers");
+        System.out.println("Initial Integers pro Block: " + valToS(INITBLOCKINTEGERS));
+        System.out.println("       Max Arbeitsspeicher: " + valToS(BUFFERSIZE_APPLICATION / 1024/1024) + "MB");
     }
 	
 	@Override
@@ -77,11 +84,17 @@ public class DataManagerImpl implements DataManager {
 	/**
 	 * Muss von OutputBuffer aufgerufen werden, wenn dort das Ende des Blocks signalisiert wurde
 	 */
-	void finishBlock(){
+	void finishBlock(){		
 		storedIntegers += readerBlockSize * 2; //wenn ein Rest gespeichert wurde, ist der tatsächliche Wert natürlich etwas kleiner, aber es wird so oder So ein Switch gemacht.
 		if (storedIntegers >= integersToSort) {
-			if ( readerBlockSize * 2 < integersToSort){ //kann hier terminiert werden?
+			if ( readerBlockSize * 2 > integersToSort){ //kann hier terminiert werden?
 				switchChannels();
+			} else {
+				//Else-Part TEMPORÄR!
+				closeBuffers();
+				System.out.println("Test-Sortierung abgeschlossen.");
+				System.out.println("Virtuell geschriebene Elemente: " + mergeOutput1.diagnosticWriteCount + ", " + mergeOutput2.diagnosticWriteCount);
+				System.exit(0);
 			}
 		} else {
 			mergeInput1.simulateNextBlock();
@@ -91,24 +104,26 @@ public class DataManagerImpl implements DataManager {
 	}
 	
 	private void switchChannels(){
-		if(mergeInput1 == null){
+		if(modus == modie.QuickSort){
 			closeInitIO();
+			modus = modie.Merge;
 		} else {
-			closeBuffers();
 			readerBlockSize *= 2; //BlockSize verdoppeln
 		}
-		if (switchState == 0){
+		switchState = (switchState == switchStates.read1_2_write3_4 ? switchStates.read3_4_write1_2 : switchStates.read1_2_write3_4);
+		
+		if (switchState == switchStates.read1_2_write3_4){
 			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler);
 			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler);
 			mergeOutput1 = new OutputBufferImpl(file3Path, this);
-			mergeOutput1 = new OutputBufferImpl(file4Path, this);
+			mergeOutput2 = new OutputBufferImpl(file4Path, this);
 		} else {
 			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler);
 			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler);
 			mergeOutput1 = new OutputBufferImpl(file1Path, this);
-			mergeOutput1 = new OutputBufferImpl(file2Path, this);
+			mergeOutput2 = new OutputBufferImpl(file2Path, this);
 		}
-		switchState = (switchState == 0 ? 1 :0);
+		
 		storedIntegers = 0;
 		activeMergeOutput = mergeOutput1;
 	}
@@ -126,45 +141,73 @@ public class DataManagerImpl implements DataManager {
 	
 	@Override
 	public InputBuffer readLeftChannel() {
+		if (modus == modie.QuickSort)
+			switchChannels();
 		return mergeInput1;
 	}
 
 	@Override
 	public InputBuffer readRightChannel() {
+		if (modus == modie.QuickSort)
+			switchChannels();
 		return mergeInput2;
 	}
 	@Override
 	public OutputBuffer createOuputBuffer() {
+		if (modus == modie.QuickSort)
+			switchChannels();
 		return activeMergeOutput;
 	}
 
 	@Override
-	public void closeAllChannelsIfOpen() {
+	public String completeSort() {
 		closeBuffers();
 		
+		File endFile = new File(activeMergeOutput.getFilePath());
+        File resultFile = new File(Paths.get(sourceFilePath).getParent().resolve("EnddateiSorted").toString());
+
+        if(!endFile.renameTo(resultFile)){
+        	System.err.println("Die Ausgabedatei konnte nicht umbenannt werden.");
+        	resultFile = endFile;
+        } else {
+        	deleteIfExits(file1Path);
+        	deleteIfExits(file2Path);
+        	deleteIfExits(file3Path);
+        	deleteIfExits(file4Path);
+        }
+        return resultFile.getAbsolutePath();
 	}
 	
-	@Override
-	public boolean leftChannelHasNext() {
-		// TODO Auto-generated method stub
-		return false;
+	
+	/**
+	 * Löscht eine Datei, wenn diese existiert.
+	 * @param stringPath
+	 */
+	private void deleteIfExits(String stringPath){
+		 Path path = Paths.get(stringPath);
+
+         if(Files.exists(path)){
+			try {
+				Files.delete(path);
+			} catch (IOException e) {
+				System.out.println("Datei " + stringPath + " konnte nicht gelöscht werden.");
+			}
+         }
 	}
-
-	@Override
-	public boolean rightChannelHasNext() {
-		// TODO Auto-generated method stub
-		return false;
+	
+	private String valToS(long val){
+		return NumberFormat.getInstance().format(val);
 	}
-
-	@Override
-	public String signSortedFile() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
     
-
+	enum modie{
+		QuickSort,
+		Merge;
+	}
+	enum switchStates{
+		undef,
+		read1_2_write3_4,
+		read3_4_write1_2;
+	}
 	
 	/*
     private static int FolgenReaderInitValue = 500;

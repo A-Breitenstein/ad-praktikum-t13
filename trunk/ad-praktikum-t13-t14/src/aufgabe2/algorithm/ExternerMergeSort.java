@@ -46,7 +46,7 @@ public class ExternerMergeSort {
 	private static boolean merge(DataManager ioTapes) {
 
 		InputBuffer linksIn = ioTapes.readLeftChannel(); //new InputBuffer(ioTapes,InputBuffer.Channels.LEFTCHANNEL);
-		InputBuffer rechtsIn = ioTapes.readLeftChannel(); //new InputBuffer(ioTapes, InputBuffer.Channels.RIGHTCHANNEL);
+		InputBuffer rechtsIn = ioTapes.readRightChannel(); //new InputBuffer(ioTapes, InputBuffer.Channels.RIGHTCHANNEL);
 			
 		//Terminierung: wenn Beiden Input-Channels schon zu beginn an leer ist, dann gibt es nix zu mergen...
 		if ((!linksIn.hasCurrent()) && (!rechtsIn.hasCurrent()))
