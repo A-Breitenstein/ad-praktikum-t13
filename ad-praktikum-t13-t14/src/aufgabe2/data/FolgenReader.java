@@ -262,13 +262,13 @@ public class FolgenReader {
     }
     private DataWrapper multipleReadPerFolge_redesgin(){
         int[] folge;
-        boolean bufferHasMaxSize = intBuffer.remaining() == reader.INTEGER_COUNT_PER_READ;
         //System.out.println(reader.getFileName()+": loadProgress: "+loadProgressOverSizedFolge+" von "+folgenLength+" Zahlen der Folge");
         if(intBuffer.remaining() == 0 && reader.hasNextIntArrray()){
             intBuffer.clear();
             fillBuffer();
         }
 
+        boolean bufferHasMaxSize = intBuffer.remaining() == reader.INTEGER_COUNT_PER_READ;
         if(gotRest && bufferHasMaxSize){
             int restImBufferBzwAnfangDerNeuenFolge = intBuffer.capacity()-intBuffer.position();
             folge = getOversizedFolgeFromBuffer( restImBufferBzwAnfangDerNeuenFolge);
