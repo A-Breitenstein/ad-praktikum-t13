@@ -1,29 +1,46 @@
 package aufgabe2.data;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 import aufgabe2.interfaces.OutputBuffer;
 
 public class OutputBufferImpl implements OutputBuffer {
 
 	DataManagerImpl owner;
+	private IOScheduler scheduler;
 	String filePath;
+	Writer writer;
+	ByteBuffer currentByteBuffer;
+	IntBuffer currentIntBuffer;
 	
-	public OutputBufferImpl(String filePath, DataManagerImpl owner){
+	public OutputBufferImpl(String filePath, DataManagerImpl owner, IOScheduler scheduler){
 		this.owner = owner;
+		this.scheduler= scheduler;
 		this.filePath = filePath;
-		// TODO Auto-generated method stub
+		this.writer = Writer.create(filePath);
+		allocateNewBuffer();
+		//job writerJob = new WriterJob(Writer, intbuffer)
+
 	}
 	
 	public void close() throws IOException{
-		// TODO Auto-generated method stub
+		writer.close();
+		if(currentIntBuffer.position() != 0){
+			pushWriterJob();//Den Rest schreiben
+		}
+		currentByteBuffer = null;
+		currentIntBuffer = null;
 	}
-	int diagnosticWriteCount = 0;
+	
 	@Override
 	public void push(int val) {
-		diagnosticWriteCount++;
-		// TODO Auto-generated method stub
-		
+		currentIntBuffer.put(val);
+		if (!currentIntBuffer.hasRemaining()) {
+			pushWriterJob();
+			allocateNewBuffer();
+		}
 	}
 
 	@Override
@@ -35,4 +52,20 @@ public class OutputBufferImpl implements OutputBuffer {
 		return filePath;
 	}
 
+	/**
+	 * Gibt den Auftrag, den Currentbuffer wegzuschreiben
+	 */
+	private void pushWriterJob(){
+		currentByteBuffer.flip();
+		scheduler.pushJob(new WriterJob(writer, currentByteBuffer));
+		currentByteBuffer = null;
+		currentIntBuffer = null;
+	}
+	/**
+	 * Erzeugt einen neuen CurrentBuffer
+	 */
+	private void allocateNewBuffer(){
+		currentByteBuffer = ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTWRITE);
+		currentIntBuffer = currentByteBuffer.asIntBuffer();
+	}
 }

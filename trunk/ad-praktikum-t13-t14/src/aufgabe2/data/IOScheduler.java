@@ -1,8 +1,10 @@
 package aufgabe2.data;
 
+import java.util.*;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.ReentrantLock;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+//import java.lang.NotImplementedException;
 
 /**
  * Diese Klasse arbeitet I/O-Jobs im Hintergrund parallel zur Berechnung ab
@@ -11,9 +13,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  */
 public class IOScheduler extends Thread {
 
+	List<IOJob> jobs = new ArrayList<IOJob>();
+	Map<String, ReentrantLock> bufferLocks = new HashMap<String, ReentrantLock>();
+	Semaphore jobSemaphore = new Semaphore(0);
 	
 	public void Run(){
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -24,6 +29,12 @@ public class IOScheduler extends Thread {
 		job.setMemoryLock(new ReentrantLock());
 		job.prepareRun();
 		job.runJob();// Testweise synchron ausführen
+		
+		/*
+		job.setMemoryLock(new ReentrantLock());
+		synchronized (jobs){
+			
+		}*/
 		//throw new NotImplementedException();
 	}
 	
@@ -31,7 +42,7 @@ public class IOScheduler extends Thread {
 	 * Wartet so lange, bis alle noch anstehenden Jobs abgearbeitet wurden
 	 */
 	public void terminate(){
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 	
 }
