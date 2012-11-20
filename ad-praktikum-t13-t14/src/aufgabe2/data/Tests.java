@@ -44,7 +44,7 @@ public final class Tests {
 		
 	}
 	
-	@Test
+	@Test @Ignore
 	public void testMergeSortAlgorithm() {
 		String InputFilePath = "DataManagerTest";
 		String outputFilePath = null;
