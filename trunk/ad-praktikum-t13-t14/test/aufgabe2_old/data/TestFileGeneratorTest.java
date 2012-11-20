@@ -1,6 +1,6 @@
 package aufgabe2_old.data;
 
-import aufgabe2.data.TestFileGenerator;
+import aufgabe2_old.data.TestFileGenerator;
 import org.junit.Before;
 import org.junit.Test;
 

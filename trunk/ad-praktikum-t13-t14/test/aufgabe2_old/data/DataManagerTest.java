@@ -6,13 +6,13 @@ package aufgabe2_old.data;
  * Date: 07.11.12
  * Time: 08:56
  */
-import aufgabe2.algorithm.ExternerMergeSort;
-import aufgabe2.data.DataManagerImpl;
-import aufgabe2.data.FolgenReader;
-import aufgabe2.data.FolgenWriter;
-import aufgabe2.data.Reader;
-import aufgabe2.data.TestFileGenerator;
-import aufgabe2.interfaces.DataWrapper;
+import aufgabe2_old.algorithm.ExternerMergeSort;
+import aufgabe2_old.data.DataManagerImpl;
+import aufgabe2_old.data.FolgenReader;
+import aufgabe2_old.data.FolgenWriter;
+import aufgabe2_old.data.Reader;
+import aufgabe2_old.data.TestFileGenerator;
+import aufgabe2_old.interfaces.DataWrapper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -21,7 +21,7 @@ public class DataManagerTest {
     @Test
     public void DataManagerTest(){
         int[] array = {9,6,4,7,4,1,3,4,5,7,45,684,15,546,684,135,843,32,565,864,13,54,8,3,684,13,5464,1,654,1,6868,648,31};
-        DataWrapper wrap = aufgabe2.data.DataWrapperImpl.create(array, array.length);
+        DataWrapper wrap = DataWrapperImpl.create(array, array.length);
         FolgenWriter writer = FolgenWriter.create("DataManagerTest");
         writer.writeFolge(wrap);
         writer.close();

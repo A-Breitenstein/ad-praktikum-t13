@@ -71,18 +71,18 @@ public class QuickSortMultiThreaded {
             } else {
                 int positionPivot = quickSwap(data, links, rechts);
                 if(depth<depthMax){
-//                    increaseDepth();
+                    increaseDepth();
                     Future<Boolean> resultLeft,resultRight;
 
                     resultLeft = threadPool.submit(new quickSort(links, positionPivot - 1));
-//                    resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
+                    resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
 
-                    blockSort_quick(data, positionPivot + 1, rechts);
+//                    blockSort_quick(data, positionPivot + 1, rechts);
 //                    System.out.println(Thread.currentThread().getName()+":  is waiting ...");
 
                     resultLeft.get();
-//                    resultRight.get();
-//                    decreaseDepth();
+                    resultRight.get();
+                    decreaseDepth();
                 }else{
 //                    System.out.println(Thread.currentThread().getName()+": is working ...");
                     blockSort_quick(data, links, positionPivot - 1);

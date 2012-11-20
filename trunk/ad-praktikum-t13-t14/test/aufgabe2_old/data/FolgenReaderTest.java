@@ -1,9 +1,9 @@
 package aufgabe2_old.data;
 
-import aufgabe2.data.FolgenReader;
-import aufgabe2.data.Reader;
-import aufgabe2.data.TestFileGenerator;
-import aufgabe2.interfaces.DataWrapper;
+import aufgabe2_old.data.FolgenReader;
+import aufgabe2_old.data.Reader;
+import aufgabe2_old.data.TestFileGenerator;
+import aufgabe2_old.interfaces.DataWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
