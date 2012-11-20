@@ -1,6 +1,6 @@
 package aufgabe2_old.data;
 
-import aufgabe2.interfaces.DataWrapper;
+import aufgabe2_old.interfaces.DataWrapper;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class DataWrapperTest {
     public void setUp() throws Exception {
         data0 = new int[]{6};
         size0 = 4;
-        dataWrapper = aufgabe2.data.DataWrapperImpl.create(data0, size0, false);
+        dataWrapper = DataWrapperImpl.create(data0, size0, false);
     }
 
     @Test

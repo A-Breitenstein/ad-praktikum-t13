@@ -1,8 +1,8 @@
 package aufgabe2_old.data;
 
-import aufgabe2.data.FolgenReader;
-import aufgabe2.data.FolgenWriter;
-import aufgabe2.interfaces.DataWrapper;
+import aufgabe2_old.data.FolgenReader;
+import aufgabe2_old.data.FolgenWriter;
+import aufgabe2_old.interfaces.DataWrapper;
 import org.junit.Test;
 
 /**
@@ -15,14 +15,14 @@ public class FolgeWriterTest {
     @Test
     public void testWrite10kInteger(){
         int size = 10000;
-        aufgabe2.data.FolgenWriter fr = FolgenWriter.create("10kIntegerTest");
+        FolgenWriter fr = FolgenWriter.create("10kIntegerTest");
         fr.setFolgenLength(size);
         int[] array = new int[size];
         for (int i = 0; i < size; i++) {
             array[i] = i+1;
         }
 
-        fr.writeFolge(aufgabe2.data.DataWrapperImpl.create(array, size, false));
+        fr.writeFolge(DataWrapperImpl.create(array, size, false));
         fr.close();
         FolgenReader reader = FolgenReader.create("10kIntegerTest","10kIntegerTest",10000);
         DataWrapper wrap;

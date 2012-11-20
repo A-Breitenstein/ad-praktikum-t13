@@ -1,11 +1,11 @@
 package aufgabe2_old.algorithm;
 
-import aufgabe2.algorithm.ExternerMergeSort;
-import aufgabe2.algorithm.QuickSortMultiThreaded;
-import aufgabe2.data.FolgenReader;
-import aufgabe2.data.Reader;
-import aufgabe2.data.TestFileGenerator;
-import aufgabe2.interfaces.DataWrapper;
+import aufgabe2_old.algorithm.ExternerMergeSort;
+import aufgabe2_old.algorithm.QuickSortMultiThreaded;
+import aufgabe2_old.data.FolgenReader;
+import aufgabe2_old.data.Reader;
+import aufgabe2_old.data.TestFileGenerator;
+import aufgabe2_old.interfaces.DataWrapper;
 import org.junit.Test;
 
 import java.nio.file.Files;
@@ -27,8 +27,8 @@ public class QuickSortMultiThreadedTest {
         // vm parameter -Xmx1024m nicht vergessen^^ gerne auch mehr
 
         int anzahlZahlenProSchreibVorgang = 5000000;
-        int anzahlSchreibVorgaenge = 20;
-        aufgabe2.algorithm.QuickSortMultiThreaded.threadCountMax = 64; // bei kleinerern Folgen weniger threads 32 16 8, aber min 8!
+        int anzahlSchreibVorgaenge = 10;
+        QuickSortMultiThreaded.threadCountMax = 64; // bei kleinerern Folgen weniger threads 32 16 8, aber min 8!
         int int_count = anzahlSchreibVorgaenge*anzahlZahlenProSchreibVorgang;
         String filename = "testSort";
         if(!Files.exists(Paths.get(filename))){
@@ -48,7 +48,7 @@ public class QuickSortMultiThreadedTest {
         ExecutorService threadPool = Executors.newCachedThreadPool();
         // ein vorlauf, damit der threadpool seine worker erstellen kann die dann
         // im nächsten durchlauf keine zeit mehr zum erstellen verbrauchen.
-        aufgabe2.algorithm.QuickSortMultiThreaded.sort(folge1, 0, folge1.length - 1, threadPool);
+        QuickSortMultiThreaded.sort(folge1, 0, folge1.length - 1, threadPool);
         System.out.println("---- vorlauf beendet ----");
         long startTime,endTime;
         startTime = System.currentTimeMillis();
