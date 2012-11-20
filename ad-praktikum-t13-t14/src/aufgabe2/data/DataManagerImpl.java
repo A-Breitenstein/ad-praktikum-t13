@@ -87,14 +87,14 @@ public class DataManagerImpl implements DataManager {
 	void finishBlock(){		
 		storedIntegers += readerBlockSize * 2; //wenn ein Rest gespeichert wurde, ist der tatsächliche Wert natürlich etwas kleiner, aber es wird so oder So ein Switch gemacht.
 		if (storedIntegers >= integersToSort) {
-			if ( readerBlockSize * 2 > integersToSort){ //kann hier terminiert werden?
+			if ( readerBlockSize * 2 < integersToSort){ //kann hier terminiert werden?
 				switchChannels();
 			} else {
 				//Else-Part TEMPORÄR!
-				closeBuffers();
-				System.out.println("Test-Sortierung abgeschlossen.");
-				System.out.println("Virtuell geschriebene Elemente: " + mergeOutput1.diagnosticWriteCount + ", " + mergeOutput2.diagnosticWriteCount);
-				System.exit(0);
+				//closeBuffers();
+				//System.out.println("Test-Sortierung abgeschlossen.");
+				//System.out.println("Virtuell geschriebene Elemente: " + mergeOutput1.diagnosticWriteCount + ", " + mergeOutput2.diagnosticWriteCount);
+				//System.exit(0);
 			}
 		} else {
 			mergeInput1.simulateNextBlock();
@@ -107,21 +107,24 @@ public class DataManagerImpl implements DataManager {
 		if(modus == modie.QuickSort){
 			closeInitIO();
 			modus = modie.Merge;
+			System.out.println("QuickSort abgschlossen. Beginne ersten Merge-Schrit mit Runlänge = " + readerBlockSize);
 		} else {
+			closeBuffers();
 			readerBlockSize *= 2; //BlockSize verdoppeln
+			System.out.println("Beginne Merge-Schrit mit Runlänge = " + readerBlockSize);
 		}
 		switchState = (switchState == switchStates.read1_2_write3_4 ? switchStates.read3_4_write1_2 : switchStates.read1_2_write3_4);
 		
 		if (switchState == switchStates.read1_2_write3_4){
 			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler);
 			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler);
-			mergeOutput1 = new OutputBufferImpl(file3Path, this);
-			mergeOutput2 = new OutputBufferImpl(file4Path, this);
+			mergeOutput1 = new OutputBufferImpl(file3Path, this, scheduler);
+			mergeOutput2 = new OutputBufferImpl(file4Path, this, scheduler);
 		} else {
 			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler);
 			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler);
-			mergeOutput1 = new OutputBufferImpl(file1Path, this);
-			mergeOutput2 = new OutputBufferImpl(file2Path, this);
+			mergeOutput1 = new OutputBufferImpl(file1Path, this, scheduler);
+			mergeOutput2 = new OutputBufferImpl(file2Path, this, scheduler);
 		}
 		
 		storedIntegers = 0;
@@ -170,10 +173,11 @@ public class DataManagerImpl implements DataManager {
         	System.err.println("Die Ausgabedatei konnte nicht umbenannt werden.");
         	resultFile = endFile;
         } else {
+        	/*
         	deleteIfExits(file1Path);
         	deleteIfExits(file2Path);
         	deleteIfExits(file3Path);
-        	deleteIfExits(file4Path);
+        	deleteIfExits(file4Path);*/
         }
         return resultFile.getAbsolutePath();
 	}
