@@ -5,7 +5,6 @@ import aufgabe2.data.Reader;
 import aufgabe2.data.TestFileGenerator;
 import aufgabe2.interfaces.DataWrapper;
 import org.junit.Test;
-import sun.misc.Sort;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -26,7 +25,7 @@ public class QuickSortMultiThreadedTest {
         // vm parameter -Xmx1024m nicht vergessen^^ gerne auch mehr
 
         int anzahlZahlenProSchreibVorgang = 5000000;
-        int anzahlSchreibVorgaenge = 10;
+        int anzahlSchreibVorgaenge = 20;
         QuickSortMultiThreaded.threadCountMax = 64; // bei kleinerern Folgen weniger threads 32 16 8, aber min 8!
         int int_count = anzahlSchreibVorgaenge*anzahlZahlenProSchreibVorgang;
         String filename = "testSort";
@@ -56,7 +55,7 @@ public class QuickSortMultiThreadedTest {
         System.out.println("ElapsedTime multi-threaded:"+(endTime-startTime));
 
         assertTrue(isSorted(folge2));
-
+        Thread.currentThread().setPriority(10);
         startTime = System.currentTimeMillis();
         ExternerMergeSort.blockSort_quick(folge3,0,folge3.length-1);
         endTime = System.currentTimeMillis();
