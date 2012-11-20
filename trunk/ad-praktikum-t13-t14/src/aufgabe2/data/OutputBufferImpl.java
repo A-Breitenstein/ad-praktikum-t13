@@ -26,10 +26,10 @@ public class OutputBufferImpl implements OutputBuffer {
 	}
 	
 	public void close() throws IOException{
-		writer.close();
 		if(currentIntBuffer.position() != 0){
 			pushWriterJob();//Den Rest schreiben
 		}
+		writer.close();
 		currentByteBuffer = null;
 		currentIntBuffer = null;
 	}
@@ -56,6 +56,7 @@ public class OutputBufferImpl implements OutputBuffer {
 	 * Gibt den Auftrag, den Currentbuffer wegzuschreiben
 	 */
 	private void pushWriterJob(){
+		currentByteBuffer.position(currentIntBuffer.position()*4);
 		currentByteBuffer.flip();
 		scheduler.pushJob(new WriterJob(writer, currentByteBuffer));
 		currentByteBuffer = null;

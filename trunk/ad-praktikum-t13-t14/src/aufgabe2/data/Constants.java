@@ -28,12 +28,12 @@ final class Constants {
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Lesen
 	 *(ByteBuffer) aus der Datei genutzt werden darf
 	 */
-	public static final long BUFFERSIZE_SORTREAD = toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY); 
+	public static final long BUFFERSIZE_SORTREAD =  toValidIntSize(BUFFERSIZE_APPLICATION );//toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY); 
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Schreiben
 	 * (ByteBuffer) in die Datei genutzt werden darf
 	 */
-	public static final long BUFFERSIZE_SORTWRITE = toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY);
+	public static final long BUFFERSIZE_SORTWRITE =  toValidIntSize(BUFFERSIZE_APPLICATION );//toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY);
 		
 	
 	/**

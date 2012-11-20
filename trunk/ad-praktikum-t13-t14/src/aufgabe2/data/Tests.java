@@ -46,13 +46,22 @@ public final class Tests {
 	
 	@Test @Ignore
 	public void testMergeSortAlgorithm() {
-		String InputFilePath = "DataManagerTest";
+		String InputFilePath = "Z:\\win7\\juno\\ADP2\\DataManagerTest";
 		String outputFilePath = null;
 		TestFileGenerator.createTestFile(InputFilePath,1000,10);
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
 		
         System.out.println("Sortieren abgeschlossen. Prüfe sortierung...");
-        //assertTrue(TestFileGenerator.isSorted(outputFilePath));
+        assertTrue(TestFileGenerator.isSorted(outputFilePath));
+        
+        //Aufräumen
+        //deleteFile(InputFilePath);
+        //deleteFile(outputFilePath);
+	}
+	@Test
+	public void testMergeSortAlgorithm2() {
+	
+        assertTrue(TestFileGenerator.isSorted("Z:\\win7\\juno\\ADP2\\DataManagerTest3"));
         
         //Aufräumen
         //deleteFile(InputFilePath);

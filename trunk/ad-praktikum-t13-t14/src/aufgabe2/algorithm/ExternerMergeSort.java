@@ -34,8 +34,8 @@ public class ExternerMergeSort {
 		}
         System.out.println("fertig");
         //tapes.closeAllChannelsIfOpen();
-       // return tapes.signSortedFile();
-        return "guck im projekt verzeichnis";
+       return tapes.completeSort();
+        //return "guck im projekt verzeichnis";
 	}
 
 	/**
