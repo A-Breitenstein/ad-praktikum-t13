@@ -172,7 +172,7 @@ public class TestFileGenerator {
             e.printStackTrace();
         }
         System.out.println(fileName+ " is sorted! congratulations ");
-        System.out.println("fileChannel Size: "+reader.getFileChanSize()+" b");
+        //System.out.println("fileChannel Size: "+reader.getFileChanSize()+" b");
         System.out.println("Anzahl der betrachteten Integer Zahlen: "+(CONTROLL_COUNTER));
         return true;
     }

@@ -5,6 +5,7 @@ import aufgabe2.interfaces.DataWrapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 /**
@@ -73,12 +74,12 @@ public class FolgenReader {
         return new FolgenReader(name, fileName, folgenLength);
     }
     private void initBuffer(){
-        intBuffer = reader.getIntBuffer();
+        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
         remainigIntegerInBuffer = intBuffer.capacity();
         //System.out.println(reader.getFileName()+": INITIAL Load!   loaded  "+intBuffer.capacity()+" Integer in intBuffer");
     }
     private void fillBuffer(){
-        intBuffer = reader.getIntBuffer();
+        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
         remainigIntegerInBuffer = intBuffer.capacity();
         //System.out.println(reader.getFileName()+": Loaded "+intBuffer.capacity()+" Integer in intBuffer");
     }

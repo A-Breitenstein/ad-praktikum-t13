@@ -1,5 +1,6 @@
 package aufgabe2.algorithm;
 
+import java.nio.IntBuffer;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -13,7 +14,7 @@ import java.util.concurrent.Future;
  * Time: 17:15
  */
 public class QuickSortMultiThreaded {
-    private int[] data;
+    private IntBuffer data;
     private ExecutorService threadPool;
     private int startLinks,startRechts;
     private int depth = 0;
@@ -26,13 +27,13 @@ public class QuickSortMultiThreaded {
     private synchronized void decreaseDepth(){
         depth--;
     }
-    private QuickSortMultiThreaded(int[] data, int startLinks, int startRechts,ExecutorService threadPool) {
+    private QuickSortMultiThreaded(IntBuffer data, int startLinks, int startRechts,ExecutorService threadPool) {
         this.data = data;
         this.threadPool = threadPool;
         this.startLinks = startLinks;
         this.startRechts = startRechts;
     }
-    public static boolean sort(int[] data, int startLinks, int startRechts,ExecutorService threadPool){
+    public static boolean sort(IntBuffer data, int startLinks, int startRechts,ExecutorService threadPool){
         QuickSortMultiThreaded tmp = new QuickSortMultiThreaded(data, startLinks, startRechts, threadPool);
         return tmp.start();
 
@@ -104,13 +105,13 @@ public class QuickSortMultiThreaded {
         public Object call() throws Exception {
             for (int i = links + 1; i <= rechts; i++) {
                 int j = i;
-                int itemToSort = data[i];
-                while (j > 0 && data[j - 1] > itemToSort) {
+                int itemToSort = data.get(i);
+                while (j > 0 && data.get(j - 1) > itemToSort) {
                     // insert
-                    data[j] = data[j - 1];
+                    data.put(j, data.get(j - 1));
                     j = j - 1;
                 }
-                data[j] = itemToSort;
+                data.put(j, itemToSort);
             }
             return true;
         }
@@ -125,16 +126,16 @@ public class QuickSortMultiThreaded {
      * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      */
-    private static void blockSort_insertion(int[] data, int links, int rechts) {
+    private static void blockSort_insertion(IntBuffer data, int links, int rechts) {
         for (int i = links + 1; i <= rechts; i++) {
             int j = i;
-            int itemToSort = data[i];
-            while (j > 0 && data[j - 1] > itemToSort) {
+            int itemToSort = data.get(i);
+            while (j > 0 && data.get(j - 1) > itemToSort) {
                 // insert
-                data[j] = data[j - 1];
+                data.put(j, data.get(j - 1));
                 j = j - 1;
             }
-            data[j] = itemToSort;
+            data.put(j, itemToSort);
         }
 
     }
@@ -146,7 +147,7 @@ public class QuickSortMultiThreaded {
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      * @return
      */
-   private static void blockSort_quick(int[] data, int links, int rechts) {
+   private static void blockSort_quick(IntBuffer data, int links, int rechts) {
         if (rechts - links < 10) {
             blockSort_insertion(data, links, rechts);
         } else {
@@ -163,15 +164,15 @@ public class QuickSortMultiThreaded {
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      * @return der Index des Pivot-ELements
      */
-    private static int quickSwap(int[] data, int links, int rechts) {
+    private static int quickSwap(IntBuffer data, int links, int rechts) {
 
         int i = links;
         int j = rechts - 1; // Starte mit j links vom Pivotelement
-        int pivot = data[rechts];
+        int pivot = data.get(rechts);
         while (i <= j) {
-            while ((data[i] <= pivot) && (i < rechts))
+            while ((data.get(i) <= pivot) && (i < rechts))
                 i++;
-            while ((links <= j) && (data[j] > pivot))
+            while ((links <= j) && (data.get(j) > pivot))
                 j--;
             // a[j].key ≤ pivot
             if (i < j) {
@@ -188,10 +189,10 @@ public class QuickSortMultiThreaded {
      * @param pos1 der Index des 1. Elements
      * @param pos2 der Index des 2. Elements
      */
-    private static void swap(int[] data, int pos1, int pos2) {
-        int tmp = data[pos1];
-        data[pos1] = data[pos2];
-        data[pos2] = tmp;
+    private static void swap(IntBuffer data, int pos1, int pos2) {
+        int tmp = data.get(pos1);
+        data.put(pos1, data.get(pos2));
+        data.put(pos2, tmp);
     }
 
 

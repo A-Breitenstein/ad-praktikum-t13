@@ -1,8 +1,8 @@
 package aufgabe2.data;
 
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Ein Job zum Einlesen aus einem Stream. Das Ergebnis ist ein IntBuffer.
@@ -13,15 +13,17 @@ public class ReaderJob implements IOJob{
 
 	private Reader reader;
 	private IntBuffer result;
-	private ReentrantLock memoryLock;
+	private Semaphore memoryLock;
 	private Semaphore jobFinished = new Semaphore(0);
+	private ByteBuffer buffer;
 	
 	/**
 	 * Konstruktor
 	 * @param reader - die Quelle, von welcher getIntBuffer() aufgerufen werden soll
 	 */
-	public ReaderJob(Reader reader){
+	public ReaderJob(Reader reader, ByteBuffer buffer){
 		this.reader = reader;
+		this.buffer = buffer;
 	}
 	
 	/**
@@ -40,7 +42,7 @@ public class ReaderJob implements IOJob{
 		} 
 		IntBuffer returnValue = result;
 		result = null; //Speicher freigeben (innerhalb dieser Klasse)
-		memoryLock.unlock(); //Signalisieren, dass der Speicher anderseitig verwendet werden darf
+		memoryLock.release(); //Signalisieren, dass der Speicher anderseitig verwendet werden darf
 		return returnValue;
 	}
 	
@@ -50,19 +52,19 @@ public class ReaderJob implements IOJob{
 	}
 
 	@Override
-	public void setMemoryLock(ReentrantLock lock) {
+	public void setMemoryLock(Semaphore lock) {
 		this.memoryLock = lock;
 		
 	}
 
 	@Override
 	public boolean prepareRun() {
-		return memoryLock.tryLock(); //Speicher im Abeitsspeicher anfordern
+		return memoryLock.tryAcquire(); //Speicher im Abeitsspeicher anfordern
 	}
 
 	@Override
 	public void runJob() {
-		result = reader.getIntBuffer(); //das ist alles...
+		result = reader.getIntBuffer(buffer); //das ist alles...
 		jobFinished.release();
 	}
 

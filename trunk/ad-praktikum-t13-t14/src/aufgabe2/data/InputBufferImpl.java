@@ -1,5 +1,6 @@
 package aufgabe2.data;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
 import aufgabe2.interfaces.*;
@@ -14,7 +15,7 @@ public class InputBufferImpl implements InputBuffer{
 	private int blockSize;
 	private int blockPos = -1; //Der Index des aktuellen Elements (vom Blockanfang aus gesehen, nicht im currentBuffer)
 	private int current = 0; //Das aktuelle Element
-	
+	private ByteBuffer currentByteBuffer, buffer1, buffer2;
 	
 	/**
 	 * Erzeugt einen neuen InputBuffer, welcher über die gesammte Datei liest und dabei die Blöcke simuliert
@@ -22,15 +23,20 @@ public class InputBufferImpl implements InputBuffer{
 	 * @param BlockSize - Die Größe der sortierten Blöcke in der Datei
 	 * @param scheduler - Die Instanz, die Lese/Schreibjobs im Hintergrund verarbeitet
 	 */
-	public InputBufferImpl(String filePath, int blockSize, IOScheduler scheduler){
+	public InputBufferImpl(String filePath, int blockSize, IOScheduler scheduler, ByteBuffer buffer1, ByteBuffer buffer2){
 		this.blockSize = blockSize;
 		this.scheduler = scheduler;
+		this.buffer1 = buffer1;
+		this.buffer2 = buffer2;
 		reader = Reader.create(filePath, (int)Constants.BUFFERSIZE_MERGEREAD);
-		
+				
 		if (reader.hasNextIntArrray()){ //Gibt es Elemente in der Datei?
 			pushReaderJob(); //Lesejob erzeugen
 			moveNext(); //Ergebnis des Lesejobs abrufen und erstes Element lesen
-		}		
+		} else {
+			blockPos = blockSize;//Bewirkt, dass hasCurrent nun False zurückliefert
+		}
+			
 	}
 	
 	/**
@@ -44,6 +50,8 @@ public class InputBufferImpl implements InputBuffer{
 			backgroundReader = null;
 		}
 		reader.close( );
+		buffer1 = null;
+		buffer2 = null;
 	}
 	
 	/**
@@ -64,17 +72,19 @@ public class InputBufferImpl implements InputBuffer{
 	public boolean hasCurrent() {
 		return blockPos < blockSize;
 	}
-
+long readCount = 0;
 	@Override
 	public void moveNext() {
 		if (blockPos + 1 < blockSize){ //hat der Block noch ein nächstes Element?
 			if (currentBuffer.hasRemaining()){
 				current = currentBuffer.get();
+				readCount ++;
 				blockPos ++;
 			} else { //Buffer komplett ausgelesen --> nächsten, hoffentlich schon fertig geladenen Buffer holen (ansonnsten dauert es etwas)
 				
 				if(backgroundReader != null) {
 					currentBuffer = null; //Speicherplatz freigeben
+					currentByteBuffer = (currentByteBuffer == buffer1 ? buffer2 : buffer1);//Nur als markierung
 					currentBuffer = backgroundReader.getIntBuffer();//hier wird ggf. gewartet, bis der Job erledigt ist.
 					backgroundReader = null; //Reader hat seinen Job getan
 					if (reader.hasNextIntArrray()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
@@ -93,7 +103,7 @@ public class InputBufferImpl implements InputBuffer{
 	}
 	
 	private void pushReaderJob(){
-		backgroundReader = new ReaderJob(reader);
+		backgroundReader = new ReaderJob(reader, (currentByteBuffer == buffer1 ? buffer2 : buffer1));
 		scheduler.pushJob(backgroundReader);
 	}
 

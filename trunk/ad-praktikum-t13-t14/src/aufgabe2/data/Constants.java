@@ -7,7 +7,11 @@ final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = 800;//(long)(0.25 * 1024 * 1024 * 1024); // = 250 MB
+	public static final long BUFFERSIZE_APPLICATION = (long)(0.96 * 1024 * 1024 * 1024); // = 2(!) GB
+	//ACHTUNG: Die Reader scheinen den Doppelten Speicher noch einmal zu benötigen. Wenn wir 
+	// das untersucht haben, kann die BufferSize korrekt eingestellt werden. Zur Zeit muss
+	// so ziemlich der doppelte Arbeitsspeicherverbrauch einkalkuliert werden!!!
+	
 	/**
 	 * Die Größe eines Integers in Bytes
 	 */
@@ -18,23 +22,12 @@ final class Constants {
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Arbeiten 
 	 * auf dem Array genutzt werden darf.
 	 */
-	public static final long BUFFERSIZE_SORTARRAY = toValidIntSize((long)(BUFFERSIZE_APPLICATION * 0.75)); //75% des Speichers für das arbeiten auf dem Array (um möglichst Große RunGröße zu ermöglichen)
+	public static final long BUFFERSIZE_SORTARRAY = toValidIntSize((long)(BUFFERSIZE_APPLICATION )); //Gesamten Arbeitsspeicher verwenden!
 	/**
 	 * Die Größe der Runs beim ersten Durchlauf (=Sortieren)
 	 */
 	public static final int INITBLOCKINTEGERS = (int)(BUFFERSIZE_SORTARRAY / 4);
-	
-	/**
-	 * Die (maximale) Größe des Speichers in Bytes, der für das Lesen
-	 *(ByteBuffer) aus der Datei genutzt werden darf
-	 */
-	public static final long BUFFERSIZE_SORTREAD =  toValidIntSize(BUFFERSIZE_APPLICATION );//toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY); 
-	/**
-	 * Die (maximale) Größe des Speichers in Bytes, der für das Schreiben
-	 * (ByteBuffer) in die Datei genutzt werden darf
-	 */
-	public static final long BUFFERSIZE_SORTWRITE =  toValidIntSize(BUFFERSIZE_APPLICATION );//toValidIntSize(BUFFERSIZE_APPLICATION - BUFFERSIZE_SORTARRAY);
-		
+			
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
