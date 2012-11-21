@@ -91,7 +91,7 @@ public class FileReader {
                     overflow+=1;
                 }
                 currentByteBufferSize = currentFolgeSizeInByte/overflow;
-                System.out.println(fileName+": splited folge in "+overflow+" chunks!");
+                //System.out.println(fileName+": splited folge in "+overflow+" chunks!");
             }
             folgenPerIntArray = hundertProzent/overflow;
             currentIntegerCount = (int)(currentByteBufferSize / INTEGER_SIZE);
@@ -102,8 +102,8 @@ public class FileReader {
             fileChanSize = fileChan.size();
             hasNextCount = (int)(fileChanSize/currentByteBufferSize)+1;
             bufferUsage =((double)currentByteBufferSize)/byteBufferSizeMax;
-            System.out.println(fileName+": BufferUsage = "+String.format("%.2f",bufferUsage*100.0)+ "% von "+(byteBufferSizeMax/1000000)+" MB  , bufferAuslastungsVerhaeltnis = "+ bufferAuslastungsVerhaeltnis );
-            System.out.println(fileName+": CurrentFolgenLength: "+currentFolgeLength+",AnzahlFolgenInIntArray :"+folgenPerIntArray+",  readCalls: "+hasNextCount );
+            //System.out.println(fileName+": BufferUsage = "+String.format("%.2f",bufferUsage*100.0)+ "% von "+(byteBufferSizeMax/1000000)+" MB  , bufferAuslastungsVerhaeltnis = "+ bufferAuslastungsVerhaeltnis );
+            //System.out.println(fileName+": CurrentFolgenLength: "+currentFolgeLength+",AnzahlFolgenInIntArray :"+folgenPerIntArray+",  readCalls: "+hasNextCount );
         }catch(IOException e){
             e.printStackTrace();
         }

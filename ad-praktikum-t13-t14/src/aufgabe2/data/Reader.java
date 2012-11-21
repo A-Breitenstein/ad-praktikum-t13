@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.FileChannel;
+import java.security.InvalidAlgorithmParameterException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -90,12 +91,15 @@ public class Reader {
         return  tmp;
     }
 
-    public IntBuffer getIntBuffer() {
-        try{
+    public IntBuffer getIntBuffer(ByteBuffer target) {
+        target.clear();
+    	try{
             long newCursorPosition = currentCursorPosition+byteBufferSize;
             hasNextCount--;
             if(newCursorPosition <= fileChanSize){
-                ByteBuffer b = ByteBuffer.allocate((int)byteBufferSize);
+            	if (target.capacity() < byteBufferSize)
+            		throw new IllegalArgumentException("übergebener Buffer zu klein");
+                ByteBuffer b = target; //ByteBuffer.allocate((int)byteBufferSize);
                 fileChan.read(b,currentCursorPosition);
                 b.rewind();
                 IntBuffer ib =  b.asIntBuffer();
@@ -107,9 +111,16 @@ public class Reader {
 
                 // der lästige rest fall...
                 int sizeLeft = (int) (fileChanSize- currentCursorPosition);
-                if(sizeLeft%4 != 0) throw  new IOException();
-                ByteBuffer b = ByteBuffer.allocate(sizeLeft);
+                if(sizeLeft % 4 != 0) throw  new IOException();
+                
+                if (target.capacity() < sizeLeft)
+            		throw new IllegalArgumentException();
+                ByteBuffer b = target;//ByteBuffer.allocate(sizeLeft);
+                b.position(sizeLeft);
+                b.flip();
+                
                 fileChan.read(b,currentCursorPosition);
+
                 b.rewind();
                 IntBuffer ib =  b.asIntBuffer();
 

@@ -3,6 +3,8 @@ package aufgabe2.algorithm;
 import aufgabe2.data.DataManagerImpl;
 import aufgabe2.interfaces.*;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,11 +20,12 @@ public class ExternerMergeSort {
 		DataManager tapes = new DataManagerImpl(inputFile);
         ExecutorService threadPool = Executors.newCachedThreadPool();
 		// Blockweise Sortierung
-		DataWrapper data = tapes.readBlock(); // lese von "band" 1;
+		ByteBuffer data = tapes.readBlock(); // lese von "band" 1;
 												// initialisierung
-		while (data.getSize() > 0) { // solange das "band" nicht leer ist
+		while (data.hasRemaining()) { // solange das "band" nicht leer ist
 //			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
-            QuickSortMultiThreaded.sort(data.getData(),0,data.getSize() - 1,threadPool);
+			IntBuffer intBuffer = data.asIntBuffer();
+            QuickSortMultiThreaded.sort(intBuffer,0,intBuffer.limit() - 1,threadPool);
 			tapes.writeBlock(data); // zurückschreiben
 			data = tapes.readBlock(); // lese wieder von "band" 1
 		}

@@ -1,6 +1,6 @@
 package aufgabe2.data;
 
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 /**
  * Ermöglicht das Ausführen eines Lese/Schreibjobs über einen Batchartigen Scheduler. Dieser
@@ -10,33 +10,33 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public interface IOJob {
 
-	/**
-	 * Gibt die Identifikation (z.B. Pfad) der Datei zurück, auf welcher dieser IO-Job arbeitet
-	 * @return
-	 */
-	public String getWorkingFile();
-	
-	/**
-	 * Gibt dem Job das Schlüsselobjekt für den Speicher für die Datei. Der Schlüssel muss 
-	 * in jenem Zeitraum gehalten werden, wie die Klasse Speicher verbraucht. Erst wenn der
-	 * Job sämmtlichen Speicher (in dieser Klasse) freigibt, darf und muss der Schlüssel
-	 * zurückgegeben werden
-	 * @param lock
-	 */
-	public void setMemoryLock(ReentrantLock lock);
-	
-	/**
-	 * Bereitet sich auf die Aufgabe vor, spätestens zu diesem Zeitpunkt muss der Schlüssel
-	 * gehalten werden. Ist dieses noch nicht möglich, so wird false zurückgegeben und die 
-	 * Aufgabe kann noch nicht ausgeführt werden.
-	 * @return
-	 */
-	public boolean prepareRun();
-	
-	/**
-	 * führt die I/O-Aufgabe (synchron) aus. Der Schlüssel muss nach Beendigung der Aufgabe noch
-	 * nicht zurückgegeben worden sein.
-	 */
-	public void runJob();
-	
+        /**
+         * Gibt die Identifikation (z.B. Pfad) der Datei zurück, auf welcher dieser IO-Job arbeitet
+         * @return
+         */
+        public String getWorkingFile();
+        
+        /**
+         * Gibt dem Job das Schlüsselobjekt für den Speicher für die Datei. Der Schlüssel muss 
+         * in jenem Zeitraum gehalten werden, wie die Klasse Speicher verbraucht. Erst wenn der
+         * Job sämmtlichen Speicher (in dieser Klasse) freigibt, darf und muss der Schlüssel
+         * zurückgegeben werden
+         * @param lock
+         */
+        public void setMemoryLock(Semaphore lock);
+        
+        /**
+         * Bereitet sich auf die Aufgabe vor, spätestens zu diesem Zeitpunkt muss der Schlüssel
+         * gehalten werden. Ist dieses noch nicht möglich, so wird false zurückgegeben und die 
+         * Aufgabe kann noch nicht ausgeführt werden.
+         * @return
+         */
+        public boolean prepareRun();
+        
+        /**
+         * führt die I/O-Aufgabe (synchron) aus. Der Schlüssel muss nach Beendigung der Aufgabe noch
+         * nicht zurückgegeben worden sein.
+         */
+        public void runJob();
+        
 }

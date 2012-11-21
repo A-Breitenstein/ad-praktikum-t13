@@ -34,25 +34,15 @@ public class Writer {
         return  new Writer(fileName);
     }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
-         try{
-             int size = byteBuffer.capacity()/4;
-             try{
+    	int size = byteBuffer.limit()/4; 
+    	try{
+             
                 fileChan.write(byteBuffer);
                  byteBuffer.clear(); // <--------- WTFX? ich wusste nicht das man den byteBuffer auch clearen muss
                  // wenn man auf nen intbuffer hat ... und auf die clear called wtf..
                  overAllWriteCount+=size;
-                 System.out.println(fileName+": erfolgreich geschrieben: "+size);
-             }catch (NullPointerException e){
-                 System.out.println(fileName+": NOTFALL WRITER WURDE ERSTELLT");
-                 fOS = new FileOutputStream(fileName);
-                 fileChan = fOS.getChannel();
-                 fileChan.force(true);
-                 fileChan.write(byteBuffer);
-                 overAllWriteCount+=size;
-                 System.out.println(fileName+": erfolgreich geschrieben: "+size);
-             }
          }catch (IOException e){
-             System.out.println(fileName+": NOTFALL WRITER NICHT ERSTELLT");
+             System.err.println(fileName+": konnte nicht geschrieben werden: " + size);
          }
     }
     public String getFileName(){
@@ -65,7 +55,7 @@ public class Writer {
                 fileChan.close();
                 fOS.close();
             }
-            System.out.println(fileName+": was successfully closed! this writer has written "+overAllWriteCount+" integer");
+            //System.out.println(fileName+": was successfully closed! this writer has written "+overAllWriteCount+" integer");
         } catch (IOException e) {
             System.out.println(fileName+": WRITER KONNTE NICHT GECLOSET WERDEN ");
         }

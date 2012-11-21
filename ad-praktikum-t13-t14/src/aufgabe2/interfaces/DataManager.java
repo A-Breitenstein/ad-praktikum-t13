@@ -1,5 +1,7 @@
 package aufgabe2.interfaces;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -17,7 +19,7 @@ public interface DataManager {
      *           DataManager.readBlock() -> {45,267}
      * @return einen DataWrapper inkl. unsortiertem Block
      */
-    public DataWrapper readBlock();
+    public ByteBuffer readBlock();
 
 
     /**
@@ -26,7 +28,7 @@ public interface DataManager {
      *
      * @param dataWrapper beinhaltet einen Array mit sortierten Datensätzen
      */
-    public void writeBlock(DataWrapper dataWrapper);
+    public void writeBlock(ByteBuffer dataWrapper);
 
     /**
      *

@@ -2,7 +2,6 @@ package aufgabe2.data;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.locks.ReentrantLock;
 
 //import java.lang.NotImplementedException;
 
@@ -14,11 +13,42 @@ import java.util.concurrent.locks.ReentrantLock;
 public class IOScheduler extends Thread {
 
 	List<IOJob> jobs = new ArrayList<IOJob>();
-	Map<String, ReentrantLock> bufferLocks = new HashMap<String, ReentrantLock>();
+	Map<String, Semaphore> bufferLocks = new HashMap<String, Semaphore>();
 	Semaphore jobSemaphore = new Semaphore(0);
 	
-	public void Run(){
-		throw new UnsupportedOperationException();
+	@Override
+	public void run(){
+		System.out.println("JobScheduler started.");
+		try {
+			while(true){
+				if (isInterrupted() && jobSemaphore.availablePermits() == 0){
+					break;
+				} else {
+					jobSemaphore.acquire();
+					IOJob job = null;
+					synchronized (jobs){
+						for (int i = 0; i < jobs.size(); i++){
+							if (jobs.get(i).prepareRun()){
+								job = jobs.get(i);
+								jobs.remove(i);
+								break;
+							}
+						}
+					}
+					if (job != null){
+						job.runJob();
+					} else {
+						jobSemaphore.release();//Das vorgesene Element konnte nicht verarbeitet werden --> zurück auf die Liste
+						Thread.sleep(50);
+						System.out.println("Spin Wait!!!");
+					}
+				}
+					
+			}
+		} catch (InterruptedException e) {
+			
+		}
+		System.out.println("JobScheduler stopped.");
 	}
 	
 	/**
@@ -26,23 +56,32 @@ public class IOScheduler extends Thread {
 	 * @param job - der in einem Hintergrundthread zu bearbeitende Job
 	 */
 	public void pushJob(IOJob job){
-		job.setMemoryLock(new ReentrantLock());
-		job.prepareRun();
-		job.runJob();// Testweise synchron ausführen
+		boolean runAsynchron = true;
 		
-		/*
-		job.setMemoryLock(new ReentrantLock());
-		synchronized (jobs){
+		if (!bufferLocks.containsKey(job.getWorkingFile())){
+			bufferLocks.put(job.getWorkingFile(), new Semaphore(1));
+		}
+		
+		job.setMemoryLock(bufferLocks.get(job.getWorkingFile()));
+		
+		if (runAsynchron) {
+			synchronized (jobs){
+				jobs.add(job);
+			}
+			jobSemaphore.release();
+		} else {
+			job.prepareRun();
+			job.runJob(); // Testweise synchron ausführen
+		}
 			
-		}*/
-		//throw new NotImplementedException();
+		
 	}
 	
 	/**
 	 * Wartet so lange, bis alle noch anstehenden Jobs abgearbeitet wurden
 	 */
 	public void terminate(){
-		throw new UnsupportedOperationException();
+		
 	}
 	
 }

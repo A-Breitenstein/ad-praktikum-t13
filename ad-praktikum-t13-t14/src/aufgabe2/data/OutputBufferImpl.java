@@ -8,28 +8,37 @@ import aufgabe2.interfaces.OutputBuffer;
 
 public class OutputBufferImpl implements OutputBuffer {
 
-	DataManagerImpl owner;
+	private DataManagerImpl owner;
 	private IOScheduler scheduler;
-	String filePath;
-	Writer writer;
-	ByteBuffer currentByteBuffer;
-	IntBuffer currentIntBuffer;
-	
-	public OutputBufferImpl(String filePath, DataManagerImpl owner, IOScheduler scheduler){
+	private String filePath;
+	private Writer writer;
+	private ByteBuffer currentByteBuffer;
+    private IntBuffer currentIntBuffer;
+    private ByteBuffer buffer1, buffer2;
+    private WriterJob backgroundWriter;
+    
+	public OutputBufferImpl(String filePath, DataManagerImpl owner, IOScheduler scheduler, ByteBuffer buffer1, ByteBuffer buffer2){
 		this.owner = owner;
 		this.scheduler= scheduler;
 		this.filePath = filePath;
+		this.buffer1 = buffer1;
+		this.buffer2 = buffer2;
+		buffer1.clear();
+		buffer2.clear();
 		this.writer = Writer.create(filePath);
-		allocateNewBuffer();
-		//job writerJob = new WriterJob(Writer, intbuffer)
-
+		aquireNewBuffer();
 	}
 	
 	public void close() throws IOException{
 		if(currentIntBuffer.position() != 0){
 			pushWriterJob();//Den Rest schreiben
 		}
-		writer.close();
+		
+		if (backgroundWriter != null){
+			backgroundWriter.waitForComplete();
+			backgroundWriter = null;
+		}
+		writer.close();	
 		currentByteBuffer = null;
 		currentIntBuffer = null;
 	}
@@ -39,7 +48,7 @@ public class OutputBufferImpl implements OutputBuffer {
 		currentIntBuffer.put(val);
 		if (!currentIntBuffer.hasRemaining()) {
 			pushWriterJob();
-			allocateNewBuffer();
+			aquireNewBuffer();
 		}
 	}
 
@@ -58,15 +67,16 @@ public class OutputBufferImpl implements OutputBuffer {
 	private void pushWriterJob(){
 		currentByteBuffer.position(currentIntBuffer.position()*4);
 		currentByteBuffer.flip();
-		scheduler.pushJob(new WriterJob(writer, currentByteBuffer));
-		currentByteBuffer = null;
-		currentIntBuffer = null;
+		WriterJob job = new WriterJob(writer, currentByteBuffer);
+		scheduler.pushJob(job);
+		backgroundWriter = job;//Reihenfolge ist wichtig, ggf später noch einmal checken...
 	}
 	/**
 	 * Erzeugt einen neuen CurrentBuffer
 	 */
-	private void allocateNewBuffer(){
-		currentByteBuffer = ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTWRITE);
+	private void aquireNewBuffer(){
+		currentByteBuffer = (currentByteBuffer == buffer1 ? buffer2 : buffer1);// ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTWRITE);
 		currentIntBuffer = currentByteBuffer.asIntBuffer();
 	}
+
 }
