@@ -30,7 +30,7 @@ public class DataManagerImpl implements DataManager {
 	private Writer initWriter1, initWriter2, activeInitWriter;
 	private InputBufferImpl mergeInput1, mergeInput2;
 	private OutputBufferImpl mergeOutput1, mergeOutput2, activeMergeOutput;
-	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocate(0);
+	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
 	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
 	private IOScheduler scheduler = new IOScheduler();
 	
@@ -57,7 +57,7 @@ public class DataManagerImpl implements DataManager {
         activeInitWriter = initWriter1;
         readerBlockSize = INITBLOCKINTEGERS;
         integersToSort = initReader.getFileChanSize() / INTSIZE;
-        sortBBuffer = ByteBuffer.allocate( (int)BUFFERSIZE_SORTARRAY);
+        sortBBuffer = ByteBuffer.allocateDirect( (int)BUFFERSIZE_SORTARRAY);
         scheduler.start();
         
         System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers");
@@ -236,10 +236,10 @@ public class DataManagerImpl implements DataManager {
 	
 	private void initBBufferPool(){
 		for (int i = 0; i<4; i++){
-			readBBufferPool.add(ByteBuffer.allocate((int)BUFFERSIZE_MERGEREAD));
+			readBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEREAD));
 		}
 		for (int i = 0; i<4; i++){
-			writeBBufferPool.add(ByteBuffer.allocate((int)BUFFERSIZE_MERGEWRITE));
+			writeBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEWRITE));
 		}
 	}
 	private void closeBBufferPool(){

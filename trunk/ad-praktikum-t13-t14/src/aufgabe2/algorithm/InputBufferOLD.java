@@ -67,7 +67,7 @@ class InputBufferOLD {
 	private void naechstesHaeppchenVomMergeRun(){
         if (input == null || !input.isFolgeKomplett()) { //Wenn signalisiert wurde, dass der Block komplett übergeben wurde, dann keine weiteren Daten anfordern. Bei der Initialisierung ist input natürlich aber noch null. 
             input = null;
-            input = (currentChannel == Channels.LEFTCHANNEL ? tapes.readLeftChannel() : tapes.readRightChannel());
+//            input = (currentChannel == Channels.LEFTCHANNEL ? tapes.readLeftChannel() : tapes.readRightChannel());
         } else {
             input.setSize(0); //Bewirkt, dass hasCurrent ab jetzt False zurückliefert.
         }

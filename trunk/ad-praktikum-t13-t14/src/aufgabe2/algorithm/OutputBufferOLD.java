@@ -56,7 +56,7 @@ class OutputBufferOLD {
 	 */
 	private void storeInTape(){
 		output.setSize(pos);//Da Pos den Index des NÄCHSTEN zu schreibendes Elementes enthält, ist Pos = Size  
-		tapes.write(output);
+//		tapes.write(output);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ class OutputBufferOLD {
 	 */
 	private void createNextOutput(){
 		output = null; //Speicher zunächst freigeben, bevor das nächste z.B. 3 Gigabyte große Element angefordert wird
-		output = tapes.createOuputChannel(); 
+//		output = tapes.createOuputChannel();
 		pos = 0;
 	}
 

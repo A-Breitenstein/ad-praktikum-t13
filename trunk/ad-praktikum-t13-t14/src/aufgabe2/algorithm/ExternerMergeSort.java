@@ -1,5 +1,7 @@
 package aufgabe2.algorithm;
 
+import aufgabe2.algorithm.parallel.QuickSortMultiThreaded;
+import aufgabe2.algorithm.parallel.stolen.Quicksort;
 import aufgabe2.data.DataManagerImpl;
 import aufgabe2.interfaces.*;
 
@@ -7,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 public class ExternerMergeSort {
 
@@ -19,13 +22,17 @@ public class ExternerMergeSort {
 	public static String sort(String inputFile) {
 		DataManager tapes = new DataManagerImpl(inputFile);
         ExecutorService threadPool = Executors.newCachedThreadPool();
+//        ExecutorService threadPool = new ForkJoinPool();
+
 		// Blockweise Sortierung
 		ByteBuffer data = tapes.readBlock(); // lese von "band" 1;
 												// initialisierung
 		while (data.hasRemaining()) { // solange das "band" nicht leer ist
 //			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
 			IntBuffer intBuffer = data.asIntBuffer();
-            QuickSortMultiThreaded.sort(intBuffer,0,intBuffer.limit() - 1,threadPool);
+//             Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,intBuffer); <-- noch schneller aber funzt mit intbuffer noch nicht ;/
+            QuickSortMultiThreaded.sort(intBuffer, 0, intBuffer.limit() - 1, threadPool);
+//            QuickSortMultiThreaded.blockSort_quick(intBuffer,0,intBuffer.limit() - 1); <-- single thread version
 			tapes.writeBlock(data); // zurückschreiben
 			data = tapes.readBlock(); // lese wieder von "band" 1
 		}

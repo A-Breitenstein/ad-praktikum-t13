@@ -35,7 +35,7 @@ public class FolgenReader {
 
 
     private FolgenReader(String name,String fileName,long folgenLength){
-        reader = Reader.create(fileName, (int)Constants.BUFFERSIZE_SORTREAD);
+//        reader = Reader.create(fileName, (int)Constants.BUFFERSIZE_SORTREAD);
         this.folgenLength = folgenLength;
         remainigIntegerInBuffer = 0;
         initBuffer();
@@ -74,12 +74,12 @@ public class FolgenReader {
         return new FolgenReader(name, fileName, folgenLength);
     }
     private void initBuffer(){
-        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
+//        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
         remainigIntegerInBuffer = intBuffer.capacity();
         //System.out.println(reader.getFileName()+": INITIAL Load!   loaded  "+intBuffer.capacity()+" Integer in intBuffer");
     }
     private void fillBuffer(){
-        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
+//        intBuffer = reader.getIntBuffer(ByteBuffer.allocate((int)Constants.BUFFERSIZE_SORTREAD));
         remainigIntegerInBuffer = intBuffer.capacity();
         //System.out.println(reader.getFileName()+": Loaded "+intBuffer.capacity()+" Integer in intBuffer");
     }

@@ -46,9 +46,8 @@ public final class Tests {
 		String InputFilePath = "DataManagerTest";
 		String outputFilePath = null;
 		
-		//TestFileGenerator.createTestFile(InputFilePath,10000000,100);
+//		TestFileGenerator.createTestFile(InputFilePath,10000000,10);
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
-		
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
         assertTrue(TestFileGenerator.isSorted(outputFilePath));
         
