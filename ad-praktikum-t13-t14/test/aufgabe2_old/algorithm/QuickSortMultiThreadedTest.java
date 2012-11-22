@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 import static org.junit.Assert.assertTrue;
 
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class QuickSortMultiThreadedTest {
     @Test
-    public void testSort() throws Exception {
+    public void testSortThreadPoolOwnImplementation() throws Exception {
         // vm parameter -Xmx1024m nicht vergessen^^ gerne auch mehr
 
         int anzahlZahlenProSchreibVorgang = 5000000;
@@ -45,11 +46,14 @@ public class QuickSortMultiThreadedTest {
 
         System.arraycopy(folge1,0,folge2,0,folge1.length);
         System.arraycopy(folge1,0,folge3,0,folge1.length);
-        ExecutorService threadPool = Executors.newCachedThreadPool();
+
+      ExecutorService threadPool = Executors.newCachedThreadPool();
         // ein vorlauf, damit der threadpool seine worker erstellen kann die dann
         // im nächsten durchlauf keine zeit mehr zum erstellen verbrauchen.
         QuickSortMultiThreaded.sort(folge1, 0, folge1.length - 1, threadPool);
+
         System.out.println("---- vorlauf beendet ----");
+
         long startTime,endTime;
         startTime = System.currentTimeMillis();
         QuickSortMultiThreaded.sort(folge2, 0, folge2.length - 1, threadPool);
@@ -65,6 +69,52 @@ public class QuickSortMultiThreadedTest {
         threadPool.shutdown();
 
     }
+    @Test
+    public void testSortForkJoinPoolCopyedImplementation() throws Exception {
+        // vm parameter -Xmx1024m nicht vergessen^^ gerne auch mehr
+
+        int anzahlZahlenProSchreibVorgang = 5000000;
+        int anzahlSchreibVorgaenge = 1;
+        int int_count = anzahlSchreibVorgaenge*anzahlZahlenProSchreibVorgang;
+        String filename = "testSort";
+        if(!Files.exists(Paths.get(filename))){
+            TestFileGenerator.createTestFile(filename,anzahlZahlenProSchreibVorgang,anzahlSchreibVorgaenge);
+        }
+        Reader.setInegerCountPerRead(int_count);
+        FolgenReader reader = FolgenReader.create(filename,filename,int_count);
+
+        int[] folge1,folge2,folge3;
+        DataWrapper data = reader.getFolge();
+        folge1 = data.getData();
+        folge2 = new int[folge1.length];
+        folge3 = new int[folge1.length];
+
+        System.arraycopy(folge1,0,folge2,0,folge1.length);
+        System.arraycopy(folge1,0,folge3,0,folge1.length);
+
+        ExecutorService threadPool = new ForkJoinPool();
+        // ein vorlauf, damit der threadpool seine worker erstellen kann die dann
+        // im nächsten durchlauf keine zeit mehr zum erstellen verbrauchen.
+        Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,folge1);
+
+        System.out.println("---- vorlauf beendet ----");
+
+        long startTime,endTime;
+        startTime = System.currentTimeMillis();
+        Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,folge2);
+        endTime = System.currentTimeMillis();
+        System.out.println("ElapsedTime multi-threaded:"+(endTime-startTime));
+
+        assertTrue(isSorted(folge2));
+        Thread.currentThread().setPriority(10);
+        startTime = System.currentTimeMillis();
+        ExternerMergeSort.blockSort_quick(folge3,0,folge3.length-1);
+        endTime = System.currentTimeMillis();
+        System.out.println("ElapsedTime single-threaded:"+(endTime-startTime));
+        threadPool.shutdown();
+
+    }
+
     private boolean isSorted(int[] data){
         long controll_counter = 1;
         for (int i = 0; i < data.length-1; i++) {
@@ -79,4 +129,6 @@ public class QuickSortMultiThreadedTest {
         System.out.println("controll_counter: "+controll_counter);
         return  true;
     }
+
+
 }
