@@ -23,7 +23,7 @@ public class IOScheduler extends Thread {
 			while(true){
 				if (isInterrupted() && jobSemaphore.availablePermits() == 0){
 					break;
-				} else {
+				} else {					
 					jobSemaphore.acquire();
 					IOJob job = null;
 					synchronized (jobs){
@@ -36,7 +36,7 @@ public class IOScheduler extends Thread {
 						}
 					}
 					if (job != null){
-						job.runJob();
+						job.run();
 					} else {
 						jobSemaphore.release();//Das vorgesene Element konnte nicht verarbeitet werden --> zurück auf die Liste
 						Thread.sleep(50);
@@ -71,7 +71,8 @@ public class IOScheduler extends Thread {
 			jobSemaphore.release();
 		} else {
 			job.prepareRun();
-			job.runJob(); // Testweise synchron ausführen
+			job.run(); // Testweise synchron ausführen
+			
 		}
 			
 		

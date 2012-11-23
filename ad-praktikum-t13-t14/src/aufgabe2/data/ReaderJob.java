@@ -63,7 +63,7 @@ public class ReaderJob implements IOJob{
 	}
 
 	@Override
-	public void runJob() {
+	public void run() {
 		result = reader.getIntBuffer(buffer); //das ist alles...
 		jobFinished.release();
 	}

@@ -42,7 +42,7 @@ public class WriterJob implements IOJob {
         }
 
         @Override
-        public void runJob() {
+        public void run() {
                 zugehoerigesBand.writeByteBufferToFile(zugehoerigeDaten); 
                 zugehoerigeDaten = null; // für neue Daten bereit machen
                 jobLock.release(); 

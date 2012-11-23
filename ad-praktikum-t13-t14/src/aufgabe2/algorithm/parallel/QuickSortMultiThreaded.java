@@ -18,8 +18,9 @@ public class QuickSortMultiThreaded {
     private int startLinks,startRechts;
     private int depth = 0;
     public static int threadCountMax = 64; // ab 50.000.000 unter 32 threads
+    public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
-    private static final int insertion_sort_grenze = 47;
+    private static final int insertion_sort_grenze = 10;//47
 
     private synchronized void increaseDepth(){
         depth++;
@@ -72,16 +73,23 @@ public class QuickSortMultiThreaded {
 //                threadPool.submit(new InsertionSort(links,rechts));
             } else {
                 int positionPivot = quickSwap(data, links, rechts);
-                if(depth<depthMax){
-                    increaseDepth();
+                if(threads + 2 <= threadCountMax){//depth<depthMax){
+                    synchronized (threads) {
+						threads += 2;
+					}
+                	increaseDepth();
                     Future<Boolean> resultLeft,resultRight;
 
+                    
                     resultLeft = threadPool.submit(new quickSort(links, positionPivot - 1));
                     resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
-//                    System.out.println(Thread.currentThread().getName()+":  is waiting ...");
+//               System.out.println(Thread.currentThread().getName()+":  is waiting ...");
                     resultLeft.get();
                     resultRight.get();
                      decreaseDepth();
+                     synchronized (threads) {
+ 						threads -= 2;
+ 					}
                 }else{
 //                    System.out.println(Thread.currentThread().getName()+": is working ...");
                     blockSort_quick(data, links, positionPivot - 1);
