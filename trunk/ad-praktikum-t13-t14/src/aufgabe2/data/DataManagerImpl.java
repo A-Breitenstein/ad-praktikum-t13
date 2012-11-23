@@ -25,48 +25,61 @@ import java.util.*;
  */
 public class DataManagerImpl implements DataManager {
 	
+	//SourceDateien
 	private String sourceFilePath, file1Path, file2Path, file3Path, file4Path;
+	
+	//Readers, Writers
 	private Reader initReader;
 	private Writer initWriter1, initWriter2, activeInitWriter;
 	private InputBufferImpl mergeInput1, mergeInput2;
 	private OutputBufferImpl mergeOutput1, mergeOutput2, activeMergeOutput;
-	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
-	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
 	private IOScheduler scheduler = new IOScheduler();
 	
+	//ByteBuffer-Pools
+	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
+	private ByteBuffer sortBBuffer;
+	private List<ByteBuffer> readBBufferPool = new ArrayList<ByteBuffer>();//ByteBuffers für die Readers im Merge-Schritt
+	private List<ByteBuffer> writeBBufferPool = new ArrayList<ByteBuffer>(); //ByteBuffers für die Writers im Merge-Schritt
+	
+	//Größen, Zustände
+	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
+	private long integersToSort; //Die Länge der Datei
+	private long storedIntegers; //Die bereits gespeicherten Integers innerhalb eines MergeRuns
 	private switchStates switchState = switchStates.undef; 
 	private modie modus = modie.QuickSort;
-	private long integersToSort;
-	private long storedIntegers;
-	//Für Buffer-Pool
-	List<ByteBuffer> readBBufferPool = new ArrayList<ByteBuffer>();//ByteBuffers für die Readers im Merge-Schritt
-	List<ByteBuffer> writeBBufferPool = new ArrayList<ByteBuffer>(); //ByteBuffers für die Writers im Merge-Schritt
-	ByteBuffer sortBBuffer;
+	
+	//Zeitmessung
+	private long startTimestamp;
+	private long lastMessageTimestamp;
 	
 	public DataManagerImpl(String sourceFilePath) {
+		//SourceFiles
 		this.sourceFilePath = sourceFilePath;
 		file1Path = sourceFilePath+"1";
 		file2Path = sourceFilePath+"2";
 		file3Path = sourceFilePath+"3";
 		file4Path = sourceFilePath+"4";
 		
+		//Readers, Writers
 		initReader = Reader.create(sourceFilePath, (int)BUFFERSIZE_SORTARRAY);
-		
 		initWriter1 = Writer.create(file1Path);
         initWriter2 = Writer.create(file2Path);
         activeInitWriter = initWriter1;
-        readerBlockSize = INITBLOCKINTEGERS;
+       
+        readerBlockSize = BUFFERSIZE_SORTARRAY / INTSIZE;
         integersToSort = initReader.getFileChanSize() / INTSIZE;
         sortBBuffer = ByteBuffer.allocateDirect( (int)BUFFERSIZE_SORTARRAY);
         scheduler.start();
         
+        //Ausgabe
         System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers");
-        System.out.println("Initial Integers pro Block: " + valToS(INITBLOCKINTEGERS));
+        System.out.println("Initial Integers pro Block: " + valToS(readerBlockSize));
         System.out.println("   Integers pro Merge-Read: " + valToS(BUFFERSIZE_MERGEREAD / INTSIZE));
         System.out.println("  Integers pro Merge-Write: " + valToS(BUFFERSIZE_MERGEWRITE / INTSIZE));
         System.out.println("       Max Arbeitsspeicher: " + valToS(BUFFERSIZE_APPLICATION / 1024/1024) + "MB");
         System.out.println();
         
+        //Zeitmessung
         startTimestamp = System.currentTimeMillis();
         lastMessageTimestamp = System.currentTimeMillis();
     }
@@ -226,8 +239,7 @@ public class DataManagerImpl implements DataManager {
 	private String valToS(long val){
 		return NumberFormat.getInstance().format(val);
 	}
-	private long startTimestamp;
-	private long lastMessageTimestamp;
+
     private void printMessage(String message){
     	DateFormat df = new SimpleDateFormat("mm:ss");
     	System.out.println(df.format((System.currentTimeMillis() - startTimestamp)) + " - Diff " + Math.round((System.currentTimeMillis() - lastMessageTimestamp) / 100.0) / 10.0 + "s: " + message);
