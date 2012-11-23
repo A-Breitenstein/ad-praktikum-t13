@@ -8,7 +8,7 @@ import java.util.concurrent.Semaphore;
  * @author Markus Bruhn
  *
  */
-public interface IOJob {
+public interface IOJob {//extends Runnable{
 
         /**
          * Gibt die Identifikation (z.B. Pfad) der Datei zurück, auf welcher dieser IO-Job arbeitet
@@ -37,6 +37,6 @@ public interface IOJob {
          * führt die I/O-Aufgabe (synchron) aus. Der Schlüssel muss nach Beendigung der Aufgabe noch
          * nicht zurückgegeben worden sein.
          */
-        public void runJob();
+         public void run();
         
 }
