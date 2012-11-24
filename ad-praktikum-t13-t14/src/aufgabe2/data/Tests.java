@@ -50,7 +50,7 @@ public final class Tests {
 
 		
 		if(!Files.exists(Paths.get(InputFilePath)))
-            TestFileGenerator.createTestFile(InputFilePath,10000000,100);
+            TestFileGenerator.createTestFile(InputFilePath,100000,100);
 
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
