@@ -20,6 +20,7 @@ public class QuickSortMultiThreaded {
     public static int threadCountMax = 10; // ab 50.000.000 unter 32 threads
     public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
+    private int dualPivotDepthMax = 96/3;
     private static final int insertion_sort_grenze = 10;//47
 
     private synchronized void increaseDepth(){
@@ -44,7 +45,8 @@ public class QuickSortMultiThreaded {
         boolean result = false;
         if(startRechts> 10000){
             Future<Boolean> future;
-            future = threadPool.submit(new quickSort(startLinks,startRechts));
+//            future = threadPool.submit(new quickSort(startLinks,startRechts));
+            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
             try {
                 result = future.get();
             } catch (InterruptedException e) {
@@ -258,6 +260,305 @@ public class QuickSortMultiThreaded {
     }
 
 
+
+
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@ SINGLE THREAD VERSION DUAL PIVOT @@@@@@@@@@@@@@@@@@@@@@*/
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+    /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+      /*source => http://iaroslavski.narod.ru/quicksort/DualPivotQuicksort.pdf  */
+
+    private static final int INSERTIONSORT_GRENZE = 10;
+    private static final int DIST_SIZE = 13;
+
+    // single thread version
+    public static void dualPivotQuicksortSingleThreaded(IntBuffer data,int left,int right){
+        int len = right - left;
+        int x;
+        if (len < INSERTIONSORT_GRENZE) { // insertion sort on tiny array
+            QuickSortMultiThreaded.blockSort_insertion(data,left,right);
+            return;
+        }
+
+        // median indexes
+        int sixth = len / 6;
+        int m1 = left + sixth;
+        int m2 = m1 + sixth;
+        int m3 = m2 + sixth;
+        int m4 = m3 + sixth;
+        int m5 = m4 + sixth;
+// 5-element sorting network
+        if (data.get(m1) > data.get(m2)) { x = data.get(m1); data.put(m1,data.get(m2)); data.put(m2,x); }
+        if (data.get(m4) > data.get(m5)) { x = data.get(m4); data.put(m4,data.get(m5)); data.put(m5,x); }
+        if (data.get(m1) > data.get(m3)) { x = data.get(m1); data.put(m1,data.get(m3)); data.put(m3,x); }
+        if (data.get(m2) > data.get(m3)) { x = data.get(m2); data.put(m2,data.get(m3)); data.put(m3,x); }
+        if (data.get(m1) > data.get(m4)) { x = data.get(m1); data.put(m1,data.get(m4)); data.put(m4,x); }
+        if (data.get(m3) > data.get(m4)) { x = data.get(m3); data.put(m3,data.get(m4)); data.put(m4,x); }
+        if (data.get(m2) > data.get(m5)) { x = data.get(m2); data.put(m2,data.get(m5)); data.put(m5,x); }
+        if (data.get(m2) > data.get(m3)) { x = data.get(m2); data.put(m2,data.get(m3)); data.put(m3,x); }
+        if (data.get(m4) > data.get(m5)) { x = data.get(m4); data.put(m4,data.get(m5)); data.put(m5,x); }
+
+        // pivots: [ < pivot1 | pivot1 <= && <= pivot2 | > pivot2 ]
+        int pivot1 = data.get(m2);
+        int pivot2 = data.get(m4);
+        boolean diffPivots = pivot1 != pivot2;
+        data.put(m2,data.get(left));
+        data.put(m4,data.get(right));
+// center part pointers
+        int less = left + 1;
+        int great = right - 1;
+
+        // sorting
+        if (diffPivots) {
+            for (int k = less; k <= great; k++) {
+                x = data.get(k);
+                if (x < pivot1) {
+                    data.put(k,data.get(less));
+                    data.put(less++,x);
+                }
+                else if (x > pivot2) {
+                    while (data.get(great) > pivot2 && k < great) {
+                        great--;
+                    }
+                    data.put(k,data.get(great));
+                    data.put(great--,x);
+                    x = data.get(k);
+                    if (x < pivot1) {
+                        data.put(k,data.get(less));
+                        data.put(less++,x);
+                    }
+                }
+            }
+        }
+        else {
+            for (int k = less; k <= great; k++) {
+                x = data.get(k);
+                if (x == pivot1) {
+                    continue;
+                }
+                if (x < pivot1) {
+                    data.put(k,data.get(less));
+                    data.put(less++, x);
+                }
+                else {
+                    while (data.get(great) > pivot2 && k < great) {
+                        great--;
+                    }
+                    data.put(k,data.get(great));
+                    data.put(great--,x);
+                    x = data.get(k);
+                    if (x < pivot1) {
+                        data.put(k,data.get(less));
+                        data.put(less++,x);
+                    }
+                }
+            }
+        }
+
+        // swap
+        data.put(left,data.get(less - 1));
+        data.put(less - 1,pivot1);
+        data.put(right,data.get(great + 1));
+        data.put(great + 1,pivot2);
+
+        // left and right parts
+        dualPivotQuicksortSingleThreaded(data, left, less - 2);
+        dualPivotQuicksortSingleThreaded(data, great + 2, right);
+
+        // equal elements
+        if (great - less > len - DIST_SIZE && diffPivots) {
+            for (int k = less; k <= great; k++) {
+                x = data.get(k);
+                if (x == pivot1) {
+                    data.put(k,data.get(less));
+                    data.put(less++, x);
+                }
+                else if (x == pivot2) {
+                    data.put(k,data.get(great));
+                    data.put(great--,x);
+                    x = data.get(k);
+
+                    if (x == pivot1) {
+                        data.put(k,data.get(less));
+                        data.put(less++, x);
+                    }
+                }
+            }
+        }
+        // center part
+        if (diffPivots) {
+            dualPivotQuicksortSingleThreaded(data, less, great);
+        }
+
+
+
+    }
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ MULTI THREADED DUAL PIOVT QUICKSORT @@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+class DualPivotQuicksort implements Callable {
+    private int left;
+    private int right;
+
+    public DualPivotQuicksort( int left, int right) {
+        this.left = left;
+        this.right = right;
+    }
+    @Override
+    public Object call() {
+        return dualPivotQuicksort();
+    }
+
+    public boolean dualPivotQuicksort(){
+        int len = right - left;
+        int x;
+        if (len < INSERTIONSORT_GRENZE) { // insertion sort on tiny array
+            QuickSortMultiThreaded.blockSort_insertion(data, left, right);
+            return true;
+        }
+
+        if(depth < dualPivotDepthMax){
+            increaseDepth();
+                // median indexes
+                int sixth = len / 6;
+                int m1 = left + sixth;
+                int m2 = m1 + sixth;
+                int m3 = m2 + sixth;
+                int m4 = m3 + sixth;
+                int m5 = m4 + sixth;
+        // 5-element sorting network
+                if (data.get(m1) > data.get(m2)) { x = data.get(m1); data.put(m1,data.get(m2)); data.put(m2,x); }
+                if (data.get(m4) > data.get(m5)) { x = data.get(m4); data.put(m4,data.get(m5)); data.put(m5,x); }
+                if (data.get(m1) > data.get(m3)) { x = data.get(m1); data.put(m1,data.get(m3)); data.put(m3,x); }
+                if (data.get(m2) > data.get(m3)) { x = data.get(m2); data.put(m2,data.get(m3)); data.put(m3,x); }
+                if (data.get(m1) > data.get(m4)) { x = data.get(m1); data.put(m1,data.get(m4)); data.put(m4,x); }
+                if (data.get(m3) > data.get(m4)) { x = data.get(m3); data.put(m3,data.get(m4)); data.put(m4,x); }
+                if (data.get(m2) > data.get(m5)) { x = data.get(m2); data.put(m2,data.get(m5)); data.put(m5,x); }
+                if (data.get(m2) > data.get(m3)) { x = data.get(m2); data.put(m2,data.get(m3)); data.put(m3,x); }
+                if (data.get(m4) > data.get(m5)) { x = data.get(m4); data.put(m4,data.get(m5)); data.put(m5,x); }
+
+                // pivots: [ < pivot1 | pivot1 <= && <= pivot2 | > pivot2 ]
+                int pivot1 = data.get(m2);
+                int pivot2 = data.get(m4);
+                boolean diffPivots = pivot1 != pivot2;
+                data.put(m2,data.get(left));
+                data.put(m4,data.get(right));
+        // center part pointers
+                int less = left + 1;
+                int great = right - 1;
+
+                // sorting
+                if (diffPivots) {
+                    for (int k = less; k <= great; k++) {
+                        x = data.get(k);
+                        if (x < pivot1) {
+                            data.put(k,data.get(less));
+                            data.put(less++,x);
+                        }
+                        else if (x > pivot2) {
+                            while (data.get(great) > pivot2 && k < great) {
+                                great--;
+                            }
+                            data.put(k,data.get(great));
+                            data.put(great--,x);
+                            x = data.get(k);
+                            if (x < pivot1) {
+                                data.put(k,data.get(less));
+                                data.put(less++,x);
+                            }
+                        }
+                    }
+                }
+                else {
+                    for (int k = less; k <= great; k++) {
+                        x = data.get(k);
+                        if (x == pivot1) {
+                            continue;
+                        }
+                        if (x < pivot1) {
+                            data.put(k,data.get(less));
+                            data.put(less++, x);
+                        }
+                        else {
+                            while (data.get(great) > pivot2 && k < great) {
+                                great--;
+                            }
+                            data.put(k,data.get(great));
+                            data.put(great--,x);
+                            x = data.get(k);
+                            if (x < pivot1) {
+                                data.put(k,data.get(less));
+                                data.put(less++,x);
+                            }
+                        }
+                    }
+                }
+
+                // swap
+                data.put(left,data.get(less - 1));
+                data.put(less - 1,pivot1);
+                data.put(right,data.get(great + 1));
+                data.put(great + 1,pivot2);
+                Future<Boolean> part1 = null,part2 = null,part3 = null;
+                // left and right parts
+                part1 = threadPool.submit(new DualPivotQuicksort(left,less - 2));
+                part2 = threadPool.submit(new DualPivotQuicksort(great + 2,right));
+        //        dualPivotQuicksort(data, left, less - 2);
+        //        dualPivotQuicksort(data, great + 2, right);
+
+                // equal elements
+                if (great - less > len - DIST_SIZE && diffPivots) {
+                    for (int k = less; k <= great; k++) {
+                        x = data.get(k);
+                        if (x == pivot1) {
+                            data.put(k,data.get(less));
+                            data.put(less++, x);
+                        }
+                        else if (x == pivot2) {
+                            data.put(k,data.get(great));
+                            data.put(great--,x);
+                            x = data.get(k);
+
+                            if (x == pivot1) {
+                                data.put(k,data.get(less));
+                                data.put(less++, x);
+                            }
+                        }
+                    }
+                }
+                // center part
+                if (diffPivots) {
+        //            dualPivotQuicksort(data, less, great);
+                    part3 = threadPool.submit(new DualPivotQuicksort(less,great));
+                }
+
+
+                try {
+                    // joining threads
+                    if(part3 != null)
+                        part3.get();
+                    part2.get();
+                    part1.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ExecutionException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            decreaseDepth();
+        }else{
+            dualPivotQuicksortSingleThreaded(data, left, right);
+        }
+        return true;
+
+    }
+
+
+
+}
 
 
 }
