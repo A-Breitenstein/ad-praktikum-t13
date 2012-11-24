@@ -138,7 +138,7 @@ public class QuickSortMultiThreaded {
      * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      */
-    private static void blockSort_insertion(IntBuffer data, int links, int rechts) {
+    public static void blockSort_insertion(IntBuffer data, int links, int rechts) {
         for (int i = links + 1; i <= rechts; i++) {
             int j = i;
             int itemToSort = data.get(i);
@@ -176,7 +176,7 @@ public class QuickSortMultiThreaded {
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      * @return der Index des Pivot-ELements
      */
-    private static int quickSwap(IntBuffer data, int links, int rechts) {
+    public static int quickSwap(IntBuffer data, int links, int rechts) {
 
         int i = links;
         int j = rechts - 1; // Starte mit j links vom Pivotelement

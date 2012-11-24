@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 import aufgabe2.algorithm.parallel.QuickSortMultiThreaded;
+import aufgabe2.algorithm.parallel.stolen.ForkJoinQuicksortStrategy;
 import aufgabe2.algorithm.parallel.stolen.Quicksort;
 import org.junit.*;
 
@@ -517,23 +518,25 @@ ElapsedTime: 69712 ms
 
     @Test
     public void quicksortMultithreadTest(){
-        String InputFilePath = "DataManagerTest";
+        String InputFilePath = "D:\\DataManagerTest";
         long start,elapsed;
 
         if(!Files.exists(Paths.get(InputFilePath)))
             TestFileGenerator.createTestFile(InputFilePath,10000000,100);
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
-        ExecutorService threadPool = Executors.newCachedThreadPool();
+//        ExecutorService threadPool = Executors.newCachedThreadPool();
+        ExecutorService threadPool = new ForkJoinPool();
 
         //vorlauf
         IntBuffer intbuff = data.readBlock().asIntBuffer();
-        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
-
+//        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
+        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
 
         intbuff = data.readBlock().asIntBuffer();
         start = System.currentTimeMillis();
-        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
+//        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
+        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
          isSorted(intbuff);
