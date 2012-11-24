@@ -33,6 +33,15 @@ public class Writer {
     public static Writer create(String fileName){
         return  new Writer(fileName);
     }
+    public void write(ByteBuffer byteBuffer){
+        int size = byteBuffer.limit()/4;
+        try{
+            fileChan.write(byteBuffer);
+            overAllWriteCount+=size;
+        }catch (IOException e){
+            System.err.println(fileName+": konnte nicht geschrieben werden: " + size);
+        }
+    }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
     	int size = byteBuffer.limit()/4; 
     	try{
