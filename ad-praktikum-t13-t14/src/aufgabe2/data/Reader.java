@@ -91,6 +91,30 @@ public class Reader {
         return  tmp;
     }
 
+    public void read(ByteBuffer target){
+        try {
+            fileChan.read(target);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean isFileFullyReaded(){
+        try {
+//            System.out.println("filechan.position = " +fileChan.position());
+            return fileChan.position()>= fileChan.size();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return true;
+    }
+    public long getFileChanPosition(){
+        try {
+            return fileChan.position();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return 0;
+    }
     public IntBuffer getIntBuffer(ByteBuffer target) {
         target.clear();
     	try{

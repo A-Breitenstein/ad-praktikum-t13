@@ -7,7 +7,7 @@ final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = (long)(1.96 * 1024 * 1024 * 1024); // = 2(!) GB
+	public static final long BUFFERSIZE_APPLICATION = (long)(1.99 * 1024 * 1024 * 1024); // = 2(!) GB
 	//ACHTUNG: Die Reader scheinen den Doppelten Speicher noch einmal zu benötigen. Wenn wir 
 	// das untersucht haben, kann die BufferSize korrekt eingestellt werden. Zur Zeit muss
 	// so ziemlich der doppelte Arbeitsspeicherverbrauch einkalkuliert werden!!!

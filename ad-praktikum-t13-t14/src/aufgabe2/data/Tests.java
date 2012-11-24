@@ -51,11 +51,48 @@ public final class Tests {
 		String InputFilePath = "DataManagerTest";
 		String outputFilePath = null;
 
-		//TestFileGenerator.createTestFile(InputFilePath,10000000,100);
+        if(!Files.exists(Paths.get(InputFilePath)))
+            TestFileGenerator.createTestFile(InputFilePath,10000000,100);
+
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
         assertTrue(TestFileGenerator.isSorted(outputFilePath));
-        
+
+        /*
+        mit 6 read calls
+        *  Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+04:21 - Diff 261.9s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 534.186.557
+fertig
+JobScheduler stopped.
+06:39 - Diff 137.7s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+Sortieren abgeschlossen. PrÃ¼fe Sortierung...
+C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\EnddateiSorted is sorted! congratulations
+Anzahl der betrachteten Integer Zahlen: 1000000000
+        *
+        *
+        *  mit nur einem readcall, hier kann man leider keinen unterschied in der quicksortphase sehen
+          Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+04:36 - Diff 276.4s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 534.186.557
+fertig
+JobScheduler stopped.
+07:54 - Diff 197.4s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+Sortieren abgeschlossen. PrÃ¼fe Sortierung...
+C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\EnddateiSorted is sorted! congratulations
+Anzahl der betrachteten Integer Zahlen: 1000000000
+
+        *
+        *
+        **/
 	}
 	@Test
 	public void testMergeSortAlgorithm2() {
@@ -83,8 +120,10 @@ public final class Tests {
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
         start = System.currentTimeMillis();
-        data.readBlock();
-        data.readBlock();
+        for (int i = 0; i <2 ; i++) {
+            data.readBlock();
+        }
+        ;
         elapsed = System.currentTimeMillis() - start;
         System.out.println("ElapsedTime: " +elapsed +" ms");
     /* Beginne Sortierung von: 1.000.000.000 Integers
@@ -95,6 +134,100 @@ Initial Integers pro Block: 526.133.493
 
 ElapsedTime: 182475 ms verfälscht durch auslagerung
 
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+ElapsedTime: 143943 ms
+
+
+JobScheduler started.
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+ElapsedTime: 100181 ms
+
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+ElapsedTime: 87991 ms
+
+
+   Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+ElapsedTime: 95482 ms
+
+-------------------- neu -----------------
+        mit 128 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+java.nio.DirectByteBuffer[pos=0 lim=2136746228 cap=2136746228]
+java.nio.DirectByteBuffer[pos=0 lim=1863253772 cap=2136746228]
+
+ElapsedTime: 75460 ms
+
+
+            mit 8 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+java.nio.DirectByteBuffer[pos=0 lim=2136746228 cap=2136746228]
+java.nio.DirectByteBuffer[pos=0 lim=1863253772 cap=2136746228]
+ElapsedTime: 70056 ms
+
+
+    mit 4 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+java.nio.DirectByteBuffer[pos=0 lim=2136746228 cap=2136746228]
+java.nio.DirectByteBuffer[pos=0 lim=1863253772 cap=2136746228]
+ElapsedTime: 70721 ms
+
+       mit 6 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+java.nio.DirectByteBuffer[pos=0 lim=2136746228 cap=2136746228]
+java.nio.DirectByteBuffer[pos=0 lim=1863253772 cap=2136746228]
+ElapsedTime: 69967 ms
+
+
+      mit einem read call
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 534.186.557
+   Integers pro Merge-Read: 66.773.319
+  Integers pro Merge-Write: 66.773.319
+       Max Arbeitsspeicher: 2.037MB
+
+java.nio.DirectByteBuffer[pos=0 lim=2136746228 cap=2136746228]
+java.nio.DirectByteBuffer[pos=0 lim=1863253772 cap=2136746228]
+ElapsedTime: 100795 ms
 */
     }
 
@@ -112,13 +245,22 @@ ElapsedTime: 182475 ms verfälscht durch auslagerung
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
         start = System.currentTimeMillis();
-        data.readBlock();
-        data.readBlock();
-        data.readBlock();
-        data.readBlock();
+        for (int i = 0; i <4 ; i++) {
+            System.out.println(data.readBlock());
+
+        }
+
         elapsed = System.currentTimeMillis() - start;
         System.out.println("ElapsedTime: " +elapsed +" ms");
         /*
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+ElapsedTime: 69697 ms
+
         *     Beginne Sortierung von: 1.000.000.000 Integers
 Initial Integers pro Block: 257.698.037
    Integers pro Merge-Read: 32.212.254
@@ -126,6 +268,19 @@ Initial Integers pro Block: 257.698.037
        Max Arbeitsspeicher: 983MB  long BUFFERSIZE_APPLICATION = (long)(0.96 * 1024 * 1024 * 1024); // = 2(!) GB
 
 ElapsedTime: 69917 ms
+
+
+
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+ElapsedTime: 69488 ms
+
+
+
 */
     }
     @Test
@@ -138,9 +293,29 @@ ElapsedTime: 69917 ms
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
         start = System.currentTimeMillis();
-        data.readBlock();
+        for (int i = 0; i <8 ; i++) {
+            data.readBlock();
+        }
         elapsed = System.currentTimeMillis() - start;
         System.out.println("ElapsedTime: " +elapsed +" ms");
+        /*
+            Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 134.217.728
+   Integers pro Merge-Read: 16.777.216
+  Integers pro Merge-Write: 16.777.216
+       Max Arbeitsspeicher: 512MB
+
+ElapsedTime: 68932 ms
+
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 134.217.728
+   Integers pro Merge-Read: 16.777.216
+  Integers pro Merge-Write: 16.777.216
+       Max Arbeitsspeicher: 512MB
+
+ElapsedTime: 69712 ms
+
+        */
     }
 
     @Test
