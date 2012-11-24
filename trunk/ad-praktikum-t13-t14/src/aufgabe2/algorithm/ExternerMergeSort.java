@@ -22,19 +22,28 @@ public class ExternerMergeSort {
 	public static String sort(String inputFile) {
 		DataManager tapes = new DataManagerImpl(inputFile);
         ExecutorService threadPool = Executors.newCachedThreadPool();
+        long start;
 //        ExecutorService threadPool = new ForkJoinPool();
 
 		// Blockweise Sortierung
-		ByteBuffer data = tapes.readBlock(); // lese von "band" 1;
+        start = System.currentTimeMillis();
+        ByteBuffer data = tapes.readBlock(); // lese  von "band" 1
+        System.out.println("readcall: "+(System.currentTimeMillis() - start)+" ms");
 												// initialisierung
 		while (data.hasRemaining()) { // solange das "band" nicht leer ist
 //			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
 			IntBuffer intBuffer = data.asIntBuffer();
+            start = System.currentTimeMillis();
 //             Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,intBuffer); <-- noch schneller aber funzt mit intbuffer noch nicht ;/
             QuickSortMultiThreaded.sort(intBuffer, 0, intBuffer.limit() - 1, threadPool);
 //            QuickSortMultiThreaded.blockSort_quick(intBuffer,0,intBuffer.limit() - 1); <-- single thread version
-			tapes.writeBlock(data); // zurückschreiben
-			data = tapes.readBlock(); // lese wieder von "band" 1
+            System.out.println("quicksort: "+(System.currentTimeMillis()-start)+" ms");
+            start = System.currentTimeMillis();
+            tapes.writeBlock(data); // zurückschreiben
+            System.out.println("writecall: "+(System.currentTimeMillis() - start )+" ms");
+			start = System.currentTimeMillis();
+            data = tapes.readBlock(); // lese wieder von "band" 1
+            System.out.println("readcall: "+(System.currentTimeMillis() - start)+" ms");
 		}
 
 		// Mergen

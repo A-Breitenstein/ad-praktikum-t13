@@ -79,7 +79,14 @@ public class Reader {
         fIS.close();
     }
     public boolean hasNextIntArrray(){
-        return (fileChanSize - currentCursorPosition) > 0;//hasNextCount > 0;
+//        return (fileChanSize - currentCursorPosition) > 0;//hasNextCount > 0;
+        boolean result = false;
+        try {
+            result = (fileChan.size() - fileChan.position()) > 0;
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return result;
     }
     public String toString(){
         String tmp = "Reader has IOException ....";
@@ -116,6 +123,11 @@ public class Reader {
         return 0;
     }
     public IntBuffer getIntBuffer(ByteBuffer target) {
+        return splitRead(target,8).asIntBuffer();
+    }
+
+
+    /*public IntBuffer getIntBuffer(ByteBuffer target) {
         target.clear();
     	try{
             long newCursorPosition = currentCursorPosition+byteBufferSize;
@@ -156,6 +168,25 @@ public class Reader {
             e.printStackTrace();
         }
         return  null;
-    }
+    }*/
 
+    public ByteBuffer splitRead(ByteBuffer bytebuffer,int read_calls){
+            int bytesPerRead = bytebuffer.capacity() / read_calls;
+            int rest = bytebuffer.capacity() % read_calls;
+                bytebuffer.clear();
+                for (int i = 1; i < read_calls ; i++) {
+                    if(!isFileFullyReaded()){
+                        bytebuffer.limit(bytesPerRead * i);
+                        read(bytebuffer);
+                    }else break;
+                }
+                if(!isFileFullyReaded()){
+                    bytebuffer.limit((bytesPerRead*read_calls)+rest);
+                    read(bytebuffer);
+                }
+
+
+                bytebuffer.flip();
+                return bytebuffer;
+    }
 }

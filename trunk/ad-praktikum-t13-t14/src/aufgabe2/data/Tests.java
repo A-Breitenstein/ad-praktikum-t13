@@ -90,9 +90,128 @@ Sortieren abgeschlossen. PrÃ¼fe Sortierung...
 C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\EnddateiSorted is sorted! congratulations
 Anzahl der betrachteten Integer Zahlen: 1000000000
 
+
+                    32 read calls
+              Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+ElapsedTime quicksort: 26411 ms
+ElapsedTime quicksort: 24538 ms
+ElapsedTime quicksort: 28133 ms
+ElapsedTime quicksort: 17417 ms
+03:57 - Diff 237.5s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 268.435.456
+06:14 - Diff 137.2s: Beginne Merge-Schritt mit RunlÃ¤nge = 536.870.912
+fertig
+JobScheduler stopped.
+08:36 - Diff 141.6s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+
+        *
+        *        32readcalls für quicksort und 16 readcalls für merge
+        *     Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+readcall: 9265 ms
+quicksort: 26581 ms
+writecall: 17878 ms
+readcall: 20120 ms
+quicksort: 24900 ms
+writecall: 17728 ms
+readcall: 19294 ms
+quicksort: 28973 ms
+writecall: 17542 ms
+readcall: 13862 ms
+quicksort: 18569 ms
+writecall: 12809 ms
+readcall: 0 ms
+03:48 - Diff 228.8s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 268.435.456
+06:13 - Diff 144.2s: Beginne Merge-Schritt mit RunlÃ¤nge = 536.870.912
+fertig
+JobScheduler stopped.
+08:44 - Diff 151.0s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+Sortieren abgeschlossen. PrÃ¼fe Sortierung...
+C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\EnddateiSorted is sorted! congratulations
+Anzahl der betrachteten Integer Zahlen: 1000000000
         *
         *
-        **/
+        * 32 readcalls quicksort 32 readcalls merge
+        *     Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+readcall: 20570 ms
+quicksort: 26458 ms
+writecall: 17491 ms
+readcall: 19947 ms
+quicksort: 31469 ms
+writecall: 28599 ms
+readcall: 19426 ms
+quicksort: 24993 ms
+writecall: 17623 ms
+readcall: 13952 ms
+quicksort: 22109 ms
+writecall: 13802 ms
+readcall: 0 ms
+04:17 - Diff 257.3s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 268.435.456
+06:42 - Diff 145.3s: Beginne Merge-Schritt mit RunlÃ¤nge = 536.870.912
+fertig
+JobScheduler stopped.
+09:06 - Diff 144.1s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+Sortieren abgeschlossen. PrÃ¼fe Sortierung...
+C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\En
+        *
+        *
+        * quicksort readcalls 8 mergesort readcalls 8
+        *
+        *    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 134.217.728
+   Integers pro Merge-Read: 16.777.216
+  Integers pro Merge-Write: 16.777.216
+       Max Arbeitsspeicher: 512MB
+
+readcall: 10486 ms
+quicksort: 21988 ms
+writecall: 9429 ms
+readcall: 10050 ms
+quicksort: 11460 ms
+writecall: 10349 ms
+readcall: 10207 ms
+quicksort: 11248 ms
+writecall: 8981 ms
+readcall: 9601 ms
+quicksort: 12619 ms
+writecall: 15302 ms
+readcall: 9619 ms
+quicksort: 11074 ms
+writecall: 22918 ms
+readcall: 9701 ms
+quicksort: 12721 ms
+writecall: 9376 ms
+readcall: 9718 ms
+quicksort: 16074 ms
+writecall: 9576 ms
+readcall: 4271 ms
+quicksort: 5248 ms
+writecall: 4071 ms
+readcall: 0 ms
+04:27 - Diff 267.5s: QuickSort abgschlossen. Beginne ersten Merge-Schrit mit RunlÃ¤nge = 134.217.728
+06:55 - Diff 147.6s: Beginne Merge-Schritt mit RunlÃ¤nge = 268.435.456
+09:21 - Diff 145.8s: Beginne Merge-Schritt mit RunlÃ¤nge = 536.870.912
+fertig
+JobScheduler stopped.
+11:51 - Diff 150.9s: Sortieren abgeschlossen! Die Ausgabedatei enthÃ¤lt 1.000.000.000 Integers.
+Sortieren abgeschlossen. PrÃ¼fe Sortierung...
+C:\Users\Sven\IdeaProjects\ad-praktikum-t13-t14\EnddateiSorted is sorted! congratulations
+Anzahl der betrachteten Integer Zahlen: 1000000000
+        *
+        * */
 	}
 	@Test
 	public void testMergeSortAlgorithm2() {
@@ -279,6 +398,84 @@ Initial Integers pro Block: 268.435.456
 
 ElapsedTime: 69488 ms
 
+                mit 8 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 70178 ms
+
+             16 read calls
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 72915 ms
+
+
+ ------------>> interessant!! mit 32 read calls 20secs weniger? -------------
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 52419 ms
+
+            nochmal mit 32 diesmal aber wieder schlechter....
+            wahrscheinlich wurde irgendwas gecached
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 71761 ms
+
+mit 128 read calls meine festplatte hat 8mb cache
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 68246 ms
+                     mit 144 read calls was ca. 7,3mb entspricht weniger als mein festplatten cache
+    Beginne Sortierung von: 1.000.000.000 Integers
+Initial Integers pro Block: 268.435.456
+   Integers pro Merge-Read: 33.554.432
+  Integers pro Merge-Write: 33.554.432
+       Max Arbeitsspeicher: 1.024MB
+
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=1073741824 cap=1073741824]
+java.nio.DirectByteBuffer[pos=0 lim=778774528 cap=1073741824]
+ElapsedTime: 70982 ms
 
 
 */

@@ -40,6 +40,7 @@ public class QuickSortMultiThreaded {
 
     }
     private boolean start(){
+
         boolean result = false;
         if(startRechts> 10000){
             Future<Boolean> future;

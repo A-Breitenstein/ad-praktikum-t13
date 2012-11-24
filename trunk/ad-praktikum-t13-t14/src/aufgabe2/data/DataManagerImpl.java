@@ -86,27 +86,8 @@ public class DataManagerImpl implements DataManager {
 	
 	@Override
 	public ByteBuffer readBlock() {
-        int read_calls = 6;
-        int bytesPerRead = BUFFERSIZE_SORTARRAY / read_calls;
-        int rest = BUFFERSIZE_SORTARRAY % read_calls;
         if(!initReader.isFileFullyReaded()){
-
-            sortBBuffer.clear();
-
-            for (int i = 1; i < read_calls ; i++) {
-                if(!initReader.isFileFullyReaded()){
-                    sortBBuffer.limit(bytesPerRead*i);
-                    initReader.read(sortBBuffer);
-                }else break;
-            }
-            if(!initReader.isFileFullyReaded()){
-                sortBBuffer.limit((bytesPerRead*read_calls)+rest);
-                initReader.read(sortBBuffer);
-            }
-
-
-            sortBBuffer.flip();
-            return sortBBuffer;
+            return initReader.splitRead(sortBBuffer,8);
         } else {
             return ZEROBYTEBUFFER;
         }
@@ -114,8 +95,26 @@ public class DataManagerImpl implements DataManager {
 		
 	@Override
 	public void writeBlock(ByteBuffer buffer) {
+//        int write_calls = 6;
+//        int bytesPerWrite = BUFFERSIZE_SORTARRAY / write_calls;
+//        int rest = BUFFERSIZE_SORTARRAY % write_calls;
+//
+//        for (int i = 1; i < write_calls; i++) {
+//            if(buffer.remaining() > bytesPerWrite){
+//                buffer.limit(bytesPerWrite*i);
+//                activeInitWriter.write(buffer);
+//            }
+//            else{
+//                buffer.limit(bytesPerWrite*(i-1)+buffer.remaining())
+//                activeInitWriter.write(buffer);
+//            }
+//        }
+//        if(buffer.hasRemaining()){
+//
+//        }
+//        buffer.clear();
 		activeInitWriter.writeByteBufferToFile(buffer);
-		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben		
+		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben
 	}
 
 	
