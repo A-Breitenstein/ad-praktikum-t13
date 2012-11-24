@@ -515,18 +515,18 @@ ElapsedTime: 69712 ms
             TestFileGenerator.createTestFile(InputFilePath,10000000,100);
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
-//        ExecutorService threadPool = Executors.newCachedThreadPool();
-        ExecutorService threadPool = new ForkJoinPool();
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+//        ExecutorService threadPool = new ForkJoinPool();
 
         //vorlauf
         IntBuffer intbuff = data.readBlock().asIntBuffer();
-//        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
-        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
+        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
+//        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
 
         intbuff = data.readBlock().asIntBuffer();
         start = System.currentTimeMillis();
-//        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
-        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
+        QuickSortMultiThreaded.sort(intbuff, 0,intbuff.limit()-1,threadPool );
+//        Quicksort.forkJoinQuicksort((ForkJoinPool) threadPool, intbuff);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
          isSorted(intbuff);
@@ -679,15 +679,14 @@ java.util.concurrent.ThreadPoolExecutor@74dbe8cd[Running, pool size = 62, active
 
         DataManagerImpl data = new DataManagerImpl(InputFilePath);
 
-        IntBuffer intbuff =data.readBlock().asIntBuffer();
+        IntBuffer intbuff = data.readBlock().asIntBuffer();
 
-
-        intbuff = data.readBlock().asIntBuffer();
         start = System.currentTimeMillis();
         // singleThread funktion
         //QuickSortMultiThreaded.blockSort_quick(intbuff,0,intbuff.limit()-1);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
+        isSorted(intbuff);
 
         /*
          SingleThreaded
@@ -697,7 +696,30 @@ Initial Integers pro Block: 257.698.037
   Integers pro Merge-Write: 32.212.254
        Max Arbeitsspeicher: 983MB
 
-elapsedTime: 57243 ms  */
+elapsedTime: 57243 ms
+
+    Beginne Sortierung von: 100.000.000 Integers
+Initial Integers pro Block: 51.002.736
+   Integers pro Merge-Read: 6.375.342
+  Integers pro Merge-Write: 6.375.342
+       Max Arbeitsspeicher: 194MB
+
+elapsedTime: 29922 ms
+controll_counter: 51002736
+
+
+    Beginne Sortierung von: 100.000.000 Integers
+Initial Integers pro Block: 51.002.736
+   Integers pro Merge-Read: 6.375.342
+  Integers pro Merge-Write: 6.375.342
+       Max Arbeitsspeicher: 194MB
+
+elapsedTime: 29859 ms
+controll_counter: 51002736
+
+
+
+*/
     }
 
     private boolean isSorted(IntBuffer data){
@@ -715,5 +737,35 @@ elapsedTime: 57243 ms  */
         return  true;
     }
 
+    @Test
+    public void dualPivotQuicksortSingleThreadedTest(){
+        String InputFilePath = "DataManagerTest";
+        long start,elapsed;
 
+        if(!Files.exists(Paths.get(InputFilePath)))
+            TestFileGenerator.createTestFile(InputFilePath,10000000,100);
+
+        DataManagerImpl data = new DataManagerImpl(InputFilePath);
+
+        IntBuffer intbuff = data.readBlock().asIntBuffer();
+
+        start = System.currentTimeMillis();
+        // singleThread funktion
+        Quicksort.dualPivotQuicksort(intbuff,0,intbuff.limit() - 1);
+        elapsed = System.currentTimeMillis() - start;
+        System.out.println("elapsedTime: "+elapsed+" ms");
+        isSorted(intbuff);
+
+        /*
+        *
+        *     Beginne Sortierung von: 100.000.000 Integers
+Initial Integers pro Block: 51.002.736
+   Integers pro Merge-Read: 6.375.342
+  Integers pro Merge-Write: 6.375.342
+       Max Arbeitsspeicher: 194MB
+
+elapsedTime: 24672 ms
+controll_counter: 51002736
+        * */
+    }
 }
