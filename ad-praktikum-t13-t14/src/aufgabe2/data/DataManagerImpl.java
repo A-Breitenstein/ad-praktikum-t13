@@ -1,5 +1,8 @@
 package aufgabe2.data;
 
+import aufgabe2.data.io.Reader;
+import aufgabe2.data.io.Writer;
+import aufgabe2.data.jobs.IOScheduler;
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.InputBuffer;
 import aufgabe2.interfaces.OutputBuffer;
@@ -7,6 +10,7 @@ import static aufgabe2.data.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,8 +46,9 @@ public class DataManagerImpl implements DataManager {
 	private List<ByteBuffer> writeBBufferPool = new ArrayList<ByteBuffer>(); //ByteBuffers für die Writers im Merge-Schritt
 	
 	//Größen, Zustände
+	private final int initBufferSize; //Die (optimale) größe der Blöcke bei der QuickSort-Sortierung in Bytes 
 	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
-	private long integersToSort; //Die Länge der Datei
+	private final long integersToSort; //Die Länge der Datei
 	private long storedIntegers; //Die bereits gespeicherten Integers innerhalb eines MergeRuns
 	private switchStates switchState = switchStates.undef; 
 	private modie modus = modie.QuickSort;
@@ -52,6 +57,10 @@ public class DataManagerImpl implements DataManager {
 	private long startTimestamp;
 	private long lastMessageTimestamp;
 	
+	/**
+	 * Konstruktor
+	 * @param sourceFilePath
+	 */
 	public DataManagerImpl(String sourceFilePath) {
 		//SourceFiles
 		this.sourceFilePath = sourceFilePath;
@@ -61,22 +70,25 @@ public class DataManagerImpl implements DataManager {
 		file4Path = sourceFilePath+"4";
 		
 		//Readers, Writers
-		initReader = Reader.create(sourceFilePath, (int)BUFFERSIZE_SORTARRAY);
+		initBufferSize = calculateOptimalInitReadBuffer(new File(sourceFilePath).length());
+		initReader = Reader.create(sourceFilePath, initBufferSize);
 		initWriter1 = Writer.create(file1Path);
         initWriter2 = Writer.create(file2Path);
         activeInitWriter = initWriter1;
-       
-        readerBlockSize = BUFFERSIZE_SORTARRAY / INTSIZE;
+               
+        readerBlockSize = initBufferSize / INTSIZE;
         integersToSort = initReader.getFileChanSize() / INTSIZE;
-        sortBBuffer = ByteBuffer.allocateDirect( (int)BUFFERSIZE_SORTARRAY);
+        sortBBuffer = ByteBuffer.allocateDirect(initBufferSize);
         scheduler.start();
         
         //Ausgabe
-        System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers");
+        System.out.println("                        PC: " + getPcName());
+        System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers (" + Math.round((integersToSort * INTSIZE)/1024/1024) + "MB)"  );
         System.out.println("Initial Integers pro Block: " + valToS(readerBlockSize));
         System.out.println("   Integers pro Merge-Read: " + valToS(BUFFERSIZE_MERGEREAD / INTSIZE));
         System.out.println("  Integers pro Merge-Write: " + valToS(BUFFERSIZE_MERGEWRITE / INTSIZE));
         System.out.println("       Max Arbeitsspeicher: " + valToS(BUFFERSIZE_APPLICATION / 1024/1024) + "MB");
+        System.out.println(" Max Größe eines Readcalls: " + valToS(MAXBYTESPERREADCALL / 1024/1024) + "MB");
         System.out.println();
         
         //Zeitmessung
@@ -84,15 +96,44 @@ public class DataManagerImpl implements DataManager {
         lastMessageTimestamp = System.currentTimeMillis();
     }
 	
+	/**
+	 * Berechnet die optimale Initiallänge der Arrays, ohne einen zusätzlichen Merge-Run machen zu müssen.
+	 * @return
+	 */
+	private int calculateOptimalInitReadBuffer(long fileSize){
+		long optimalInitBuffer = fileSize;
+		while(optimalInitBuffer > BUFFERSIZE_SORTARRAY){
+			optimalInitBuffer = optimalInitBuffer / 2 + 4; //+4 wegen möglichen Rundungsfehlern (und 4 Bits für Integers...)
+		}
+		return toValidIntSize(optimalInitBuffer);
+	}
+	
+	private String getPcName() {
+		try {
+			return java.net.InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			return "Unknown";
+		}
+	}
+	
+	
+	//---------------Interface-Methoden --------------------------------------
+	
+	
 	@Override
 	public ByteBuffer readBlock() {
         if(!initReader.isFileFullyReaded()){
-            return initReader.splitRead(sortBBuffer,8);
+        	 try {
+				initReader.readToByteBuffer(sortBBuffer);
+				return sortBBuffer;
+			} catch (IOException e) {
+				System.err.println("Fehler beim Lesen aus der Initialdatei");
+				return ZEROBYTEBUFFER;
+			}
         } else {
             return ZEROBYTEBUFFER;
         }
 	}
-		
 	@Override
 	public void writeBlock(ByteBuffer buffer) {
 //        int write_calls = 6;
@@ -116,41 +157,70 @@ public class DataManagerImpl implements DataManager {
 		activeInitWriter.writeByteBufferToFile(buffer);
 		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben
 	}
-
 	
-	private void closeInitIO(){
-		if(initReader != null){//Wurde der Kram bereits geschlossen (und freigegeben)?
-			try {
-				initReader.close();
-			} catch (IOException e) {
-				System.err.println("InitReader konnte nicht geschlossen werden");
-			}
-			initWriter1.close();
-			initWriter2.close();
-			initReader = null;
-			initWriter1 = null;
-			initWriter2 = null;
-			sortBBuffer = null;
-			System.gc();
+	@Override
+	public InputBuffer readLeftChannel() {
+		if (modus == modie.QuickSort)
+			switchChannels();
+		return mergeInput1;
+	}
+	@Override
+	public InputBuffer readRightChannel() {
+		if (modus == modie.QuickSort)
+			switchChannels();
+		return mergeInput2;
+	}
+	@Override
+	public OutputBuffer createOuputBuffer() {
+		if (modus == modie.QuickSort)
+			switchChannels();
+		return activeMergeOutput;
+	}
+	@Override
+	public String completeSort() {
+		closeBBufferPool();
+		closeBuffers();
+		scheduler.interrupt();
+		try {
+			scheduler.join();
+		} catch (InterruptedException e) {}
+		File endFile = new File(activeMergeOutput.getFilePath());
+        File resultFile =  new File((endFile.getParent() == null ? "EnddateiSorted" : Paths.get(sourceFilePath).getParent().resolve("EnddateiSorted").toString()));
+ 
+        if(!endFile.renameTo(resultFile)){
+        	System.err.println("Die Ausgabedatei (" + endFile.getAbsolutePath() +") konnte nicht umbenannt werden.");
+        	resultFile = endFile;
+        } else {
+        	deleteIfExits(file1Path);
+        	deleteIfExits(file2Path);
+        	deleteIfExits(file3Path);
+        	deleteIfExits(file4Path);
+        }
+        printMessage("Sortieren abgeschlossen! Die Ausgabedatei enthält " + valToS(resultFile.length() / INTSIZE) + " Integers.");
+        
+        return resultFile.getAbsolutePath();
+	}
+	
+	
+	//----------- Buffer-Pool --------------------------------------------------
+	
+	
+	private void initBBufferPool(){
+		for (int i = 0; i<4; i++){
+			readBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEREAD));
+		}
+		for (int i = 0; i<4; i++){
+			writeBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEWRITE));
 		}
 	}
-
-
-	/**
-	 * Muss von OutputBuffer aufgerufen werden, wenn dort das Ende des Blocks signalisiert wurde
-	 */
-	void finishBlock(){		
-		storedIntegers += readerBlockSize * 2; //wenn ein Rest gespeichert wurde, ist der tatsächliche Wert natürlich etwas kleiner, aber es wird so oder So ein Switch gemacht.
-		if (storedIntegers >= integersToSort) {
-			if ( readerBlockSize * 2 < integersToSort){ //wenn false, dann terminiere
-				switchChannels();
-			}
-		} else {
-			mergeInput1.simulateNextBlock();
-			mergeInput2.simulateNextBlock();
-			activeMergeOutput = (activeMergeOutput == mergeOutput1 ? mergeOutput2 : mergeOutput1); //Den nächsten Run auf die andere der beiden Dateien schreiben
-		}	
+	private void closeBBufferPool(){
+		readBBufferPool.clear();
+		writeBBufferPool.clear();
 	}
+	
+	
+	//----------SwitchChannels, Close IO Channels--------------------------------
+	
 	
 	private void switchChannels(){
 		if(modus == modie.QuickSort){
@@ -179,6 +249,40 @@ public class DataManagerImpl implements DataManager {
 		storedIntegers = 0;
 		activeMergeOutput = mergeOutput1;
 	}
+	
+	private void closeInitIO(){
+		if(initReader != null){//Wurde der Kram bereits geschlossen (und freigegeben)?
+			try {
+				initReader.close();
+			} catch (IOException e) {
+				System.err.println("InitReader konnte nicht geschlossen werden");
+			}
+			initWriter1.close();
+			initWriter2.close();
+			initReader = null;
+			initWriter1 = null;
+			initWriter2 = null;
+			sortBBuffer = null;
+			System.gc();
+		}
+	}
+
+	/**
+	 * Muss von OutputBuffer aufgerufen werden, wenn dort das Ende des Blocks signalisiert wurde
+	 */
+	void finishBlock(){		
+		storedIntegers += readerBlockSize * 2; //wenn ein Rest gespeichert wurde, ist der tatsächliche Wert natürlich etwas kleiner, aber es wird so oder So ein Switch gemacht.
+		if (storedIntegers >= integersToSort) {
+			if ( readerBlockSize * 2 < integersToSort){ //wenn false, dann terminiere
+				switchChannels();
+			}
+		} else {
+			mergeInput1.simulateNextBlock();
+			mergeInput2.simulateNextBlock();
+			activeMergeOutput = (activeMergeOutput == mergeOutput1 ? mergeOutput2 : mergeOutput1); //Den nächsten Run auf die andere der beiden Dateien schreiben
+		}	
+	}
+	
 	private void closeBuffers(){
 		try {
 			mergeInput1.close();
@@ -190,52 +294,6 @@ public class DataManagerImpl implements DataManager {
 			System.exit(0);
 		}
 	}
-	
-	@Override
-	public InputBuffer readLeftChannel() {
-		if (modus == modie.QuickSort)
-			switchChannels();
-		return mergeInput1;
-	}
-
-	@Override
-	public InputBuffer readRightChannel() {
-		if (modus == modie.QuickSort)
-			switchChannels();
-		return mergeInput2;
-	}
-	@Override
-	public OutputBuffer createOuputBuffer() {
-		if (modus == modie.QuickSort)
-			switchChannels();
-		return activeMergeOutput;
-	}
-
-	@Override
-	public String completeSort() {
-		closeBBufferPool();
-		closeBuffers();
-		scheduler.interrupt();
-		try {
-			scheduler.join();
-		} catch (InterruptedException e) {}
-		File endFile = new File(activeMergeOutput.getFilePath());
-        File resultFile =  new File((endFile.getParent() == null ? "EnddateiSorted" : Paths.get(sourceFilePath).getParent().resolve("EnddateiSorted").toString()));
- 
-        if(!endFile.renameTo(resultFile)){
-        	System.err.println("Die Ausgabedatei (" + endFile.getAbsolutePath() +") konnte nicht umbenannt werden.");
-        	resultFile = endFile;
-        } else {
-        	deleteIfExits(file1Path);
-        	deleteIfExits(file2Path);
-        	deleteIfExits(file3Path);
-        	deleteIfExits(file4Path);
-        }
-        printMessage("Sortieren abgeschlossen! Die Ausgabedatei enthält " + valToS(resultFile.length() / INTSIZE) + " Integers.");
-        
-        return resultFile.getAbsolutePath();
-	}
-	
 	
 	/**
 	 * Löscht eine Datei, wenn diese existiert.
@@ -253,28 +311,26 @@ public class DataManagerImpl implements DataManager {
          }
 	}
 	
-	private String valToS(long val){
-		return NumberFormat.getInstance().format(val);
-	}
-
+	
+	//---------- Ausgabe auf Konsole ----------------
+	
     private void printMessage(String message){
     	DateFormat df = new SimpleDateFormat("mm:ss");
     	System.out.println(df.format((System.currentTimeMillis() - startTimestamp)) + " - Diff " + Math.round((System.currentTimeMillis() - lastMessageTimestamp) / 100.0) / 10.0 + "s: " + message);
     	lastMessageTimestamp = System.currentTimeMillis();
     }
-	
-	private void initBBufferPool(){
-		for (int i = 0; i<4; i++){
-			readBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEREAD));
-		}
-		for (int i = 0; i<4; i++){
-			writeBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEWRITE));
-		}
+    /**
+     * Formatiert eine Zahl mit Tausender-Trennzeichen
+     * @param val
+     * @return
+     */
+	private String valToS(long val){
+		return NumberFormat.getInstance().format(val);
 	}
-	private void closeBBufferPool(){
-		readBBufferPool.clear();
-		writeBBufferPool.clear();
-	}
+
+
+	//------------ Eumns ----------------------------
+
 	
 	enum modie{
 		QuickSort,

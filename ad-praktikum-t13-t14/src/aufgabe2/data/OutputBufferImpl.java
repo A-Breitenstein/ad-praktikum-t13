@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import aufgabe2.data.io.Writer;
+import aufgabe2.data.jobs.IOScheduler;
+import aufgabe2.data.jobs.WriterJob;
 import aufgabe2.interfaces.OutputBuffer;
 
 public class OutputBufferImpl implements OutputBuffer {

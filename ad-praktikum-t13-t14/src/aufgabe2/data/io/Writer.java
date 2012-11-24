@@ -1,4 +1,4 @@
-package aufgabe2.data;
+package aufgabe2.data.io;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -14,8 +14,7 @@ public class Writer {
     private FileChannel fileChan;
     private String fileName;
     private FileOutputStream fOS;
-    private long overAllWriteCount = 0;
-
+   
 
     private Writer(String fileName){
         this.fileName = fileName;
@@ -36,11 +35,10 @@ public class Writer {
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
     	int size = byteBuffer.limit()/4; 
     	try{
-             
-                fileChan.write(byteBuffer);
-                 byteBuffer.clear(); // <--------- WTFX? ich wusste nicht das man den byteBuffer auch clearen muss
-                 // wenn man auf nen intbuffer hat ... und auf die clear called wtf..
-                 overAllWriteCount+=size;
+            fileChan.write(byteBuffer);
+            byteBuffer.clear(); // <--------- WTFX? ich wusste nicht das man den byteBuffer auch clearen muss
+            // wenn man auf nen intbuffer hat ... und auf die clear called wtf..
+
          }catch (IOException e){
              System.err.println(fileName+": konnte nicht geschrieben werden: " + size);
          }

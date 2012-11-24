@@ -35,8 +35,10 @@ public class ExternerMergeSort {
 			IntBuffer intBuffer = data.asIntBuffer();
             start = System.currentTimeMillis();
 //             Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,intBuffer); <-- noch schneller aber funzt mit intbuffer noch nicht ;/
-            QuickSortMultiThreaded.sort(intBuffer, 0, intBuffer.limit() - 1, threadPool);
-//            QuickSortMultiThreaded.blockSort_quick(intBuffer,0,intBuffer.limit() - 1); <-- single thread version
+            System.out.println("Start Quicksort");
+			QuickSortMultiThreaded.sort(intBuffer, 0, intBuffer.limit() - 1, threadPool);
+            System.out.println("Stop Quicksort");
+			//QuickSortMultiThreaded.blockSort_quick(intBuffer,0,intBuffer.limit() - 1); <-- single thread version
             System.out.println("quicksort: "+(System.currentTimeMillis()-start)+" ms");
             start = System.currentTimeMillis();
             tapes.writeBlock(data); // zurückschreiben
@@ -51,7 +53,7 @@ public class ExternerMergeSort {
 								// Blöcke mehr kommen
 			// der merge tut schon alles, also do nothing
 		}
-        System.out.println("fertig");
+        //System.out.println("fertig");
         //tapes.closeAllChannelsIfOpen();
        return tapes.completeSort();
         //return "guck im projekt verzeichnis";
