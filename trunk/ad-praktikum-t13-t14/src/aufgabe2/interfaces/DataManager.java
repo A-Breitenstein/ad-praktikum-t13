@@ -43,14 +43,14 @@ public interface DataManager {
 
     /**
      * 
-     * @return InputBuffer, der die Daten auf dem linken band beinhaltet (vorsortiert!) 
+     * @return InputBuffer, der die Daten auf dem linken Band beinhaltet (vorsortiert!) 
      */
     public InputBuffer readLeftChannel();
 
 
     /**
      * 
-     * @return InputBuffer, der die Daten auf dem rechten band beinhaltet (vorsortiert!) 
+     * @return InputBuffer, der die Daten auf dem rechten Band beinhaltet (vorsortiert!) 
      */
     public InputBuffer readRightChannel();
 

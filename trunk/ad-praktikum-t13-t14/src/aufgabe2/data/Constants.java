@@ -1,33 +1,29 @@
 package aufgabe2.data;
 
-final class Constants {
+public final class Constants {
 	//Nach jeder Änderung in den Konstanten ist der Test in Tests.testValidBufferConstants aufzurufen!
 	
 	/**
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = (long)(0.5 * 1024 * 1024 * 1024); // = 2(!) GB
-	//ACHTUNG: Die Reader scheinen den Doppelten Speicher noch einmal zu benötigen. Wenn wir 
-	// das untersucht haben, kann die BufferSize korrekt eingestellt werden. Zur Zeit muss
-	// so ziemlich der doppelte Arbeitsspeicherverbrauch einkalkuliert werden!!!
-	
+	public static final long BUFFERSIZE_APPLICATION = 983 * 1024 * (long)1024; // vorderster Wert in MB
+
 	/**
 	 * Die Größe eines Integers in Bytes
 	 */
 	public static final int INTSIZE = 4; // ein Int benötigt 4 Bytes
 	
+	/**
+	 * Die maximale Größe eines Lesevorgangs. Sind mehr Zahlen einzulesenen, so wird mehrmals hintereinander gelesen.
+	 */
+	public static final int MAXBYTESPERREADCALL = toValidIntSize(256 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Arbeiten 
 	 * auf dem Array genutzt werden darf.
 	 */
-	public static final int BUFFERSIZE_SORTARRAY = toValidIntSize(BUFFERSIZE_APPLICATION); //Gesamten Arbeitsspeicher verwenden!
-	/**
-	 * Die Größe der Runs beim ersten Durchlauf (=Sortieren)
-	 */
-	//public static final int INITBLOCKINTEGERS = (int)(BUFFERSIZE_SORTARRAY / 4);
-			
+	public static final int BUFFERSIZE_SORTARRAY = toValidIntSize(BUFFERSIZE_APPLICATION); //Gesamten Arbeitsspeicher verwenden!	
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
@@ -48,7 +44,7 @@ final class Constants {
 	 * @param maxBufferSize
 	 * @return int - Postcondition: return % INTSIZE == 0 && returnvalue + INTSIZE > maxBufferSize
 	 */
-	private static int toValidIntSize(long maxBufferSize){
+	public static int toValidIntSize(long maxBufferSize){
 		return ((int)Math.min(Integer.MAX_VALUE,maxBufferSize) / INTSIZE) * INTSIZE;
 	}
 	

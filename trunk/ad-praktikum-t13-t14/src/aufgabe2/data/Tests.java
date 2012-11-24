@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 
 import aufgabe2.algorithm.parallel.QuickSortMultiThreaded;
-import aufgabe2.algorithm.parallel.stolen.ForkJoinQuicksortStrategy;
 import aufgabe2.algorithm.parallel.stolen.Quicksort;
 import org.junit.*;
 
@@ -25,26 +24,23 @@ public final class Tests {
     @Test
 	public void testValidBufferConstants() {
 		//Positiver Wert?
-		assertTrue(BUFFERSIZE_APPLICATION > 0);
+		assertTrue( BUFFERSIZE_APPLICATION > 0);
 		assertTrue(BUFFERSIZE_SORTARRAY > 0);
 		assertTrue(BUFFERSIZE_MERGEREAD > 0);
 		assertTrue(BUFFERSIZE_MERGEWRITE > 0);
+		assertTrue(MAXBYTESPERREADCALL > 0);
 		//Gültiger Wert (lassen sich dort ganze Integers speichern ohne Rest?)
 		assertTrue(BUFFERSIZE_SORTARRAY % INTSIZE == 0);
 		assertTrue(BUFFERSIZE_MERGEREAD % INTSIZE == 0);
 		assertTrue(BUFFERSIZE_MERGEWRITE % INTSIZE == 0);
-		//Werden implementierungstechnische Limits nicht überschritten?
-		assertTrue(BUFFERSIZE_MERGEREAD <= Integer.MAX_VALUE);
-		assertTrue(BUFFERSIZE_MERGEWRITE <= Integer.MAX_VALUE);
+		assertTrue(MAXBYTESPERREADCALL % INTSIZE == 0);
 		//Wird die Gesammtkapazität des Speichers nicht überschritten? (Bedingungen können sich je nach Implementierungen ändern!)
+		assertTrue(MAXBYTESPERREADCALL <= BUFFERSIZE_APPLICATION);
 		assertTrue( BUFFERSIZE_SORTARRAY <= BUFFERSIZE_APPLICATION);
 		assertTrue( BUFFERSIZE_SORTARRAY <= BUFFERSIZE_APPLICATION);
 		assertTrue( BUFFERSIZE_MERGEREAD * 4 + BUFFERSIZE_MERGEWRITE * 4 <= BUFFERSIZE_APPLICATION); //Jeweils zwei Dateien und zwei Treads, also mal 4!
 	}
-	@Test
-	public void testPrototype(){
-		
-	}
+
 	
 	@Test
 	public void testMergeSortAlgorithm() {
@@ -52,7 +48,8 @@ public final class Tests {
 		String InputFilePath = "DataManagerTest";
 		String outputFilePath = null;
 
-        if(!Files.exists(Paths.get(InputFilePath)))
+		
+		if(!Files.exists(Paths.get(InputFilePath)))
             TestFileGenerator.createTestFile(InputFilePath,10000000,100);
 
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
@@ -214,23 +211,16 @@ Anzahl der betrachteten Integer Zahlen: 1000000000
         *
         * */
 	}
-	@Test
-	public void testMergeSortAlgorithm2() {
-	
-        //assertTrue(TestFileGenerator.isSorted("Z:\\win7\\juno\\ADP2\\DataManagerTest3"));
-        
-        //Aufräumen
-        //deleteFile(InputFilePath);
-        //deleteFile(outputFilePath);
-	}
 
+	
+	@SuppressWarnings("unused")
 	private static void deleteFile(String path){
 		File file = new File(path);
 		if (file.exists())
 			file.delete();
 	}
 
-    @Test
+    @Test @Ignore
     public void read2GBTest(){
         String InputFilePath = "DataManagerTest";
         long start,elapsed;
@@ -355,7 +345,7 @@ ElapsedTime: 100795 ms
 
 
 
-    @Test
+    @Test @Ignore
     public void read1GBTest(){
         String InputFilePath = "DataManagerTest";
         long start,elapsed;
@@ -481,7 +471,7 @@ ElapsedTime: 70982 ms
 
 */
     }
-    @Test
+    @Test @Ignore
     public void read512MBTest(){
         String InputFilePath = "DataManagerTest";
         long start,elapsed;
@@ -516,7 +506,7 @@ ElapsedTime: 69712 ms
         */
     }
 
-    @Test
+    @Test @Ignore
     public void quicksortMultithreadTest(){
         String InputFilePath = "D:\\DataManagerTest";
         long start,elapsed;
@@ -679,7 +669,7 @@ java.util.concurrent.ThreadPoolExecutor@74dbe8cd[Running, pool size = 62, active
 
     }
 
-    @Test
+    @Test @Ignore
     public void quicksortSingleThreadedTest(){
         String InputFilePath = "DataManagerTest";
         long start,elapsed;
@@ -695,7 +685,7 @@ java.util.concurrent.ThreadPoolExecutor@74dbe8cd[Running, pool size = 62, active
         intbuff = data.readBlock().asIntBuffer();
         start = System.currentTimeMillis();
         // singleThread funktion
-        QuickSortMultiThreaded.blockSort_quick(intbuff,0,intbuff.limit()-1);
+        //QuickSortMultiThreaded.blockSort_quick(intbuff,0,intbuff.limit()-1);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
 

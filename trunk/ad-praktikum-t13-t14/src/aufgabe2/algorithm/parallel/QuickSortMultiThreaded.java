@@ -17,7 +17,7 @@ public class QuickSortMultiThreaded {
     private ExecutorService threadPool;
     private int startLinks,startRechts;
     private int depth = 0;
-    public static int threadCountMax = 64; // ab 50.000.000 unter 32 threads
+    public static int threadCountMax = 10; // ab 50.000.000 unter 32 threads
     public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
     private static final int insertion_sort_grenze = 10;//47
@@ -53,7 +53,15 @@ public class QuickSortMultiThreaded {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }else {
-               blockSort_quick(data,startLinks,startRechts);
+               try {
+				blockSort_quick(data,startLinks,startRechts);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         return true;
     }
@@ -75,16 +83,26 @@ public class QuickSortMultiThreaded {
             } else {
                 int positionPivot = quickSwap(data, links, rechts);
 
-//                synchronized (threads) {
-//                    threads -= 1;
-//                }
+                synchronized (threads) {
+                    threads -= 1;
+                }
 
-                    if(depth<depthMax){
-//                if(threads + 2 <= threadCountMax){//depth<depthMax){
+                   // if(depth<depthMax){
+                boolean newThread = false;
+                if (rechts - links > 100000){
+                    synchronized (threads) {
+                    	if(threads + 2 <= threadCountMax) {
+                    		threads += 2;
+                    		newThread = true;
+                    	}
+                    }
+                }
+
+                if(newThread){//depth<depthMax){
 //                    synchronized (threads) {
-//						threads += 2;
-//					}
-                	increaseDepth();
+//                    	threads += 2;
+//                    }
+                        //increaseDepth();
                     Future<Boolean> resultLeft,resultRight;
 
                     
@@ -93,7 +111,7 @@ public class QuickSortMultiThreaded {
 //               System.out.println(Thread.currentThread().getName()+":  is waiting ...");
                     resultLeft.get();
                     resultRight.get();
-                     decreaseDepth();
+                     //decreaseDepth();
                 }else{
 //                    System.out.println(Thread.currentThread().getName()+": is working ...");
                     blockSort_quick(data, links, positionPivot - 1);
@@ -158,14 +176,46 @@ public class QuickSortMultiThreaded {
      * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
      * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
      * @return
+     * @throws ExecutionException 
+     * @throws InterruptedException 
      */
-   public static void blockSort_quick(IntBuffer data, int links, int rechts) {
+   public  void blockSort_quick(IntBuffer data, int links, int rechts) throws InterruptedException, ExecutionException {
         if (rechts - links < insertion_sort_grenze) {
             blockSort_insertion(data, links, rechts);
         } else {
             int positionPivot = quickSwap(data, links, rechts);
-            blockSort_quick(data, links, positionPivot - 1);
-            blockSort_quick(data, positionPivot + 1, rechts);
+            
+            boolean newThread = false;
+            if (rechts - links > 100000){
+                synchronized (threads) {
+                	if(threads + 2 <= threadCountMax) {
+                		threads += 2;
+                		newThread = true;
+                	}
+                }
+            }
+
+            if(newThread){//depth<depthMax){
+//                synchronized (threads) {
+//                	threads += 2;
+//                }
+                    //increaseDepth();
+                Future<Boolean> resultLeft,resultRight;
+
+                
+                resultLeft = threadPool.submit(new quickSort(links, positionPivot - 1));
+                resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
+//           System.out.println(Thread.currentThread().getName()+":  is waiting ...");
+                resultLeft.get();
+                resultRight.get();
+                 //decreaseDepth();
+            }else{
+//                System.out.println(Thread.currentThread().getName()+": is working ...");
+                blockSort_quick(data, links, positionPivot - 1);
+                blockSort_quick(data, positionPivot + 1, rechts);
+            }
+//            blockSort_quick(data, links, positionPivot - 1);
+//            blockSort_quick(data, positionPivot + 1, rechts);
         }
     }
 

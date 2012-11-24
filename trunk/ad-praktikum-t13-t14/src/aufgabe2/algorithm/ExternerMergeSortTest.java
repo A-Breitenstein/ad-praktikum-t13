@@ -9,10 +9,6 @@ import java.io.File;
 
 import org.junit.*;
 
-import aufgabe2.data.DWUtilityClass;
-import aufgabe2.data.TestFileGenerator;
-import aufgabe2.interfaces.DataWrapper;
-
 
 public class ExternerMergeSortTest {
 	
@@ -22,12 +18,9 @@ public class ExternerMergeSortTest {
 		int[] testelems = {6,3,7,2,8,7,345,8,323, 7,3,0,7,23,6,7,-4,546,34};
 		int[] expectedArr =Arrays.copyOf(testelems,testelems.length); 
 		Arrays.sort(expectedArr); //Java-Standard-implementierung vom sortieren
-		
-		DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
-		DataWrapper expected = DWUtilityClass.createNewDataWrapper(expectedArr, expectedArr.length);
-		
-		ExternerMergeSort.blockSort_insertion(test.getData(),0,testelems.length-1);
-		assertEquals(expected, test); 
+
+		ExternerMergeSort.blockSort_insertion(testelems,0,testelems.length-1);
+		assertEquals(expectedArr, testelems); 
 	}
 	
 	@Test
@@ -35,11 +28,8 @@ public class ExternerMergeSortTest {
 		int[] testelems = {};
 		int[] expectedArr =Arrays.copyOf(testelems,testelems.length); 
 		
-		DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
-		DataWrapper expected = DWUtilityClass.createNewDataWrapper(expectedArr, expectedArr.length);
-		
-		ExternerMergeSort.blockSort_insertion(test.getData(),0,testelems.length-1);
-		assertEquals(expected, test); 
+		ExternerMergeSort.blockSort_insertion(testelems,0,testelems.length-1);
+		assertEquals(expectedArr, testelems); 
 	}
 	
 	@Test
@@ -47,13 +37,10 @@ public class ExternerMergeSortTest {
 		int[] testelems = {6,3,7,2,8,7,345,8,323, 7,3,0,7,23,6,7,-4,546,34,12};
 		int[] expectedArr =Arrays.copyOf(testelems,testelems.length); 
 		Arrays.sort(expectedArr); //Java-Standard-implementierung vom sortieren
-		
-		DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
-		DataWrapper expected = DWUtilityClass.createNewDataWrapper(expectedArr, expectedArr.length);
-		
-		ExternerMergeSort.blockSort_quick(test.getData(),0,testelems.length-1);
+
+		ExternerMergeSort.blockSort_quick(testelems,0,testelems.length-1);
 		//System.out.println(Arrays.toString(test.getData()));
-		assertEquals(expected, test); 
+		assertEquals(expectedArr, testelems); 
 	}
 	
 	@Test @Ignore
@@ -62,9 +49,8 @@ public class ExternerMergeSortTest {
 		int durchlaeufe = 30;
 		for (int i=0; i<durchlaeufe; i++){
 			int[] testelems = initRandomArray(1000000, 10000000, -1000000);
-			DataWrapper test = DWUtilityClass.createNewDataWrapper(testelems,testelems.length); 
 			long start = System.currentTimeMillis();
-			ExternerMergeSort.blockSort_quick(test.getData(),0,testelems.length-1);
+			ExternerMergeSort.blockSort_quick(testelems,0,testelems.length-1);
 			duration += System.currentTimeMillis() - start;
 			assertTrue(isSorted(testelems));
 		}

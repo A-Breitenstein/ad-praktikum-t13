@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
+import aufgabe2.data.io.Reader;
+import aufgabe2.data.jobs.IOScheduler;
+import aufgabe2.data.jobs.ReaderJob;
 import aufgabe2.interfaces.*;
 
 public class InputBufferImpl implements InputBuffer{
@@ -12,8 +15,8 @@ public class InputBufferImpl implements InputBuffer{
 	private Reader reader; //der einzige Leser auf diese Datei
 	private IntBuffer currentBuffer = ZEROBUFFER; //Die aktuelle Quelle, aus der gerade die CurrentElemente geholt werden (wechselt, wenn die Quelle zuende gelesen wurde). Die Größe des currentBuffer ist maximal BUFFERSIZE_MERGEREAD 
 	private ReaderJob backgroundReader; //Der aktuelle Leseauftrag 
-	private int blockSize;
-	private int blockPos = -1; //Der Index des aktuellen Elements (vom Blockanfang aus gesehen, nicht im currentBuffer)
+	private long blockSize;
+	private long blockPos = -1; //Der Index des aktuellen Elements (vom Blockanfang aus gesehen, nicht im currentBuffer)
 	private int current = 0; //Das aktuelle Element
 	private ByteBuffer currentByteBuffer, buffer1, buffer2;
 	
@@ -30,7 +33,7 @@ public class InputBufferImpl implements InputBuffer{
 		this.buffer2 = buffer2;
 		reader = Reader.create(filePath, (int)Constants.BUFFERSIZE_MERGEREAD);
 				
-		if (reader.hasNextIntArrray()){ //Gibt es Elemente in der Datei?
+		if (!reader.isFileFullyReaded()){ //Gibt es Elemente in der Datei?
 			pushReaderJob(); //Lesejob erzeugen
 			moveNext(); //Ergebnis des Lesejobs abrufen und erstes Element lesen
 		} else {
@@ -87,7 +90,7 @@ long readCount = 0;
 					currentByteBuffer = (currentByteBuffer == buffer1 ? buffer2 : buffer1);//Nur als markierung
 					currentBuffer = backgroundReader.getIntBuffer();//hier wird ggf. gewartet, bis der Job erledigt ist.
 					backgroundReader = null; //Reader hat seinen Job getan
-					if (reader.hasNextIntArrray()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
+					if (!reader.isFileFullyReaded()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
 						pushReaderJob(); 
 					}
 					moveNext(); //currentBuffer wurde erneuert, daher current neu einlsenen
