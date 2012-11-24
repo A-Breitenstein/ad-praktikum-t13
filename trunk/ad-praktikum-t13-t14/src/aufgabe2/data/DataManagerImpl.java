@@ -86,8 +86,26 @@ public class DataManagerImpl implements DataManager {
 	
 	@Override
 	public ByteBuffer readBlock() {
-		if(initReader.hasNextIntArrray()){		
-            initReader.getIntBuffer(sortBBuffer);
+        int read_calls = 6;
+        int bytesPerRead = BUFFERSIZE_SORTARRAY / read_calls;
+        int rest = BUFFERSIZE_SORTARRAY % read_calls;
+        if(!initReader.isFileFullyReaded()){
+
+            sortBBuffer.clear();
+
+            for (int i = 1; i < read_calls ; i++) {
+                if(!initReader.isFileFullyReaded()){
+                    sortBBuffer.limit(bytesPerRead*i);
+                    initReader.read(sortBBuffer);
+                }else break;
+            }
+            if(!initReader.isFileFullyReaded()){
+                sortBBuffer.limit((bytesPerRead*read_calls)+rest);
+                initReader.read(sortBBuffer);
+            }
+
+
+            sortBBuffer.flip();
             return sortBBuffer;
         } else {
             return ZEROBYTEBUFFER;
