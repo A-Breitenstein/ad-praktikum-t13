@@ -17,7 +17,7 @@ public class QuickSortMultiThreaded {
     private ExecutorService threadPool;
     private int startLinks,startRechts;
     private int depth = 0;
-    public static int threadCountMax = 10; // ab 50.000.000 unter 32 threads
+    public static int threadCountMax = 8; //Optimal schein Anzahl der Kerne * 1,33 (Markus hat 6 Kerne)// ab 50.000.000 unter 32 threads
     public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
     private int dualPivotThreadCount = 16;
@@ -45,8 +45,8 @@ public class QuickSortMultiThreaded {
         boolean result = false;
         if(startRechts> 10000){
             Future<Boolean> future;
-//            future = threadPool.submit(new quickSort(startLinks,startRechts));
-            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
+            future = threadPool.submit(new quickSort(startLinks,startRechts));
+//            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
             try {
                 result = future.get();
             } catch (InterruptedException e) {
@@ -83,7 +83,7 @@ public class QuickSortMultiThreaded {
                 blockSort_insertion(data, links, rechts);
 //                threadPool.submit(new InsertionSort(links,rechts));
             } else {
-                int positionPivot = quickSwap(data, links, rechts);
+                int positionPivot = quickSwapMulitPivot(data, links, rechts);
 
                 synchronized (threads) {
                     threads -= 1;
@@ -91,7 +91,7 @@ public class QuickSortMultiThreaded {
 
                    // if(depth<depthMax){
                 boolean newThread = false;
-                if (rechts - links > 100000){
+                if (rechts - links > 100000){ //prüfen, ob es sich überhaupt lohnt, einen neuen Thread zu erstellen (nicht für 50 Elemente!)
                     synchronized (threads) {
                     	if(threads + 2 <= threadCountMax) {
                     		threads += 2;
@@ -100,22 +100,13 @@ public class QuickSortMultiThreaded {
                     }
                 }
 
-                if(newThread){//depth<depthMax){
-//                    synchronized (threads) {
-//                    	threads += 2;
-//                    }
-                        //increaseDepth();
+                if(newThread){
                     Future<Boolean> resultLeft,resultRight;
-
-                    
                     resultLeft = threadPool.submit(new quickSort(links, positionPivot - 1));
                     resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
-//               System.out.println(Thread.currentThread().getName()+":  is waiting ...");
                     resultLeft.get();
                     resultRight.get();
-                     //decreaseDepth();
                 }else{
-//                    System.out.println(Thread.currentThread().getName()+": is working ...");
                     blockSort_quick(data, links, positionPivot - 1);
                     blockSort_quick(data, positionPivot + 1, rechts);
                 }
@@ -204,7 +195,7 @@ public class QuickSortMultiThreaded {
         if (rechts - links < insertion_sort_grenze) {
             blockSort_insertion(data, links, rechts);
         } else {
-            int positionPivot = quickSwap(data, links, rechts);
+            int positionPivot = quickSwapMulitPivot(data, links, rechts);
             
             boolean newThread = false;
             if (rechts - links > 100000){
@@ -216,22 +207,13 @@ public class QuickSortMultiThreaded {
                 }
             }
 
-            if(newThread){//depth<depthMax){
-//                synchronized (threads) {
-//                	threads += 2;
-//                }
-                    //increaseDepth();
+            if(newThread){
                 Future<Boolean> resultLeft,resultRight;
-
-                
                 resultLeft = threadPool.submit(new quickSort(links, positionPivot - 1));
                 resultRight = threadPool.submit(new quickSort(positionPivot + 1, rechts));
-//           System.out.println(Thread.currentThread().getName()+":  is waiting ...");
                 resultLeft.get();
                 resultRight.get();
-                 //decreaseDepth();
             }else{
-//                System.out.println(Thread.currentThread().getName()+": is working ...");
                 blockSort_quick(data, links, positionPivot - 1);
                 blockSort_quick(data, positionPivot + 1, rechts);
             }
@@ -266,6 +248,50 @@ public class QuickSortMultiThreaded {
         return i;
     }
 
+    static int quickSwapMulitPivot(IntBuffer liste, int untereGrenze, int obereGrenze) {
+	    int links = untereGrenze;
+	    int rechts = obereGrenze;
+	    int pivot = liste.get(rechts);
+	    if (obereGrenze - untereGrenze >10000){
+	    	int p1 = liste.get(0);
+	    	int p2 = liste.get(((untereGrenze + obereGrenze) / 2));
+	    	int p3 = pivot;
+	    	
+	    	if(p1 > p2){
+	    		pivot = (p3 > p1 ? p1 : (p3 > p2 ? p3 : p2)); 
+	    	} else { //p1 <= p2
+	    		pivot = (p3 < p1 ? p1 : (p3 < p2 ? p3 : p2));
+	    	}
+	    	
+	    	//pivot = Math.min(pivot, Math.max(liste.get(0), liste.get(((untereGrenze + obereGrenze) / 2)))); 
+	    } 
+	    
+	    do {
+	      while (liste.get(links) < pivot) {
+	        links++;
+	      }
+	      while (pivot < liste.get(rechts)) {
+	        rechts--;
+	      }
+	      if (links <= rechts) {
+	    	  
+	        int tmp = liste.get(links);
+	        liste.put(links, liste.get(rechts));
+	        liste.put(rechts, tmp);
+	        links++;
+	        rechts--;
+	      }
+	    } while (links <= rechts);
+	    
+	    return rechts;
+//	    if (untereGrenze < rechts) {
+//	       quickSort2(liste, untereGrenze, rechts);
+//	    }
+//	    if (links < obereGrenze) {
+//	        quickSort2(liste, links, obereGrenze);
+//	    }
+	  }
+    
     /**
      * Hilfsmethode für quickSwap: vertauscht zwei Elemente miteinander
      * @param data das Array, auf welchem vertauscht werden soll
