@@ -20,7 +20,7 @@ public class QuickSortMultiThreaded {
     public static int threadCountMax = 10; // ab 50.000.000 unter 32 threads
     public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
-    private int dualPivotDepthMax = 96/3;
+    private int dualPivotThreadCount = 16;
     private static final int insertion_sort_grenze = 10;//47
 
     private synchronized void increaseDepth(){
@@ -151,6 +151,25 @@ public class QuickSortMultiThreaded {
 
 
     //Sortieralgorithmen-@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    /**
+     *Sortiert die Daten von der linken bis zur rechten Grenze mit QuickSort
+     * @param data das Array, auf welchem sortiert werden soll
+     * @param links die linke Grenze (einschließlich), ab welcher mit der Sortierung begonnen werden soll
+     * @param rechts die rechte Grenze (einschließlich), bis zu welcher sortiert werden soll
+     * @return
+     */
+    public static void blockSort_quick_singleThreaded(IntBuffer data, int links, int rechts) {
+        if (rechts - links < insertion_sort_grenze) {
+            blockSort_insertion(data, links, rechts);
+        } else {
+            int positionPivot = quickSwap(data, links, rechts);
+            blockSort_quick_singleThreaded(data, links, positionPivot - 1);
+            blockSort_quick_singleThreaded(data, positionPivot + 1, rechts);
+        }
+    }
+
+
 
     /**
      * Sortiert die Daten von der linken bis zur rechten Grenze mit InsertionSort
@@ -414,6 +433,7 @@ class DualPivotQuicksort implements Callable {
     }
 
     public boolean dualPivotQuicksort(){
+        Thread.currentThread().setPriority(10);
         int len = right - left;
         int x;
         if (len < INSERTIONSORT_GRENZE) { // insertion sort on tiny array
@@ -421,8 +441,27 @@ class DualPivotQuicksort implements Callable {
             return true;
         }
 
-        if(depth < dualPivotDepthMax){
-            increaseDepth();
+
+        synchronized (threads) {
+            threads -= 1;
+        }
+
+        boolean newThread = false;
+        if (len > 100000){
+            synchronized (threads) {
+                if(threads + 2 <= dualPivotThreadCount) {
+                    threads += 2;
+                    newThread = true;
+                }
+            }
+        }
+
+
+
+
+//        if(depth < dualPivotThreadCount){
+        if(newThread){
+//            increaseDepth();
                 // median indexes
                 int sixth = len / 6;
                 int m1 = left + sixth;
@@ -532,8 +571,19 @@ class DualPivotQuicksort implements Callable {
                 }
                 // center part
                 if (diffPivots) {
+                    newThread = false;
+                    synchronized (threads){
+                        if(threads + 1 <= dualPivotThreadCount) {
+                            threads += 1;
+                            newThread = true;
+                        }
+                    }
+                    if(newThread){
+                        part3 = threadPool.submit(new DualPivotQuicksort(less,great));
+                    }else
+                        dualPivotQuicksortSingleThreaded(data,less,great);
         //            dualPivotQuicksort(data, less, great);
-                    part3 = threadPool.submit(new DualPivotQuicksort(less,great));
+
                 }
 
 
@@ -548,7 +598,7 @@ class DualPivotQuicksort implements Callable {
                 } catch (ExecutionException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-            decreaseDepth();
+//            decreaseDepth();
         }else{
             dualPivotQuicksortSingleThreaded(data, left, right);
         }
