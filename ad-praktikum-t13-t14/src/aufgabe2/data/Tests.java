@@ -508,7 +508,7 @@ ElapsedTime: 69712 ms
 
     @Test @Ignore
     public void quicksortMultithreadTest(){
-        String InputFilePath = "D:\\DataManagerTest";
+        String InputFilePath = "DataManagerTest";
         long start,elapsed;
 
         if(!Files.exists(Paths.get(InputFilePath)))
@@ -683,7 +683,8 @@ java.util.concurrent.ThreadPoolExecutor@74dbe8cd[Running, pool size = 62, active
 
         start = System.currentTimeMillis();
         // singleThread funktion
-        //QuickSortMultiThreaded.blockSort_quick(intbuff,0,intbuff.limit()-1);
+        QuickSortMultiThreaded.blockSort_quick_singleThreaded(intbuff,0,intbuff.limit()-1);
+//        QuickSortMultiThreaded.dualPivotQuicksortSingleThreaded(intbuff,0,intbuff.limit()-1);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
         isSorted(intbuff);
@@ -751,7 +752,7 @@ controll_counter: 51002736
 
         start = System.currentTimeMillis();
         // singleThread funktion
-        Quicksort.dualPivotQuicksort(intbuff,0,intbuff.limit() - 1);
+        QuickSortMultiThreaded.dualPivotQuicksortSingleThreaded(intbuff,0,intbuff.limit() - 1);
         elapsed = System.currentTimeMillis() - start;
         System.out.println("elapsedTime: "+elapsed+" ms");
         isSorted(intbuff);

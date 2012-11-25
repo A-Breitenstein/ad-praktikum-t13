@@ -7,7 +7,7 @@ public final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = 983 * 1024 * (long)1024; // vorderster Wert in MB
+	public static final long BUFFERSIZE_APPLICATION = 1024 * 1024 * (long)1024; // vorderster Wert in MB
 
 	/**
 	 * Die Größe eines Integers in Bytes
