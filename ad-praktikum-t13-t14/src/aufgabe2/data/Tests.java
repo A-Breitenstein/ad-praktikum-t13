@@ -54,6 +54,7 @@ public final class Tests {
 
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
+        //outputFilePath ="EnddateiSorted";
         assertTrue(TestFileGenerator.isSorted(outputFilePath));
 
         /*
@@ -738,7 +739,7 @@ controll_counter: 51002736
         return  true;
     }
 
-    @Test
+    @Test @Ignore
     public void dualPivotQuicksortSingleThreadedTest(){
         String InputFilePath = "DataManagerTest";
         long start,elapsed;
