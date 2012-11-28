@@ -45,17 +45,18 @@ public final class Tests {
 	@Test
 	public void testMergeSortAlgorithm() {
 		//deleteFile("EnddateiSorted");
-		String InputFilePath = "DataManagerTest";
+		String InputFilePath = "C:\\Users\\abg690\\Downloads\\DataManagerTest";
 		String outputFilePath = null;
 
 		
 		if(!Files.exists(Paths.get(InputFilePath)))
-            TestFileGenerator.createTestFile(InputFilePath,100000,100);
+            TestFileGenerator.createTestFile(InputFilePath,10000000,150);
 
+		
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
         //outputFilePath ="EnddateiSorted";
-        assertTrue(TestFileGenerator.isSorted(outputFilePath));
+        assertTrue(TestFileGenerator.isSorted("C:\\Users\\abg690\\Downloads\\EnddateiSorted")) ;//outputFilePath));
 
         /*
         mit 6 read calls
