@@ -41,7 +41,28 @@ public final class Tests {
 		assertTrue( BUFFERSIZE_MERGEREAD * 4 + BUFFERSIZE_MERGEWRITE * 4 <= BUFFERSIZE_APPLICATION); //Jeweils zwei Dateien und zwei Treads, also mal 4!
 	}
 
-	
+    @Test @Ignore
+	public void testTrend(){
+    	String ausgabe ="zu Sortierende Zahlen;Anzahl Merge-Runs;Zugriffe insgesammt;";
+    	
+    	for(int anzahlElemente = 5; anzahlElemente<=3000; anzahlElemente+=30){
+    		int anzahlZugriffe = 0;
+    		int runlänge = 5;
+    		int anzahlMergeRuns = 0;
+    		anzahlZugriffe += anzahlElemente * 2; //init Run
+    		
+    		while (runlänge < anzahlElemente){
+    			anzahlZugriffe += anzahlElemente * 2;
+    			anzahlMergeRuns ++;
+    			runlänge *= 2;
+    		}
+    		ausgabe += "\n" + anzahlElemente + ";" + anzahlMergeRuns + ";" + anzahlZugriffe + ";" ;
+    	}
+    	System.out.println(ausgabe);
+    	
+	}
+    
+    
 	@Test
 	public void testMergeSortAlgorithm() {
 		//deleteFile("EnddateiSorted");
