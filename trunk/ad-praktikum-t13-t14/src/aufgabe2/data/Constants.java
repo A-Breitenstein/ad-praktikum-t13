@@ -7,7 +7,7 @@ public final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = 1024 * 1024 * (long)1024; // vorderster Wert in MB
+	public static final long BUFFERSIZE_APPLICATION = Integer.MAX_VALUE; //2047 * 1024 * (long)1024; // vorderster Wert in MB
 
 	/**
 	 * Die Größe eines Integers in Bytes
@@ -17,7 +17,7 @@ public final class Constants {
 	/**
 	 * Die maximale Größe eines Lesevorgangs. Sind mehr Zahlen einzulesenen, so wird mehrmals hintereinander gelesen.
 	 */
-	public static final int MAXBYTESPERREADCALL = toValidIntSize(512 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
+	public static final int MAXBYTESPERREADCALL = toValidIntSize(128 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Arbeiten 

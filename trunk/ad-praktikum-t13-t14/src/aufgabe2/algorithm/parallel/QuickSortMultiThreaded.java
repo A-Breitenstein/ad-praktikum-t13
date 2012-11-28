@@ -19,10 +19,10 @@ public class QuickSortMultiThreaded {
     private ExecutorService threadPool;
     private int startLinks,startRechts;
     private int depth = 0;
-    public static int threadCountMax = 8; //Optimal schein Anzahl der Kerne * 1,33 (Markus hat 6 Kerne)// ab 50.000.000 unter 32 threads
+    public static int threadCountMax = 6; //Optimal schein Anzahl der Kerne * 1,33 (Markus hat 6 Kerne)// ab 50.000.000 unter 32 threads
     public Integer threads=0;
     private int depthMax = (int)(threadCountMax/2);
-    private int dualPivotThreadCount = 16;
+    private int dualPivotThreadCount = 18;
     private static final int insertion_sort_grenze = 10;//47
 
     private synchronized void increaseDepth(){
@@ -47,8 +47,8 @@ public class QuickSortMultiThreaded {
         boolean result = false;
         if(startRechts> 10000){
             Future<Boolean> future;
-            future = threadPool.submit(new quickSort(startLinks,startRechts));
-            //future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
+            //future = threadPool.submit(new quickSort(startLinks,startRechts));
+            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
             try {
                 result = future.get();
             } catch (InterruptedException e) {
