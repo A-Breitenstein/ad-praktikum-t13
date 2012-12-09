@@ -122,29 +122,42 @@ public class Reader {
      */
     public void readToByteBuffer(ByteBuffer target) throws IOException {
         int bytesToRead = (int)Math.min(bytesPerRead, fileChanSize- currentCursorPosition); //Insgesammt zu lesende Menge an Bytes
-        if (target.capacity() < bytesToRead)
-    		throw new IllegalArgumentException("Übergebener Buffer zu klein");
-        
-        target.clear();
-        
-        //Datei ggf stückweise einlesen, da es erstaunlicherweise schneller geht, z.b. 8 x 256 MB zulesen als einmal 4GB  
-        while(bytesToRead > 0){
-        	int currentReadSize = Math.min(Constants.MAXBYTESPERREADCALL, bytesToRead);
+        int currentReadSize = 0;
+        if (target.capacity() < bytesToRead){
+//            throw new IllegalArgumentException("Übergebener Buffer zu klein");
+            currentReadSize = Math.min(target.capacity(), bytesToRead);
 
-        	//Limit neu setzen
-        	target.limit(target.position() + currentReadSize);
-            
+            target.clear();
+
+            //Limit neu setzen
+            target.limit(target.position() + currentReadSize);
+
             //Lesen
             fileChan.read(target, currentCursorPosition);
-            
+
             //Abschließende Arbeiten
             currentCursorPosition += currentReadSize;
-            bytesToRead -= currentReadSize;
+
+
+        }else{
+            target.clear();
+            //Datei ggf stückweise einlesen, da es erstaunlicherweise schneller geht, z.b. 8 x 256 MB zulesen als einmal 4GB
+            while(bytesToRead > 0){
+                currentReadSize = Math.min(Constants.MAXBYTESPERREADCALL, bytesToRead);
+
+                //Limit neu setzen
+                target.limit(target.position() + currentReadSize);
+
+                //Lesen
+                fileChan.read(target, currentCursorPosition);
+
+                //Abschließende Arbeiten
+                currentCursorPosition += currentReadSize;
+                bytesToRead -= currentReadSize;
+            }
         }
-        
-      
         //Abschließende Arbeiten
-        target.rewind(); //Position auf 0 setzen   
+        target.rewind(); //Position auf 0 setzen
     }
     
 }

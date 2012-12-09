@@ -32,6 +32,14 @@ public class Writer {
     public static Writer create(String fileName){
         return  new Writer(fileName);
     }
+    public long getFileChanSize(){
+        try {
+           return fileChan.size();
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return 0;
+    }
     public void writeByteBufferToFile(ByteBuffer byteBuffer){
     	int size = byteBuffer.limit()/4; 
     	try{
