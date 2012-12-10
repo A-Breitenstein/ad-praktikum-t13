@@ -32,6 +32,7 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
     private final long INTEGER_COUNT_PER_BUFFER;
     private final long BUFFER_COUNT;
     private final long RESTBUFFER_SIZE;
+    private final double buffer_faktor;
     private final int INTEGER_SIZE = Integer.SIZE / Byte.SIZE;
     private int tmp_IntBufferIndex = 0;
     private int tmp_Index = 0;
@@ -49,6 +50,7 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
         } else {
             BUFFER_COUNT =  (capacityInBytes / INTERNAL_BUFFER_SIZE_IN_BYTES)+1;
         }
+        buffer_faktor = (1d/ INTEGER_COUNT_PER_BUFFER);
 
         limit = capacityInBytes;
         position = 0;
@@ -82,18 +84,23 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 
     @Override
     public void put(long index, int val) {
-        tmp_IntBufferIndex = (int) (index / INTEGER_COUNT_PER_BUFFER);
-        tmp_Index = (int)(index - (((long)tmp_IntBufferIndex)*INTEGER_COUNT_PER_BUFFER));
+//        tmp_IntBufferIndex = (int) (index / INTEGER_COUNT_PER_BUFFER);
+        final int tmp_IntBufferIndex = (int) (index *buffer_faktor);
+//        final int tmp_Index = (int)(index - (INTEGER_COUNT_PER_BUFFER * tmp_IntBufferIndex));
 //        tmp_Index = (int) (index % INTEGER_COUNT_PER_BUFFER);
-        intBuffers[tmp_IntBufferIndex].put(tmp_Index,val);
+//        intBuffers[tmp_IntBufferIndex].put(tmp_Index,val);
+        intBuffers[tmp_IntBufferIndex].put((int) (index - (INTEGER_COUNT_PER_BUFFER * tmp_IntBufferIndex)),val);
+
     }
 
     @Override
     public int get(long index) {
-        tmp_IntBufferIndex = (int) (index / INTEGER_COUNT_PER_BUFFER);
-        tmp_Index = (int)(index - (((long)tmp_IntBufferIndex)*INTEGER_COUNT_PER_BUFFER));
+//        tmp_IntBufferIndex = (int) (index / INTEGER_COUNT_PER_BUFFER);
+        final int tmp_IntBufferIndex = (int) (index *buffer_faktor);
+//        final int tmp_Index = (int)(index - (INTEGER_COUNT_PER_BUFFER*tmp_IntBufferIndex));
 //        tmp_Index = (int) (index % INTEGER_COUNT_PER_BUFFER);
-        return intBuffers[tmp_IntBufferIndex].get(tmp_Index);
+//        return intBuffers[tmp_IntBufferIndex].get(tmp_Index);
+        return intBuffers[tmp_IntBufferIndex].get((int)(index - (INTEGER_COUNT_PER_BUFFER*tmp_IntBufferIndex)));
     }
 
     /**
@@ -166,6 +173,22 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         flip();
+    }
+
+    @Override
+    public void swap(long pos1, long pos2) {
+        final int tmp_IntBufferIndex1 = (int) (pos1 *buffer_faktor);
+        final int tmp_IntBufferIndex2 = (int) (pos2 *buffer_faktor);
+        final int tmp_Index1 = (int)(pos1 - (INTEGER_COUNT_PER_BUFFER*tmp_IntBufferIndex1));
+        final int tmp_Index2 = (int)(pos2 - (INTEGER_COUNT_PER_BUFFER*tmp_IntBufferIndex2));
+
+        final int tmp = intBuffers[tmp_IntBufferIndex1].get(tmp_Index1);
+        intBuffers[tmp_IntBufferIndex1].put(tmp_Index1,intBuffers[tmp_IntBufferIndex2].get(tmp_Index2));
+        intBuffers[tmp_IntBufferIndex2].put(tmp_Index2,tmp);
+//        int tmp = data.get(pos1);
+//            data.put(pos1, data.get(pos2));
+//            data.put(pos2, tmp);
+
     }
 
 
@@ -284,15 +307,20 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
     }
 
     private static void test_sort(){
-        LargeIntBuffer ib = LargeIntBufferImpl.allocateDirect(5500000, 4);
-        Reader reader = Reader.create("testSort",5500000*4);
+        System.out.println("----LargeIntBuffer MultiThreaded -----");
+        final int readSizeInMB = 256;
+        LargeIntBuffer ib = LargeIntBufferImpl.allocateDirect(500000000,readSizeInMB);
+        Reader reader = Reader.create("testSort",readSizeInMB*_1024*_1024);
         Writer writer = Writer.create("hierrein");
         ExecutorService threadPool = Executors.newCachedThreadPool();
 //        while(!reader.isFileFullyReaded()){
-            ib.readBuffer(reader);
-            double start = System.currentTimeMillis();
-//            QuickSortMultiThreadedLargeBuffer.sort(ib, 0, ib.limitIntBuffer() - 1, threadPool);
-            QuickSortMultiThreadedLargeBuffer.blockSort_quick_singleThreaded(ib,0,ib.limitIntBuffer() - 1);
+        double start = System.currentTimeMillis();
+        ib.readBuffer(reader);
+        System.out.println("ElapsedTime Reading : "+(System.currentTimeMillis()-start));
+        System.out.println("readed ints: "+ib.limitIntBuffer());
+        start = System.currentTimeMillis();
+        QuickSortMultiThreadedLargeBuffer.sort(ib, 0, ib.limitIntBuffer() - 1, threadPool);
+//      QuickSortMultiThreadedLargeBuffer.blockSort_quick_singleThreaded(ib,0,ib.limitIntBuffer() - 1);
         System.out.println("ElapsedTime : "+(System.currentTimeMillis()-start));
             ib.wirteBuffer(writer);
 //        }
@@ -300,21 +328,24 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
         TestFileGenerator.isSorted("hierrein");
     }
     private static void test_quicksortMultiThreadedNormalBuffer(){
-        ByteBuffer bb = ByteBuffer.allocateDirect(5500000*4);
-        Reader reader = Reader.create("testSort",5500000*4);
+        System.out.println("----IntBuffer Normal MultiThreaded -----");
+        ByteBuffer bb = ByteBuffer.allocateDirect(500000000*4);
+        Reader reader = Reader.create("testSort",500000000*4);
         Writer writer = Writer.create("hierrein");
         ExecutorService threadPool = Executors.newCachedThreadPool();
         IntBuffer ib;
         try {
+            double start = System.currentTimeMillis();
             reader.readToByteBuffer(bb);
+            System.out.println("ElapsedTime Reading : "+(System.currentTimeMillis()-start));
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
         ib = bb.asIntBuffer();
 
         double start = System.currentTimeMillis();
-//        QuickSortMultiThreaded.sort(ib, 0, ib.limit() - 1, threadPool);
-        QuickSortMultiThreaded.blockSort_quick_singleThreaded(ib, 0, ib.limit() - 1);
+        QuickSortMultiThreaded.sort(ib, 0, ib.limit() - 1, threadPool);
+//        QuickSortMultiThreaded.blockSort_quick_singleThreaded(ib, 0, ib.limit() - 1);
         System.out.println("ElapsedTime : "+(System.currentTimeMillis()-start));
         System.out.println(ib.limit());
         System.out.println(threadPool);

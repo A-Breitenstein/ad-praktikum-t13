@@ -23,5 +23,6 @@ public interface LargeIntBuffer {
     long position();
     void wirteBuffer(Writer writer);
     void readBuffer(Reader reader);
+    void swap(long pos1 ,long pos2);
 
 }
