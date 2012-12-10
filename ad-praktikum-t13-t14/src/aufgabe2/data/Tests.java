@@ -66,7 +66,7 @@ public final class Tests {
 	@Test
 	public void testMergeSortAlgorithm() {
 		//deleteFile("EnddateiSorted");
-		String InputFilePath = "C:\\Users\\abg690\\Downloads\\DataManagerTest";
+		String InputFilePath = "DataManagerTest";
 		String outputFilePath = null;
 
 		
@@ -77,7 +77,7 @@ public final class Tests {
 		outputFilePath = ExternerMergeSort.sort(InputFilePath);
         System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
         //outputFilePath ="EnddateiSorted";
-        assertTrue(TestFileGenerator.isSorted("C:\\Users\\abg690\\Downloads\\EnddateiSorted")) ;//outputFilePath));
+        assertTrue(TestFileGenerator.isSorted("EnddateiSorted")) ;//outputFilePath));
 
         /*
         mit 6 read calls
@@ -692,9 +692,9 @@ java.util.concurrent.ThreadPoolExecutor@74dbe8cd[Running, pool size = 62, active
 
     }
 
-    @Test @Ignore
+    @Test
     public void quicksortSingleThreadedTest(){
-        String InputFilePath = "DataManagerTest";
+        String InputFilePath = "testSort";
         long start,elapsed;
 
         if(!Files.exists(Paths.get(InputFilePath)))
@@ -792,4 +792,22 @@ elapsedTime: 24672 ms
 controll_counter: 51002736
         * */
     }
+
+    @Test
+    public void testMergeSortAlgorithm_LARGE_BUFFER() {
+        //deleteFile("EnddateiSorted");
+        String InputFilePath = "DataManagerTest";
+        String outputFilePath = null;
+
+
+        if(!Files.exists(Paths.get(InputFilePath)))
+            TestFileGenerator.createTestFile(InputFilePath,100000000,10);
+
+
+        outputFilePath = ExternerMergeSort.sortWithLargeBuffer(InputFilePath);
+        System.out.println("Sortieren abgeschlossen. Prüfe Sortierung...");
+        //outputFilePath ="EnddateiSorted";
+        assertTrue(TestFileGenerator.isSorted("EnddateiSorted"));
+    }
+
 }

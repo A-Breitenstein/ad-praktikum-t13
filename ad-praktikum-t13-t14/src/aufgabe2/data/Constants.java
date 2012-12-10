@@ -7,7 +7,7 @@ public final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = Integer.MAX_VALUE; //2047 * 1024 * (long)1024; // vorderster Wert in MB
+	public static final long BUFFERSIZE_APPLICATION = 2047* 1024l * 1024l; // vorderster Wert in MB
 
 	/**
 	 * Die Größe eines Integers in Bytes
@@ -17,25 +17,27 @@ public final class Constants {
 	/**
 	 * Die maximale Größe eines Lesevorgangs. Sind mehr Zahlen einzulesenen, so wird mehrmals hintereinander gelesen.
 	 */
-	public static final int MAXBYTESPERREADCALL = toValidIntSize(128 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
+	public static final long MAXBYTESPERREADCALL = toValidIntSize(128 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Arbeiten 
 	 * auf dem Array genutzt werden darf.
 	 */
-	public static final int BUFFERSIZE_SORTARRAY = toValidIntSize(BUFFERSIZE_APPLICATION); //Gesamten Arbeitsspeicher verwenden!	
+	public static final long BUFFERSIZE_SORTARRAY = BUFFERSIZE_APPLICATION; //Gesamten Arbeitsspeicher verwenden!
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
 	 * genutzt werden darf
 	 */
-	public static final int BUFFERSIZE_MERGEREAD = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
+	public static final long BUFFERSIZE_MERGEREAD = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
+//	public static final long BUFFERSIZE_MERGEREAD = toValidIntSize(BUFFERSIZE_APPLICATION / 8); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für einen Schreibvorgang pro Datei und
 	 * Thread genutzt werden darf
 	 */
-	public static final int BUFFERSIZE_MERGEWRITE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
-	
+	public static final long BUFFERSIZE_MERGEWRITE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+//	public static final long BUFFERSIZE_MERGEWRITE = toValidIntSize(BUFFERSIZE_APPLICATION / 8); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+
 	
 	
 	/**
@@ -44,8 +46,8 @@ public final class Constants {
 	 * @param maxBufferSize
 	 * @return int - Postcondition: return % INTSIZE == 0 && returnvalue + INTSIZE > maxBufferSize
 	 */
-	public static int toValidIntSize(long maxBufferSize){
-		return ((int)Math.min(Integer.MAX_VALUE,maxBufferSize) / INTSIZE) * INTSIZE;
+	public static long toValidIntSize(long maxBufferSize){
+		return (Math.min(Integer.MAX_VALUE,maxBufferSize) / INTSIZE) * INTSIZE;
 	}
 	
 	

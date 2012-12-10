@@ -5,6 +5,7 @@ import aufgabe2.data.io.Writer;
 import aufgabe2.data.jobs.IOScheduler;
 import aufgabe2.interfaces.DataManager;
 import aufgabe2.interfaces.InputBuffer;
+import aufgabe2.interfaces.LargeIntBuffer;
 import aufgabe2.interfaces.OutputBuffer;
 import static aufgabe2.data.Constants.*;
 
@@ -41,13 +42,15 @@ public class DataManagerImpl implements DataManager {
 	
 	//ByteBuffer-Pools
 	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
+    private final LargeIntBuffer ZEROLARGEBYTEBUFFER = LargeIntBufferImpl.zeroLargeIntBuffer();
 	private ByteBuffer sortBBuffer;
+    private LargeIntBuffer largeSortBBuffer;
 	private List<ByteBuffer> readBBufferPool = new ArrayList<ByteBuffer>();//ByteBuffers für die Readers im Merge-Schritt
 	private List<ByteBuffer> writeBBufferPool = new ArrayList<ByteBuffer>(); //ByteBuffers für die Writers im Merge-Schritt
-	
+	private static boolean useLargeBuffer = false;
 	//Größen, Zustände
-	private final int initBufferSize; //Die (optimale) größe der Blöcke bei der QuickSort-Sortierung in Bytes 
-	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
+	private final long initBufferSize; //Die (optimale) größe der Blöcke bei der QuickSort-Sortierung in Bytes
+	private long  readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
 	private final long integersToSort; //Die Länge der Datei
 	private long storedIntegers; //Die bereits gespeicherten Integers innerhalb eines MergeRuns
 	private switchStates switchState = switchStates.undef; 
@@ -71,14 +74,21 @@ public class DataManagerImpl implements DataManager {
 		
 		//Readers, Writers
 		initBufferSize = calculateOptimalInitReadBuffer(new File(sourceFilePath).length());
-		initReader = Reader.create(sourceFilePath, initBufferSize);
 		initWriter1 = Writer.create(file1Path);
         initWriter2 = Writer.create(file2Path);
         activeInitWriter = initWriter1;
-               
-        readerBlockSize = initBufferSize / INTSIZE;
+
+        if (!useLargeBuffer) {
+            sortBBuffer = ByteBuffer.allocateDirect((int)initBufferSize);
+            initReader = Reader.create(sourceFilePath, initBufferSize);
+            readerBlockSize = initBufferSize / INTSIZE;
+        }else{
+            largeSortBBuffer = LargeIntBufferImpl.allocateDirect(Constants.BUFFERSIZE_SORTARRAY/INTSIZE,(int)(Constants.MAXBYTESPERREADCALL/(1024*1024)));
+            initReader = Reader.create(sourceFilePath,initBufferSize);
+            readerBlockSize = Constants.BUFFERSIZE_SORTARRAY / INTSIZE;
+        }
         integersToSort = initReader.getFileChanSize() / INTSIZE;
-        sortBBuffer = ByteBuffer.allocateDirect(initBufferSize);
+
         scheduler.start();
         
         //Ausgabe
@@ -95,12 +105,14 @@ public class DataManagerImpl implements DataManager {
         startTimestamp = System.currentTimeMillis();
         lastMessageTimestamp = System.currentTimeMillis();
     }
-	
+    public static void useLargeBuffer(){
+        useLargeBuffer = true;
+    }
 	/**
 	 * Berechnet die optimale Initiallänge der Arrays, ohne einen zusätzlichen Merge-Run machen zu müssen.
 	 * @return
 	 */
-	private int calculateOptimalInitReadBuffer(long fileSize){
+	private long calculateOptimalInitReadBuffer(long fileSize){
 		long optimalInitBuffer = fileSize;
 		while(optimalInitBuffer > BUFFERSIZE_SORTARRAY){
 			optimalInitBuffer = optimalInitBuffer / 2 + 4; //+4 wegen möglichen Rundungsfehlern (und 4 Bits für Integers...)
@@ -134,30 +146,26 @@ public class DataManagerImpl implements DataManager {
             return ZEROBYTEBUFFER;
         }
 	}
-	@Override
+
+    public LargeIntBuffer readLargeBlock(){
+        if(!initReader.isFileFullyReaded()){
+                largeSortBBuffer.readBuffer(initReader);
+                return largeSortBBuffer;
+        } else {
+            largeSortBBuffer.limit(0);
+            return largeSortBBuffer;
+        }
+    }
+    @Override
 	public void writeBlock(ByteBuffer buffer) {
-//        int write_calls = 6;
-//        int bytesPerWrite = BUFFERSIZE_SORTARRAY / write_calls;
-//        int rest = BUFFERSIZE_SORTARRAY % write_calls;
-//
-//        for (int i = 1; i < write_calls; i++) {
-//            if(buffer.remaining() > bytesPerWrite){
-//                buffer.limit(bytesPerWrite*i);
-//                activeInitWriter.write(buffer);
-//            }
-//            else{
-//                buffer.limit(bytesPerWrite*(i-1)+buffer.remaining())
-//                activeInitWriter.write(buffer);
-//            }
-//        }
-//        if(buffer.hasRemaining()){
-//
-//        }
-//        buffer.clear();
 		activeInitWriter.writeByteBufferToFile(buffer);
 		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben
 	}
-	
+	public void writeLargeBlock(LargeIntBuffer buffer){
+        buffer.wirteBuffer(activeInitWriter);
+        activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben
+
+    }
 	@Override
 	public InputBuffer readLeftChannel() {
 		if (modus == modie.QuickSort)
@@ -263,7 +271,13 @@ public class DataManagerImpl implements DataManager {
 			initWriter1 = null;
 			initWriter2 = null;
 			sortBBuffer = null;
-			System.gc();
+
+            if(useLargeBuffer){
+                largeSortBBuffer.closeWithGCCall();
+                largeSortBBuffer = null;
+            }else{
+                System.gc();
+            }
 		}
 	}
 

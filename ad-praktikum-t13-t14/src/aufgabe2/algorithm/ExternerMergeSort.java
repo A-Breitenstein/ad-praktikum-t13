@@ -1,6 +1,7 @@
 package aufgabe2.algorithm;
 
 import aufgabe2.algorithm.parallel.QuickSortMultiThreaded;
+import aufgabe2.algorithm.parallel.QuickSortMultiThreadedLargeBuffer;
 import aufgabe2.algorithm.parallel.stolen.Quicksort;
 import aufgabe2.data.DataManagerImpl;
 import aufgabe2.interfaces.*;
@@ -31,14 +32,11 @@ public class ExternerMergeSort {
         System.out.println("readcall: "+(System.currentTimeMillis() - start)+" ms");
 												// initialisierung
 		while (data.hasRemaining()) { // solange das "band" nicht leer ist
-//			blockSort_quick(data.getData(), 0, data.getSize() - 1);// Sortieren
 			IntBuffer intBuffer = data.asIntBuffer();
             start = System.currentTimeMillis();
-//             Quicksort.forkJoinQuicksort((ForkJoinPool)threadPool,intBuffer); <-- noch schneller aber funzt mit intbuffer noch nicht ;/
             System.out.println("Start Quicksort");
 			QuickSortMultiThreaded.sort(intBuffer, 0, intBuffer.limit() - 1, threadPool);
             System.out.println("Stop Quicksort");
-			//QuickSortMultiThreaded.blockSort_quick(intBuffer,0,intBuffer.limit() - 1); <-- single thread version
             System.out.println("quicksort: "+(System.currentTimeMillis()-start)+" ms");
             start = System.currentTimeMillis();
             tapes.writeBlock(data); // zurückschreiben
@@ -213,5 +211,48 @@ public class ExternerMergeSort {
 		    }
 		  }
 
+    /**
+     * Sortiert die angegebene externe Datei, welche ausschließlich aus 4-Byte-Integer-Zahlen besteht
+     * @param inputFile Der Pfad der Datei, welche sortiert werden soll. An jenem Verzeichnis muss
+     * 		  Platz sein für eine weitere Datei mit der gleichen Größe.
+     * @return Der Pfad der sortierten Datei
+     */
+    public static String sortWithLargeBuffer(String inputFile) {
+        DataManagerImpl.useLargeBuffer();
+        DataManager tapes = new DataManagerImpl(inputFile);
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        long start;
+//        ExecutorService threadPool = new ForkJoinPool();
+
+        // Blockweise Sortierung
+        start = System.currentTimeMillis();
+        LargeIntBuffer data = tapes.readLargeBlock(); // lese  von "band" 1
+        System.out.println("largebuffer.limitIntBuffer = "+data.limitIntBuffer());
+        System.out.println("readcall: "+(System.currentTimeMillis() - start)+" ms");
+        // initialisierung
+        while (data.limitIntBuffer() > 0) { // solange das "band" nicht leer ist
+            start = System.currentTimeMillis();
+            System.out.println("Start Quicksort");
+            QuickSortMultiThreadedLargeBuffer.sort(data, 0, data.limitIntBuffer() - 1, threadPool);
+            System.out.println("Stop Quicksort");
+            System.out.println("quicksort: "+(System.currentTimeMillis()-start)+" ms");
+            start = System.currentTimeMillis();
+            tapes.writeLargeBlock(data); // zurückschreiben
+            System.out.println("writecall: "+(System.currentTimeMillis() - start )+" ms");
+            start = System.currentTimeMillis();
+            data = tapes.readLargeBlock(); // lese wieder von "band" 1
+            System.out.println("readcall: "+(System.currentTimeMillis() - start)+" ms");
+        }
+
+        // Mergen
+        while (merge(tapes)) {// Merge für jeden Block aufrufen, bis keine
+            // Blöcke mehr kommen
+            // der merge tut schon alles, also do nothing
+        }
+        //System.out.println("fertig");
+        //tapes.closeAllChannelsIfOpen();
+        return tapes.completeSort();
+        //return "guck im projekt verzeichnis";
+    }
 
 }
