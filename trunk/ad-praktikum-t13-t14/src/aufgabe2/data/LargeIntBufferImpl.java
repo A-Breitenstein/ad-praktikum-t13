@@ -78,7 +78,11 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 
     }
     public static LargeIntBuffer allocateDirect(long integerCount,int sizePerBufferInMB) {
+        if(sizePerBufferInMB<= 0) throw new IllegalArgumentException("LargeIntBuffer:: sizePerBufferInMB had an overflow");
         return new LargeIntBufferImpl(integerCount, sizePerBufferInMB);
+    }
+    public static LargeIntBuffer zeroLargeIntBuffer(){
+        return new LargeIntBufferImpl(1,1);
     }
 
 
@@ -89,7 +93,7 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 //        final int tmp_Index = (int)(index - (INTEGER_COUNT_PER_BUFFER * tmp_IntBufferIndex));
 //        tmp_Index = (int) (index % INTEGER_COUNT_PER_BUFFER);
 //        intBuffers[tmp_IntBufferIndex].put(tmp_Index,val);
-        intBuffers[tmp_IntBufferIndex].put((int) (index - (INTEGER_COUNT_PER_BUFFER * tmp_IntBufferIndex)),val);
+        intBuffers[tmp_IntBufferIndex].put((int) (index - (INTEGER_COUNT_PER_BUFFER * tmp_IntBufferIndex)), val);
 
     }
 
@@ -191,6 +195,15 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 
     }
 
+    @Override
+    public void closeWithGCCall() {
+        for (int i = 0; i < BUFFER_COUNT; i++) {
+            intBuffers[i] = null;
+            byteBuffers[i] = null;
+        }
+        System.gc();
+    }
+
 
     public static void main(String[] args) {
 //        test_put_int_and_get_int();
@@ -198,8 +211,8 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 //        test_writeBuffer();
 //        test_destinationFileIsEqualToSourceFile();
 //        test_writeFolge();
-//        test_sort();
-        test_quicksortMultiThreadedNormalBuffer();
+        test_sort();
+//        test_quicksortMultiThreadedNormalBuffer();
     }
 
 
@@ -308,9 +321,9 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
 
     private static void test_sort(){
         System.out.println("----LargeIntBuffer MultiThreaded -----");
-        final int readSizeInMB = 256;
-        LargeIntBuffer ib = LargeIntBufferImpl.allocateDirect(500000000,readSizeInMB);
-        Reader reader = Reader.create("testSort",readSizeInMB*_1024*_1024);
+        final int readSizeInMB = 32;
+        LargeIntBuffer ib = LargeIntBufferImpl.allocateDirect(800000000,readSizeInMB*32);
+        Reader reader = Reader.create("testSort",readSizeInMB*_1024*_1024*32);
         Writer writer = Writer.create("hierrein");
         ExecutorService threadPool = Executors.newCachedThreadPool();
 //        while(!reader.isFileFullyReaded()){
@@ -337,7 +350,7 @@ public class LargeIntBufferImpl implements LargeIntBuffer{
         try {
             double start = System.currentTimeMillis();
             reader.readToByteBuffer(bb);
-            System.out.println("ElapsedTime Reading : "+(System.currentTimeMillis()-start));
+            System.out.println("ElapsedTime Reading : " + (System.currentTimeMillis() - start));
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }

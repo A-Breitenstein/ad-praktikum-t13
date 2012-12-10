@@ -22,7 +22,7 @@ public class Reader {
 
     //Konstanten
     private final long fileChanSize; //Die Größe der Datei   
-    private final int bytesPerRead; //Die anzahl der Elemente, die pro readToByteBuffer in den Buffer gelesen werden sollen
+    private final long bytesPerRead; //Die anzahl der Elemente, die pro readToByteBuffer in den Buffer gelesen werden sollen
     //private final int internalMaxReadSize; //Noch nicht benutzt: Die maximale Anzahl der auf einmal eingelesenen Bytes für fileChan.read. Ist bBufferSize größer als dieser Wert, so wird ggf. mehrmals hintereinander gelesen, bis readToByteBuffer den kompletten Wert zurückliefert. 
         
     /**
@@ -31,7 +31,7 @@ public class Reader {
      * @param bufferSize
      * @return
      */
-    public static Reader create(String fileName, int bufferSize){
+    public static Reader create(String fileName, long bufferSize){
         try {
 			return new Reader(fileName, bufferSize);
 		} catch (IOException e) {
@@ -45,7 +45,7 @@ public class Reader {
      * @param bBufferSize
      * @throws IOException 
      */
-    private Reader(String filePath, int bBufferSize) throws IOException{
+    private Reader(String filePath, long bBufferSize) throws IOException{
         if (bBufferSize % Constants.INTSIZE != 0)
         	throw new IllegalArgumentException("BuferSize muss ein Vielfaches von INTSIZE sein.");
             
@@ -121,8 +121,8 @@ public class Reader {
      * @throws IOException 
      */
     public void readToByteBuffer(ByteBuffer target) throws IOException {
-        int bytesToRead = (int)Math.min(bytesPerRead, fileChanSize- currentCursorPosition); //Insgesammt zu lesende Menge an Bytes
-        int currentReadSize = 0;
+        long bytesToRead = Math.min(bytesPerRead, fileChanSize- currentCursorPosition); //Insgesammt zu lesende Menge an Bytes
+        long currentReadSize = 0;
         if (target.capacity() < bytesToRead){
 //            throw new IllegalArgumentException("Übergebener Buffer zu klein");
             currentReadSize = Math.min(target.capacity(), bytesToRead);
@@ -130,7 +130,7 @@ public class Reader {
             target.clear();
 
             //Limit neu setzen
-            target.limit(target.position() + currentReadSize);
+            target.limit((int)(target.position() + currentReadSize));
 
             //Lesen
             fileChan.read(target, currentCursorPosition);
@@ -146,7 +146,7 @@ public class Reader {
                 currentReadSize = Math.min(Constants.MAXBYTESPERREADCALL, bytesToRead);
 
                 //Limit neu setzen
-                target.limit(target.position() + currentReadSize);
+                target.limit((int)(target.position() + currentReadSize));
 
                 //Lesen
                 fileChan.read(target, currentCursorPosition);

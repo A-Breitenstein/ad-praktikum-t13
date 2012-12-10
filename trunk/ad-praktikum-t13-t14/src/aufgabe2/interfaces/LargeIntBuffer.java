@@ -24,5 +24,6 @@ public interface LargeIntBuffer {
     void wirteBuffer(Writer writer);
     void readBuffer(Reader reader);
     void swap(long pos1 ,long pos2);
+    void closeWithGCCall();
 
 }
