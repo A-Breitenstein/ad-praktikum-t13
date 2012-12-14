@@ -25,18 +25,26 @@ public final class Constants {
 	 */
 	public static final int BUFFERSIZE_SORTARRAY = toValidIntSize(BUFFERSIZE_APPLICATION); //Gesamten Arbeitsspeicher verwenden!	
 	
-	/**
-	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
-	 * genutzt werden darf
-	 */
-	public static final int BUFFERSIZE_MERGEREAD = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
-	/**
-	 * Die (maximale) Größe des Speichers in Bytes, der für einen Schreibvorgang pro Datei und
-	 * Thread genutzt werden darf
-	 */
-	public static final int BUFFERSIZE_MERGEWRITE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+//	/**
+//	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
+//	 * genutzt werden darf
+//	 */
+//	public static final int BUFFERSIZE_MERGEREAD = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
+//	/**
+//	 * Die (maximale) Größe des Speichers in Bytes, der für einen Schreibvorgang pro Datei und
+//	 * Thread genutzt werden darf
+//	 */
+//	public static final int BUFFERSIZE_MERGEWRITE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
 	
-	
+	/**
+	 * Die Größe des Speichers in Bytes, der für einen Lese/Schreibvorgang pro Datei und Thead
+	 * genutzt werden darf.
+	 */
+	public static final int BUFFERSIZE_MERGEPAGE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL));//Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+	/**
+	 * Die Größe des Speichers in Bytes, der für das halten verarbeiteteter Daten im Abeitsspeichers (statt Festplatte) verwendet werden darf. 
+	 */
+	public static final long BUFFERSIZE_MERGEMEMPERSISTENCE = Math.max(0, BUFFERSIZE_APPLICATION - BUFFERSIZE_MERGEPAGE * 8);
 	
 	/**
 	 * Berechnet aus dem gegebenen Maximalen Speicher den maximalen Anteil, in welchen sich

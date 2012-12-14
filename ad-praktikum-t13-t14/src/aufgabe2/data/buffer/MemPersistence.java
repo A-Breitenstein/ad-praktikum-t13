@@ -1,7 +1,10 @@
-package aufgabe2.data.jobs;
+package aufgabe2.data.buffer;
 
 import java.nio.ByteBuffer;
 import java.util.*;
+
+import static aufgabe2.data.Constants.*;
+
 
 /**
  * Klasse zum Halten einiger Seiten (=ByteBuffers der Länge eines ReadCalls) im Abeitsspeicher
@@ -15,6 +18,26 @@ public class MemPersistence {
 	private final OccupancyData NOTUSEDPAGE = new OccupancyData("",1); 
 	
 	/**
+	 * Erzeugt eine MemPersistence und allociert DirectByteBuffers.
+	 */
+	public MemPersistence(){
+		int pageCount = (int) Math.floor(BUFFERSIZE_MERGEMEMPERSISTENCE / BUFFERSIZE_MERGEPAGE);
+		for (int i = 0; i< pageCount;i++){
+			bufferPages.add(ByteBuffer.allocateDirect(BUFFERSIZE_MERGEPAGE));
+			bufferOccupancy.add(NOTUSEDPAGE);
+		}
+	}
+	
+	/**
+	 * Gibt den Abeitsspeicher wieder frei
+	 */
+	public void ReleasePersistence(){
+		bufferPages.clear();
+		bufferOccupancy.clear();
+	}
+	
+	
+	/**
 	 * Gibt die Anzahl der aktuell freien Speicherseiten zurück
 	 * @return
 	 */
@@ -25,6 +48,14 @@ public class MemPersistence {
 				count ++;
 		}
 		return count;
+	}
+	
+	/**
+	 * Gibt die Anzahl der Seiten insgesammt zurück
+	 * @return
+	 */
+	public int getPageCount(){
+		return bufferOccupancy.size();
 	}
 	
 	private int getFreePageIndex(){
@@ -53,37 +84,40 @@ public class MemPersistence {
 	 * @return
 	 */
 	public ByteBuffer popPage(String fileID, long startPos, ByteBuffer spareBuffer){
-		int index = getPageIndex(fileID,startPos);
-		if(index == -1)
-			throw new IndexOutOfBoundsException("die gewünschte Page konnte nicht gefunden werden");  
-		ByteBuffer page = bufferPages.get(index);
-		bufferOccupancy.set(index, NOTUSEDPAGE);
-		bufferPages.set(index, spareBuffer);
-		return page;
+		synchronized (bufferPages) {
+			int index = getPageIndex(fileID,startPos);
+			if(index == -1)
+				throw new IndexOutOfBoundsException("die gewünschte Page konnte nicht gefunden werden");  
+			ByteBuffer page = bufferPages.get(index);
+			bufferOccupancy.set(index, NOTUSEDPAGE);
+			bufferPages.set(index, spareBuffer);
+			return page;
+		}
 	}
 	
 	/**
-	 * speichert den Buffer ab und gibt dafür einen freien Speicher zurück
+	 * Speichert den Buffer ab und gibt dafür einen freien Speicher zurück
 	 * @param fileID die Bezeichnung der Datei (z.B. Pfad)
 	 * @param startPos die StartPosition, ab welchem die Inhalte in der Datei liegt
-	 * @param data der Buffer, der
+	 * @param data der Buffer, der gespeichert werden soll
 	 * @return
 	 */
 	public ByteBuffer pushPage(String fileID, long startPos, ByteBuffer data){
-		int index = getFreePageIndex();
-		if (index == -1)
-			throw new IndexOutOfBoundsException("der MemPersistence-Speicher ist voll");
-		ByteBuffer freePage = bufferPages.get(index);
-		bufferOccupancy.set(index, new OccupancyData(fileID, startPos));
-		bufferPages.set(index, data);
-		return freePage;
+		synchronized (bufferPages) {
+			int index = getFreePageIndex();
+			if (index == -1)
+				throw new IndexOutOfBoundsException("der MemPersistence-Speicher ist voll");
+			ByteBuffer freePage = bufferPages.get(index);
+			bufferOccupancy.set(index, new OccupancyData(fileID, startPos));
+			bufferPages.set(index, data);
+			return freePage;
+		}
 	}
-	
-	
+		
 	private int getPageIndex(String fileID, long startPos){
 		for(int i = 0; i<bufferOccupancy.size(); i++){
 			OccupancyData occupancy = bufferOccupancy.get(i);
-			if (occupancy.fileID == fileID && occupancy.startPos == startPos)
+			if (occupancy.getFileID() == fileID && occupancy.getStartPos() == startPos)
 				return i;
 		}
 		return -1;

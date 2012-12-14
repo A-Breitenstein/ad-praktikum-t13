@@ -80,9 +80,9 @@ public class TestFileGenerator {
     }
 
     public static boolean isSorted(String fileName){
-        Reader reader = Reader.create(fileName, Constants.BUFFERSIZE_MERGEREAD);
+        Reader reader = Reader.create(fileName, Constants.MAXBYTESPERREADCALL);
         long CONTROLL_COUNTER = 0;
-        ByteBuffer bbuffer = ByteBuffer.allocate(Constants.BUFFERSIZE_MERGEREAD);
+        ByteBuffer bbuffer = ByteBuffer.allocate(Constants.MAXBYTESPERREADCALL);
        
         int overhangElem = Integer.MIN_VALUE;
         

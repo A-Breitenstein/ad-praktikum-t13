@@ -42,9 +42,8 @@ public class DataManagerImpl implements DataManager {
 	//ByteBuffer-Pools
 	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
 	private ByteBuffer sortBBuffer;
-	private List<ByteBuffer> readBBufferPool = new ArrayList<ByteBuffer>();//ByteBuffers für die Readers im Merge-Schritt
-	private List<ByteBuffer> writeBBufferPool = new ArrayList<ByteBuffer>(); //ByteBuffers für die Writers im Merge-Schritt
-	
+	private Hashtable<String, ByteBuffer> mergeBBufferPool = new Hashtable<String, ByteBuffer>();//ByteBuffers für die Readers/Writers im Merge-Schritt
+		
 	//Größen, Zustände
 	private final int initBufferSize; //Die (optimale) größe der Blöcke bei der QuickSort-Sortierung in Bytes 
 	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
@@ -85,8 +84,7 @@ public class DataManagerImpl implements DataManager {
         System.out.println("                        PC: " + getPcName());
         System.out.println("    Beginne Sortierung von: " + valToS(integersToSort) + " Integers (" + Math.round((integersToSort * INTSIZE)/1024/1024) + "MB)"  );
         System.out.println("Initial Integers pro Block: " + valToS(readerBlockSize));
-        System.out.println("   Integers pro Merge-Read: " + valToS(BUFFERSIZE_MERGEREAD / INTSIZE));
-        System.out.println("  Integers pro Merge-Write: " + valToS(BUFFERSIZE_MERGEWRITE / INTSIZE));
+        System.out.println("   Integers pro Merge-Page: " + valToS(BUFFERSIZE_MERGEPAGE / INTSIZE));
         System.out.println("       Max Arbeitsspeicher: " + valToS(BUFFERSIZE_APPLICATION / 1024/1024) + "MB");
         System.out.println(" Max Größe eines Readcalls: " + valToS(MAXBYTESPERREADCALL / 1024/1024) + "MB");
         System.out.println();
@@ -206,16 +204,17 @@ public class DataManagerImpl implements DataManager {
 	
 	
 	private void initBBufferPool(){
-		for (int i = 0; i<4; i++){
-			readBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEREAD));
+		for (int i = 0; i<2; i++){
+			mergeBBufferPool.put("r1" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
+			mergeBBufferPool.put("r2" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 		}
-		for (int i = 0; i<4; i++){
-			writeBBufferPool.add(ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEWRITE));
+		for (int i = 0; i<2; i++){
+			mergeBBufferPool.put("w1" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
+			mergeBBufferPool.put("w2" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 		}
 	}
 	private void closeBBufferPool(){
-		readBBufferPool.clear();
-		writeBBufferPool.clear();
+		mergeBBufferPool.clear();
 	}
 	
 	
@@ -236,10 +235,10 @@ public class DataManagerImpl implements DataManager {
 		switchState = (switchState == switchStates.read1_2_write3_4 ? switchStates.read3_4_write1_2 : switchStates.read1_2_write3_4);
 		
 		if (switchState == switchStates.read1_2_write3_4){
-			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler, readBBufferPool.get(0), readBBufferPool.get(1));
-			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler, readBBufferPool.get(2), readBBufferPool.get(3));
-			mergeOutput1 = new OutputBufferImpl(file3Path, this, scheduler, writeBBufferPool.get(0), writeBBufferPool.get(1));
-			mergeOutput2 = new OutputBufferImpl(file4Path, this, scheduler, writeBBufferPool.get(2), writeBBufferPool.get(3));
+			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler, mergeBBufferPool, "r11", "r12");
+			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler, mergeBBufferPool, "r21", "r22");
+			mergeOutput1 = new OutputBufferImpl(file3Path, this, scheduler, mergeBBufferPool, "w11", "w12");
+			mergeOutput2 = new OutputBufferImpl(file4Path, this, scheduler, mergeBBufferPool, "w21", "w22");
 		} else {
 			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler, readBBufferPool.get(0), readBBufferPool.get(1));
 			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler, readBBufferPool.get(2), readBBufferPool.get(3));
