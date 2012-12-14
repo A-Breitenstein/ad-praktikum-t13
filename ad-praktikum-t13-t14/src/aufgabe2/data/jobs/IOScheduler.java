@@ -1,5 +1,6 @@
 package aufgabe2.data.jobs;
 
+import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -16,7 +17,7 @@ public class IOScheduler extends Thread {
 	List<IOJob> jobs = new ArrayList<IOJob>();
 	Map<String, Semaphore> bufferLocks = new HashMap<String, Semaphore>();
 	Semaphore jobSemaphore = new Semaphore(0);
-	
+		
 	@Override
 	public void run(){
 		//System.out.println("JobScheduler started.");
