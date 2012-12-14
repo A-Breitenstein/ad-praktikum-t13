@@ -10,10 +10,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 
 import aufgabe2.algorithm.parallel.QuickSortMultiThreaded;
-import aufgabe2.algorithm.parallel.stolen.Quicksort;
 import org.junit.*;
 
 import aufgabe2.algorithm.ExternerMergeSort;
@@ -26,19 +24,18 @@ public final class Tests {
 		//Positiver Wert?
 		assertTrue( BUFFERSIZE_APPLICATION > 0);
 		assertTrue(BUFFERSIZE_SORTARRAY > 0);
-		assertTrue(BUFFERSIZE_MERGEREAD > 0);
-		assertTrue(BUFFERSIZE_MERGEWRITE > 0);
+		assertTrue(BUFFERSIZE_MERGEPAGE > 0);
+		assertTrue(BUFFERSIZE_MERGEMEMPERSISTENCE >= 0);
 		assertTrue(MAXBYTESPERREADCALL > 0);
 		//Gültiger Wert (lassen sich dort ganze Integers speichern ohne Rest?)
 		assertTrue(BUFFERSIZE_SORTARRAY % INTSIZE == 0);
-		assertTrue(BUFFERSIZE_MERGEREAD % INTSIZE == 0);
-		assertTrue(BUFFERSIZE_MERGEWRITE % INTSIZE == 0);
+		assertTrue(BUFFERSIZE_MERGEPAGE % INTSIZE == 0);
 		assertTrue(MAXBYTESPERREADCALL % INTSIZE == 0);
 		//Wird die Gesammtkapazität des Speichers nicht überschritten? (Bedingungen können sich je nach Implementierungen ändern!)
 		assertTrue(MAXBYTESPERREADCALL <= BUFFERSIZE_APPLICATION);
 		assertTrue( BUFFERSIZE_SORTARRAY <= BUFFERSIZE_APPLICATION);
 		assertTrue( BUFFERSIZE_SORTARRAY <= BUFFERSIZE_APPLICATION);
-		assertTrue( BUFFERSIZE_MERGEREAD * 4 + BUFFERSIZE_MERGEWRITE * 4 <= BUFFERSIZE_APPLICATION); //Jeweils zwei Dateien und zwei Treads, also mal 4!
+		assertTrue( BUFFERSIZE_MERGEPAGE * 8 + BUFFERSIZE_MERGEMEMPERSISTENCE <= BUFFERSIZE_APPLICATION); //Jeweils zwei Dateien und zwei Treads und jeweils Lesen und Schreiben, also mal 8!
 	}
 
     @Test @Ignore

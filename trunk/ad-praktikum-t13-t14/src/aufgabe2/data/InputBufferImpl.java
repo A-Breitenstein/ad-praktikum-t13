@@ -31,7 +31,7 @@ public class InputBufferImpl implements InputBuffer{
 		this.scheduler = scheduler;
 		this.buffer1 = buffer1;
 		this.buffer2 = buffer2;
-		reader = Reader.create(filePath, (int)Constants.BUFFERSIZE_MERGEREAD);
+		reader = Reader.create(filePath, (int)Constants.BUFFERSIZE_MERGEPAGE);
 				
 		if (!reader.isFileFullyReaded()){ //Gibt es Elemente in der Datei?
 			pushReaderJob(); //Lesejob erzeugen
