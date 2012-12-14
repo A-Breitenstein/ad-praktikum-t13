@@ -23,10 +23,10 @@ public class InputBufferImpl implements InputBuffer{
 	/**
 	 * Erzeugt einen neuen InputBuffer, welcher über die gesammte Datei liest und dabei die Blöcke simuliert
 	 * @param filePath - Der Pfad der zu lesenden Datei
-	 * @param blockSize - Die Größe der sortierten Blöcke in der Datei
+	 * @param BlockSize - Die Größe der sortierten Blöcke in der Datei
 	 * @param scheduler - Die Instanz, die Lese/Schreibjobs im Hintergrund verarbeitet
 	 */
-	public InputBufferImpl(String filePath, long blockSize, IOScheduler scheduler, ByteBuffer buffer1, ByteBuffer buffer2){
+	public InputBufferImpl(String filePath, int blockSize, IOScheduler scheduler, ByteBuffer buffer1, ByteBuffer buffer2){
 		this.blockSize = blockSize;
 		this.scheduler = scheduler;
 		this.buffer1 = buffer1;
