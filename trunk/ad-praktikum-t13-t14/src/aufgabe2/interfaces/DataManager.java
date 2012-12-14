@@ -59,7 +59,4 @@ public interface DataManager {
      * Schließt alle offen FileChannels und gibt den Pfad der sortierten Datei zurück.
      */
     public String completeSort();
-
-    public LargeIntBuffer readLargeBlock();
-    public void writeLargeBlock(LargeIntBuffer buffer);
 }

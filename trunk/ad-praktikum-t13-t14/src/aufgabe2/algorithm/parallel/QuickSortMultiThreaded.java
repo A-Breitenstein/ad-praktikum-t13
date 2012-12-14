@@ -47,8 +47,8 @@ public class QuickSortMultiThreaded {
         boolean result = false;
         if(startRechts> 10000){
             Future<Boolean> future;
-            future = threadPool.submit(new quickSort(startLinks,startRechts));
-//            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
+            //future = threadPool.submit(new quickSort(startLinks,startRechts));
+            future = threadPool.submit(new DualPivotQuicksort(startLinks,startRechts));
             try {
                 result = future.get();
             } catch (InterruptedException e) {
