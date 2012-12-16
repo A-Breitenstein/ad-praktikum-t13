@@ -12,7 +12,7 @@ import aufgabe2.data.io.Reader;
  * @author Markus Bruhn
  *
  */
-public class ReaderJob implements IOJob{
+public class ReaderJob implements IOJob, IReaderJob{
 
 	private Reader reader;
 	private IntBuffer result;
@@ -23,10 +23,12 @@ public class ReaderJob implements IOJob{
 	/**
 	 * Konstruktor
 	 * @param reader - die Quelle, von welcher getIntBuffer() aufgerufen werden soll
+	 * @param buffer - der Buffer, in welches das Ergebnis geschrieben werden soll
 	 */
 	public ReaderJob(Reader reader, ByteBuffer buffer){
 		this.reader = reader;
 		this.buffer = buffer;
+		buffer.clear();
 	}
 	
 	/**
@@ -35,6 +37,7 @@ public class ReaderJob implements IOJob{
 	 * Nachdem der IntBuffer zurückgegeben wurde, ist dieser kein zweites Mal abrufbar.
 	 * @return
 	 */
+	@Override
 	public IntBuffer getIntBuffer(){
 		
 		try {
@@ -68,7 +71,8 @@ public class ReaderJob implements IOJob{
 	@Override
 	public void run() {
 		 try {
-			reader.readToByteBuffer(buffer);//das ist alles...
+			System.out.println("Lese aus Datei " + reader.getFilePath() + ": " + System.identityHashCode(buffer));
+			 reader.readToByteBuffer(buffer);//das ist alles...
 		} catch (IOException e) {
 			System.err.println("Fehler beim Lesen aus " + getWorkingFile());
 			buffer.clear();

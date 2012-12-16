@@ -7,7 +7,7 @@ public final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = Integer.MAX_VALUE; //2047 * 1024 * (long)1024; // vorderster Wert in MB
+	public static final long BUFFERSIZE_APPLICATION = 1024 * 1024 * (long)1024; // Integer.MAX_VALUE// vorderster Wert in MB
 
 	/**
 	 * Die Größe eines Integers in Bytes
@@ -24,23 +24,11 @@ public final class Constants {
 	 * auf dem Array genutzt werden darf.
 	 */
 	public static final int BUFFERSIZE_SORTARRAY = toValidIntSize(BUFFERSIZE_APPLICATION); //Gesamten Arbeitsspeicher verwenden!	
-	
-//	/**
-//	 * Die (maximale) Größe des Speichers in Bytes, der für einen LeseVorgang pro Datei und Tread
-//	 * genutzt werden darf
-//	 */
-//	public static final int BUFFERSIZE_MERGEREAD = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei lesende Dateien und zwei Treads (Rechentread/ IO-Tread)
-//	/**
-//	 * Die (maximale) Größe des Speichers in Bytes, der für einen Schreibvorgang pro Datei und
-//	 * Thread genutzt werden darf
-//	 */
-//	public static final int BUFFERSIZE_MERGEWRITE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)); //Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
-	
 	/**
 	 * Die Größe des Speichers in Bytes, der für einen Lese/Schreibvorgang pro Datei und Thead
 	 * genutzt werden darf.
 	 */
-	public static final int BUFFERSIZE_MERGEPAGE = toValidIntSize(Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL));//Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+	public static final int BUFFERSIZE_MERGEPAGE = toValidIntSize(Math.min(64 * 1024 * 1024, Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)));//Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
 	/**
 	 * Die Größe des Speichers in Bytes, der für das halten verarbeiteteter Daten im Abeitsspeichers (statt Festplatte) verwendet werden darf. 
 	 */

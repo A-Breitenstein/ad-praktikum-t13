@@ -46,10 +46,10 @@ public class WriterJob implements IOJob {
         @Override
         public void run() {
                 zugehoerigesBand.writeByteBufferToFile(zugehoerigeDaten); 
+                System.out.println("Geschrieben in Datei " + zugehoerigesBand.getFileName() + ": " + System.identityHashCode(zugehoerigeDaten));
                 zugehoerigeDaten = null; // für neue Daten bereit machen
                 jobLock.release(); 
-                jobFinished.release();
-                
+                jobFinished.release();                
         }
         
         

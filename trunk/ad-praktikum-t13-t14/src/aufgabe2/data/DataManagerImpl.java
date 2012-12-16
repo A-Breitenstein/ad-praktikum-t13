@@ -1,5 +1,7 @@
 package aufgabe2.data;
 
+import aufgabe2.data.buffer.IBufferManager;
+import aufgabe2.data.buffer.MemPersistence;
 import aufgabe2.data.io.Reader;
 import aufgabe2.data.io.Writer;
 import aufgabe2.data.jobs.IOScheduler;
@@ -20,6 +22,8 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +31,7 @@ import java.util.*;
  * Date: 31.10.12
  * Time: 16:41
  */
-public class DataManagerImpl implements DataManager {
+public class DataManagerImpl implements DataManager, IBufferManager {
 	
 	//SourceDateien
 	private String sourceFilePath, file1Path, file2Path, file3Path, file4Path;
@@ -43,11 +47,12 @@ public class DataManagerImpl implements DataManager {
 	private final ByteBuffer ZEROBYTEBUFFER = ByteBuffer.allocateDirect(0);
 	private ByteBuffer sortBBuffer;
 	private Hashtable<String, ByteBuffer> mergeBBufferPool = new Hashtable<String, ByteBuffer>();//ByteBuffers für die Readers/Writers im Merge-Schritt
-		
+	private MemPersistence memPersistence = MemPersistence.ZEROMEMPERSISTENCE;
+	
 	//Größen, Zustände
 	private final int initBufferSize; //Die (optimale) größe der Blöcke bei der QuickSort-Sortierung in Bytes 
 	private int readerBlockSize; //Die aktuelle Größe der beim Mergen zu lesenden Blöcke (writerBlockSize ist doppelt so groß)
-	private final long integersToSort; //Die Länge der Datei
+	public final long integersToSort; //Die Länge der Datei
 	private long storedIntegers; //Die bereits gespeicherten Integers innerhalb eines MergeRuns
 	private switchStates switchState = switchStates.undef; 
 	private modie modus = modie.QuickSort;
@@ -87,6 +92,8 @@ public class DataManagerImpl implements DataManager {
         System.out.println("   Integers pro Merge-Page: " + valToS(BUFFERSIZE_MERGEPAGE / INTSIZE));
         System.out.println("       Max Arbeitsspeicher: " + valToS(BUFFERSIZE_APPLICATION / 1024/1024) + "MB");
         System.out.println(" Max Größe eines Readcalls: " + valToS(MAXBYTESPERREADCALL / 1024/1024) + "MB");
+        System.out.println("           Merge PageGröße: " + valToS(BUFFERSIZE_MERGEPAGE / 1024/1024) + "MB");
+        System.out.println("Größe Merge-MemPersistence: " + valToS(BUFFERSIZE_MERGEMEMPERSISTENCE / 1024/1024) + "MB (" + (int)Math.floor(BUFFERSIZE_MERGEMEMPERSISTENCE / BUFFERSIZE_MERGEPAGE) + " Pages)");
         System.out.println();
         
         //Zeitmessung
@@ -134,24 +141,6 @@ public class DataManagerImpl implements DataManager {
 	}
 	@Override
 	public void writeBlock(ByteBuffer buffer) {
-//        int write_calls = 6;
-//        int bytesPerWrite = BUFFERSIZE_SORTARRAY / write_calls;
-//        int rest = BUFFERSIZE_SORTARRAY % write_calls;
-//
-//        for (int i = 1; i < write_calls; i++) {
-//            if(buffer.remaining() > bytesPerWrite){
-//                buffer.limit(bytesPerWrite*i);
-//                activeInitWriter.write(buffer);
-//            }
-//            else{
-//                buffer.limit(bytesPerWrite*(i-1)+buffer.remaining())
-//                activeInitWriter.write(buffer);
-//            }
-//        }
-//        if(buffer.hasRemaining()){
-//
-//        }
-//        buffer.clear();
 		activeInitWriter.writeByteBufferToFile(buffer);
 		activeInitWriter = (activeInitWriter == initWriter1 ? initWriter2 : initWriter1); //Runs abwechselnd schreiben
 	}
@@ -176,12 +165,12 @@ public class DataManagerImpl implements DataManager {
 	}
 	@Override
 	public String completeSort() {
-		closeBBufferPool();
 		closeBuffers();
+		closeBBufferPool();
 		scheduler.interrupt();
 		try {
 			scheduler.join();
-		} catch (InterruptedException e) {}
+		} catch (InterruptedException e) {}		
 		File endFile = new File(activeMergeOutput.getFilePath());
         File resultFile =  new File((endFile.getParent() == null ? "EnddateiSorted" : Paths.get(sourceFilePath).getParent().resolve("EnddateiSorted").toString()));
  
@@ -204,19 +193,46 @@ public class DataManagerImpl implements DataManager {
 	
 	
 	private void initBBufferPool(){
-		for (int i = 0; i<2; i++){
+		for (int i = 1; i<=2; i++){
 			mergeBBufferPool.put("r1" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 			mergeBBufferPool.put("r2" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 		}
-		for (int i = 0; i<2; i++){
+		for (int i = 1; i<=2; i++){
 			mergeBBufferPool.put("w1" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 			mergeBBufferPool.put("w2" + i, ByteBuffer.allocateDirect((int)BUFFERSIZE_MERGEPAGE));
 		}
+		memPersistence = new MemPersistence(BUFFERSIZE_MERGEMEMPERSISTENCE);
 	}
 	private void closeBBufferPool(){
 		mergeBBufferPool.clear();
+		memPersistence.ReleasePersistence();
 	}
-	
+		
+	/**
+	 * Gibt den Buffer mit dem angegebenen BufferKey zurück
+	 * @param bufferKey
+	 * @return
+	 */
+	@Override
+	public ByteBuffer getBBuffer(String bufferKey){
+		return mergeBBufferPool.get(bufferKey);
+	}
+	/**
+	 * Tauscht einen ByteBuffer gegen einen anderen, gleichwertigen aus
+	 * @param bufferKey
+	 * @return
+	 */
+	@Override
+	public ByteBuffer exchangeBBuffer(String bufferKey, ByteBuffer newBuffer){
+		ByteBuffer b = getBBuffer(bufferKey);
+		mergeBBufferPool.put(bufferKey, newBuffer);
+		System.out.println("Exchange Buffer " + bufferKey + " von " + System.identityHashCode(b) + " zu " + System.identityHashCode(newBuffer));
+		return b;
+	}
+	@Override
+	public MemPersistence getMemPersistence() {
+		return memPersistence;
+	}
 	
 	//----------SwitchChannels, Close IO Channels--------------------------------
 	
@@ -233,17 +249,17 @@ public class DataManagerImpl implements DataManager {
 			printMessage("Beginne Merge-Schritt mit Runlänge = " + valToS(readerBlockSize));
 		}
 		switchState = (switchState == switchStates.read1_2_write3_4 ? switchStates.read3_4_write1_2 : switchStates.read1_2_write3_4);
-		
+		boolean lastRun = readerBlockSize *2 > integersToSort;
 		if (switchState == switchStates.read1_2_write3_4){
-			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler, mergeBBufferPool, "r11", "r12");
-			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler, mergeBBufferPool, "r21", "r22");
-			mergeOutput1 = new OutputBufferImpl(file3Path, this, scheduler, mergeBBufferPool, "w11", "w12");
-			mergeOutput2 = new OutputBufferImpl(file4Path, this, scheduler, mergeBBufferPool, "w21", "w22");
+			mergeInput1 = new InputBufferImpl(file1Path, readerBlockSize, scheduler, this, "r11", "r12");
+			mergeInput2 = new InputBufferImpl(file2Path, readerBlockSize, scheduler, this, "r21", "r22");
+			mergeOutput1 = new OutputBufferImpl(file3Path, this, scheduler, "w11", "w12", lastRun);
+			mergeOutput2 = new OutputBufferImpl(file4Path, this, scheduler, "w21", "w22", lastRun);
 		} else {
-			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler, readBBufferPool.get(0), readBBufferPool.get(1));
-			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler, readBBufferPool.get(2), readBBufferPool.get(3));
-			mergeOutput1 = new OutputBufferImpl(file1Path, this, scheduler, writeBBufferPool.get(0), writeBBufferPool.get(1));
-			mergeOutput2 = new OutputBufferImpl(file2Path, this, scheduler, writeBBufferPool.get(2), writeBBufferPool.get(3));
+			mergeInput1 = new InputBufferImpl(file3Path, readerBlockSize, scheduler, this, "r11", "r12");
+			mergeInput2 = new InputBufferImpl(file4Path, readerBlockSize, scheduler, this, "r21", "r22");
+			mergeOutput1 = new OutputBufferImpl(file1Path, this, scheduler, "w11", "w12", lastRun);
+			mergeOutput2 = new OutputBufferImpl(file2Path, this, scheduler, "w21", "w22", lastRun);
 		}
 		storedIntegers = 0;
 		activeMergeOutput = mergeOutput1;
@@ -340,5 +356,5 @@ public class DataManagerImpl implements DataManager {
 		read1_2_write3_4,
 		read3_4_write1_2;
 	}
-
+	
 }
