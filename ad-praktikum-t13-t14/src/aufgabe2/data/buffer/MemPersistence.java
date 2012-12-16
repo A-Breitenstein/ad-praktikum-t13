@@ -13,6 +13,7 @@ import static aufgabe2.data.Constants.*;
  */
 public class MemPersistence {
 
+	public static final MemPersistence ZEROMEMPERSISTENCE = new MemPersistence(0);
 	private List<ByteBuffer> bufferPages = new ArrayList<ByteBuffer>(); //Die aussschließlich im Abeitsspeicher gehaltenen Fragmente 
 	private List<OccupancyData> bufferOccupancy = new ArrayList<OccupancyData>(); //Die Belegung der Buffers. NOTUSEDPAGE, wenn frei
 	private final OccupancyData NOTUSEDPAGE = new OccupancyData("",1); 
@@ -20,13 +21,16 @@ public class MemPersistence {
 	/**
 	 * Erzeugt eine MemPersistence und allociert DirectByteBuffers.
 	 */
-	public MemPersistence(){
-		int pageCount = (int) Math.floor(BUFFERSIZE_MERGEMEMPERSISTENCE / BUFFERSIZE_MERGEPAGE);
+	public MemPersistence(long fullSize){
+		int pageCount = (int) Math.floor(fullSize / BUFFERSIZE_MERGEPAGE);
 		for (int i = 0; i< pageCount;i++){
 			bufferPages.add(ByteBuffer.allocateDirect(BUFFERSIZE_MERGEPAGE));
 			bufferOccupancy.add(NOTUSEDPAGE);
 		}
-	}
+		for (ByteBuffer b:bufferPages){
+			b.position(0);
+		}
+	} 
 	
 	/**
 	 * Gibt den Abeitsspeicher wieder frei
@@ -91,6 +95,8 @@ public class MemPersistence {
 			ByteBuffer page = bufferPages.get(index);
 			bufferOccupancy.set(index, NOTUSEDPAGE);
 			bufferPages.set(index, spareBuffer);
+			spareBuffer.clear();
+			System.out.println("Lese aus MemPersistence " + System.identityHashCode(page) + ", freier Buffer: " + System.identityHashCode(spareBuffer));
 			return page;
 		}
 	}
@@ -110,6 +116,7 @@ public class MemPersistence {
 			ByteBuffer freePage = bufferPages.get(index);
 			bufferOccupancy.set(index, new OccupancyData(fileID, startPos));
 			bufferPages.set(index, data);
+			System.out.println("Schreibe in MemPersistence " + System.identityHashCode(data) + ", freier Buffer: " + System.identityHashCode(freePage));
 			return freePage;
 		}
 	}

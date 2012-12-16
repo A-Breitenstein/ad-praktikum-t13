@@ -75,19 +75,29 @@ public class ExternerMergeSort {
 
         OutputBuffer output = ioTapes.createOuputBuffer(); //new OutputBuffer(ioTapes);
     	
-		while (linksIn.hasCurrent() && rechtsIn.hasCurrent()) {
-
-			int linksElem = linksIn.getCurrent();
+        boolean linksHasCurrent = linksIn.hasCurrent();
+        boolean rechtsHasCurrent = rechtsIn.hasCurrent();
+        
+        if (linksHasCurrent && rechtsHasCurrent){
+        	int linksElem = linksIn.getCurrent();
 			int rechtsElem = rechtsIn.getCurrent();
-
-			if (linksElem <= rechtsElem) {
-				output.push(linksElem);
-				linksIn.moveNext();
-			} else {
-				output.push(rechtsElem);
-				rechtsIn.moveNext();
+			
+			while (linksHasCurrent && rechtsHasCurrent) {
+				if (linksElem <= rechtsElem) {
+					output.push(linksElem);
+					linksIn.moveNext();
+					linksElem = linksIn.getCurrent();
+					linksHasCurrent = linksIn.hasCurrent();
+				} else {
+					output.push(rechtsElem);
+					rechtsIn.moveNext();
+					rechtsElem = rechtsIn.getCurrent();
+					rechtsHasCurrent = rechtsIn.hasCurrent();
+				}
 			}
-		}
+        }
+        
+		
 
 		while (linksIn.hasCurrent()) {
 			output.push(linksIn.getCurrent());

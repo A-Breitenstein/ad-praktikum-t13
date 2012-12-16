@@ -1,6 +1,5 @@
 package aufgabe2.data.jobs;
 
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -26,6 +25,8 @@ public class IOScheduler extends Thread {
 				if (isInterrupted() && jobSemaphore.availablePermits() == 0){
 					break;
 				} else {					
+//					if (jobSemaphore.availablePermits() == 0)
+//						System.out.println("Kein IO Auftrag!");
 					jobSemaphore.acquire();
 					IOJob job = null;
 					synchronized (jobs){
