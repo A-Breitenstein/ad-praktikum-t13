@@ -80,11 +80,12 @@ public class InputBufferImpl implements InputBuffer{
 	}
 		
 	@Override
-	public void moveNext() {
+	public boolean moveNext() {
 		if (blockPos + 1 < blockSize){ //hat der Block noch ein nächstes Element?
 			if (currentBuffer.hasRemaining()){
 				current = currentBuffer.get();
 				blockPos ++;
+				return true;
 			} else { //Buffer komplett ausgelesen --> nächsten, hoffentlich schon fertig geladenen Buffer holen (ansonnsten dauert es etwas)
 				
 				if(backgroundReader != null) {
@@ -96,27 +97,26 @@ public class InputBufferImpl implements InputBuffer{
 					if (!reader.isFileFullyReaded() || memPersistenceHasData()){ //kann noch mehr gelesen werden? --> neuen asynchronen Leseauftrag erstellen!
 						pushReaderJob(); 
 					}
-					moveNext(); //currentBuffer wurde erneuert, daher current neu einlsenen
+					return moveNext(); //currentBuffer wurde erneuert, daher current neu einlsenen
 				} else { //Dann ist die Datei entgültig zuende
 					currentBuffer = ZEROBUFFER;
 					blockPos = blockSize;//Bewirkt, dass hasCurrent nun False zurückliefert
+					return false;
 				}
 			}
 		} else {
 			blockPos = blockSize;//Bewirkt, dass hasCurrent nun False zurückliefert (CurrentBuffer aber nicht zurücksetzen, da dort noch Elemente für den nächsten Block stehen könnten)
+			return false;
 		}
+		
 			
 	}
-	private long count = 0;
 	private void pushReaderJob(){
-		count ++;
 		String fileID = reader.getFilePath();
 		String readerBufferKey = (currentByteBufferKey == bufferKey1 ? bufferKey2 : bufferKey1);
 		if(memPersistenceHasData()){
-			System.out.println(" Lesen aus MemBuffer Job: " + count + " Pos: " + fileBytePos + " File: " + fileID);
 			backgroundReader = new MemReader(persistenceBuffer, fileID, fileBytePos, bufferManager, readerBufferKey);
 		} else {
-			System.out.println(" Lesen aus Datei Job: " + count + " Pos: " + fileBytePos + " File: " + fileID);
 			backgroundReader = new ReaderJob(reader, bufferManager.getBBuffer(readerBufferKey));
 			scheduler.pushJob((ReaderJob)backgroundReader);
 		}

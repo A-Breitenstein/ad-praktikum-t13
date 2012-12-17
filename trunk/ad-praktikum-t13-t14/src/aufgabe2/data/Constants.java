@@ -7,7 +7,7 @@ public final class Constants {
 	 * Die (maximale Größe) des Speichers in Bytes, die insgesammt vom Programm
 	 * verwendet werden darf
 	 */
-	public static final long BUFFERSIZE_APPLICATION = 1024 * 1024 * (long)1024; // Integer.MAX_VALUE// vorderster Wert in MB
+	public static final long BUFFERSIZE_APPLICATION = 2048 * 1024 * (long)1024; // Integer.MAX_VALUE// vorderster Wert in MB
 
 	/**
 	 * Die Größe eines Integers in Bytes
@@ -17,7 +17,7 @@ public final class Constants {
 	/**
 	 * Die maximale Größe eines Lesevorgangs. Sind mehr Zahlen einzulesenen, so wird mehrmals hintereinander gelesen.
 	 */
-	public static final int MAXBYTESPERREADCALL = toValidIntSize(128 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
+	public static final int MAXBYTESPERREADCALL = toValidIntSize(256 * 1024 * 1024); //optimal scheint 250-512 MB zu sein
 	
 	/**
 	 * Die (maximale) Größe des Speichers in Bytes, der für das Arbeiten 
@@ -28,7 +28,7 @@ public final class Constants {
 	 * Die Größe des Speichers in Bytes, der für einen Lese/Schreibvorgang pro Datei und Thead
 	 * genutzt werden darf.
 	 */
-	public static final int BUFFERSIZE_MERGEPAGE = toValidIntSize(Math.min(64 * 1024 * 1024, Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)));//Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
+	public static final int BUFFERSIZE_MERGEPAGE = toValidIntSize(Math.min(128 * 1024 * 1024, Math.min(BUFFERSIZE_APPLICATION / 8, MAXBYTESPERREADCALL)));//Anmerkung: es gibt zwei schreibende Dateien (auch, wenn abwechselnd in diese geschrieben werden) und zwei Treads (Rechentread/ IO-Tread)
 	/**
 	 * Die Größe des Speichers in Bytes, der für das halten verarbeiteteter Daten im Abeitsspeichers (statt Festplatte) verwendet werden darf. 
 	 */

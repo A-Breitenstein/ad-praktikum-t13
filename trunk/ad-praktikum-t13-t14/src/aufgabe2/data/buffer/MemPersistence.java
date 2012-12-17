@@ -96,7 +96,6 @@ public class MemPersistence {
 			bufferOccupancy.set(index, NOTUSEDPAGE);
 			bufferPages.set(index, spareBuffer);
 			spareBuffer.clear();
-			System.out.println("Lese aus MemPersistence " + System.identityHashCode(page) + ", freier Buffer: " + System.identityHashCode(spareBuffer));
 			return page;
 		}
 	}
@@ -116,7 +115,6 @@ public class MemPersistence {
 			ByteBuffer freePage = bufferPages.get(index);
 			bufferOccupancy.set(index, new OccupancyData(fileID, startPos));
 			bufferPages.set(index, data);
-			System.out.println("Schreibe in MemPersistence " + System.identityHashCode(data) + ", freier Buffer: " + System.identityHashCode(freePage));
 			return freePage;
 		}
 	}

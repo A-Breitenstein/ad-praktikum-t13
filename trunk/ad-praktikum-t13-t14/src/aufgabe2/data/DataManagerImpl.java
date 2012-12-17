@@ -22,9 +22,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
-
-
 /**
  * Created with IntelliJ IDEA.
  * User: abg667
@@ -184,7 +181,7 @@ public class DataManagerImpl implements DataManager, IBufferManager {
         	deleteIfExits(file4Path);
         }
         printMessage("Sortieren abgeschlossen! Die Ausgabedatei enthält " + valToS(resultFile.length() / INTSIZE) + " Integers.");
-        
+        System.gc();
         return resultFile.getAbsolutePath();
 	}
 	
@@ -226,7 +223,6 @@ public class DataManagerImpl implements DataManager, IBufferManager {
 	public ByteBuffer exchangeBBuffer(String bufferKey, ByteBuffer newBuffer){
 		ByteBuffer b = getBBuffer(bufferKey);
 		mergeBBufferPool.put(bufferKey, newBuffer);
-		System.out.println("Exchange Buffer " + bufferKey + " von " + System.identityHashCode(b) + " zu " + System.identityHashCode(newBuffer));
 		return b;
 	}
 	@Override
@@ -246,7 +242,7 @@ public class DataManagerImpl implements DataManager, IBufferManager {
 		} else {
 			closeBuffers();
 			readerBlockSize *= 2; //BlockSize verdoppeln
-			printMessage("Beginne Merge-Schritt mit Runlänge = " + valToS(readerBlockSize));
+			printMessage("Beginne Merge-Schritt mit Runlänge = " + valToS(readerBlockSize) + " MemBuffer-Auslastung: " + (memPersistence.getPageCount() == 0 ? 0 :(int)((memPersistence.getPageCount() - memPersistence.getFreePages()) / memPersistence.getPageCount() *100)) + "%");
 		}
 		switchState = (switchState == switchStates.read1_2_write3_4 ? switchStates.read3_4_write1_2 : switchStates.read1_2_write3_4);
 		boolean lastRun = readerBlockSize *2 > integersToSort;

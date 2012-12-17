@@ -25,9 +25,10 @@ public class IOScheduler extends Thread {
 				if (isInterrupted() && jobSemaphore.availablePermits() == 0){
 					break;
 				} else {					
-//					if (jobSemaphore.availablePermits() == 0)
-//						System.out.println("Kein IO Auftrag!");
+					if (jobSemaphore.availablePermits() == 0)
+						System.out.println("Kein IO Auftrag!");
 					jobSemaphore.acquire();
+					System.out.println("Anzahl Jobs: " + jobs.size());
 					IOJob job = null;
 					synchronized (jobs){
 						for (int i = 0; i < jobs.size(); i++){
@@ -75,17 +76,17 @@ public class IOScheduler extends Thread {
 		} else {
 			job.prepareRun();
 			job.run(); // Testweise synchron ausführen
-			
 		}
 			
 		
 	}
 	
 	/**
-	 * Wartet so lange, bis alle noch anstehenden Jobs abgearbeitet wurden
+	 * Gibt die Anzahl der Jobs zurück, die zur Zeit in der Warteschlange stehen. Darüber hinaus kann es noch einen Job geben, der momentan bearbeitet wird.
+	 * @return
 	 */
-	public void terminate(){
-		
+	public int actQueueCount(){
+		return jobs.size();
 	}
 	
 }
