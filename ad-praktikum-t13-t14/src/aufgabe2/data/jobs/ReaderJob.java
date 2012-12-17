@@ -71,7 +71,6 @@ public class ReaderJob implements IOJob, IReaderJob{
 	@Override
 	public void run() {
 		 try {
-			System.out.println("Lese aus Datei " + reader.getFilePath() + ": " + System.identityHashCode(buffer));
 			 reader.readToByteBuffer(buffer);//das ist alles...
 		} catch (IOException e) {
 			System.err.println("Fehler beim Lesen aus " + getWorkingFile());

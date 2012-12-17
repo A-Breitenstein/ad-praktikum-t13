@@ -61,8 +61,6 @@ public class OutputBufferImpl implements OutputBuffer {
 	@Override
 	public void push(int val) {
 		currentIntBuffer.put(val);
-//		if (val == -328925546 && count == 15)
-//			System.out.println("Es ist soweit...");
 		if (!currentIntBuffer.hasRemaining()) {
 			pushWriterJob();
 			aquireNewBuffer();
@@ -78,7 +76,7 @@ public class OutputBufferImpl implements OutputBuffer {
 		return filePath;
 	}
 	private long writerPos = 0; 
-	private int count = 0;
+
 	/**
 	 * Gibt den Auftrag, den Currentbuffer wegzuschreiben
 	 * PostCondition: der Buffer des Nicht-CurrentByteBufferKey ist frei und kann wieder verwendet werden. Der CurrentByteBufferKey darf geändert werden!
@@ -87,20 +85,16 @@ public class OutputBufferImpl implements OutputBuffer {
 		currentByteBuffer.position(currentIntBuffer.position()*4);
 		currentByteBuffer.flip();
 		remainingPushesForMemWrite -=1;
-		count ++;
-		boolean shouldWriteInMemPersistence = remainingPushesForMemWrite <= 0;
+		boolean shouldWriteInMemPersistence = remainingPushesForMemWrite <= 0 && (scheduler.actQueueCount() > 0 || persistenceBuffer.getFreePages() <= 2) ;//möglichst gleichverteilt schreiben, doch wenn der Scheduler so gut wie nix zu tun hat ihm eine Aufgabe geben, wenn möglich (MemPersistence wird um einen Push verschoben)
 		if (shouldWriteInMemPersistence && persistenceBuffer.getFreePages() >  0){
 			remainingPushesForMemWrite += memPushFrequenz;
 			ByteBuffer newFreeBuffer = persistenceBuffer.pushPage(getFilePath(), writerPos , currentByteBuffer);
 			newFreeBuffer.clear();
 			owner.exchangeBBuffer(currentByteBufferKey, newFreeBuffer);
 			currentByteBufferKey = (currentByteBufferKey == bufferKey1 ? bufferKey2 : bufferKey1); //Sehr fieser Fehler: CurrentBuffer muss getauscht werden. Normalerweise wird davon ausgegangen, dass der Nicht-CurrentBuffer nun wieder frei ist, da bei pushJob so lange gewartet wird, bis der alte Job abgearbeitet ist. Hier wird an dem JobScheduler "vorbei" programmiert; d.h, der Job läuft evtl. noch und der Speicher ist noch nicht frei. Wird in diesem Buffer nun neue werte geschrieben, landet Murks auf der Platte. Aber der Speicher für den aktuellen Writejob ist schon frei und soll bei AquireBuffer verwendet werden. 
-			System.out.println("Write in MemPersistence Job: " + count + " Pos: " + writerPos + " File: " + getFilePath());
 		} else {
 			if(shouldWriteInMemPersistence)
 				System.out.println("Zwangsschreiben in Datei, da MemBuffer voll ist");
-			else
-				System.out.println("Write in Datei Job: " + count + " Pos: " + writerPos + " File: " + getFilePath());
 			WriterJob job = new WriterJob(writer, currentByteBuffer);
 			scheduler.pushJob(job);
 			backgroundWriter = job;//Reihenfolge ist wichtig, ggf später noch einmal checken...

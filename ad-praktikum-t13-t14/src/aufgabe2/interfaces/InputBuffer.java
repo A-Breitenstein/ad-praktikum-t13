@@ -21,7 +21,8 @@ public interface InputBuffer {
 	public boolean hasCurrent();
 	/**
 	 * Verschiebt das aktuelle Element um 1 nach rechts. Es wird kein Fehler ausgegeben, wenn hasCurrent==false ist.
+	 * @return ob es nun noch ein aktuelles Element gibt (äquvalent mit hasCurrent)
 	 */
-	public void moveNext();
+	public boolean moveNext();
 	
 }

@@ -85,14 +85,12 @@ public class ExternerMergeSort {
 			while (linksHasCurrent && rechtsHasCurrent) {
 				if (linksElem <= rechtsElem) {
 					output.push(linksElem);
-					linksIn.moveNext();
+					linksHasCurrent = linksIn.moveNext();
 					linksElem = linksIn.getCurrent();
-					linksHasCurrent = linksIn.hasCurrent();
 				} else {
 					output.push(rechtsElem);
-					rechtsIn.moveNext();
+					rechtsHasCurrent = rechtsIn.moveNext();
 					rechtsElem = rechtsIn.getCurrent();
-					rechtsHasCurrent = rechtsIn.hasCurrent();
 				}
 			}
         }
